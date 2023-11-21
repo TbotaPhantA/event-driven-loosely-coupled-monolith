@@ -2,9 +2,10 @@
   "name": "nestjs-ddd",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
     "lint": "turbo lint",
+    "build": "turbo build",
+    "start:dev": "turbo start:dev",
+    "ci": "turbo ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
