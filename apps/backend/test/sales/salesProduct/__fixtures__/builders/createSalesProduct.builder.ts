@@ -4,7 +4,11 @@ import { CreateSalesProduct } from '../../../../../src/sales/domain/salesProduct
 export class CreateSalesProductBuilder {
   static get defaultAll(): InjectionBuilder<CreateSalesProduct> {
     return new InjectionBuilder<CreateSalesProduct>(
-      new CreateSalesProduct('Phone', 'An android phone', 1),
+      new CreateSalesProduct({
+        name: 'Phone',
+        description: 'An android phone',
+        price: 1,
+      }),
     );
   }
 }
