@@ -13,10 +13,7 @@ export class SalesProductController {
 
   @Post('create-sales-product')
   @ApiOperation({ summary: 'Create sales product' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: CreateSalesProductOutputDto,
-  })
+  @ApiResponse({ type: CreateSalesProductOutputDto })
   async createSalesProduct(
     @Body() command: CreateSalesProduct,
   ): Promise<CreateSalesProductOutputDto> {
