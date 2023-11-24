@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  nes_event_store_db:
+    image: postgres:16-alpine
+    restart: no
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 5432:${DB_PORT}
