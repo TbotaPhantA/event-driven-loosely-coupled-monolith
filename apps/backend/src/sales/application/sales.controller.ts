@@ -1,5 +1,5 @@
 import { CreateSalesProduct } from '../domain/salesProduct/commands/createSalesProduct';
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateSalesProductOutputDto } from './dto/output/createSalesProductOutput.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSalesProductService } from './services/createSalesProduct.service';
