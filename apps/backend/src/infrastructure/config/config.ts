@@ -10,7 +10,7 @@ class Config {
     port: process.env.APP_PORT ?? isRequired('APP_PORT'),
   };
 
-  eventStoreDB = {
+  database = {
     host: process.env.DB_HOST ?? isRequired('DB_HOST'),
     port: Number(process.env.DB_PORT ?? isRequired('DB_PORT')),
     username: process.env.DB_USERNAME ?? isRequired('DB_USERNAME'),
