@@ -3,16 +3,16 @@ import { SalesProduct } from '../../../domain/salesProduct/salesProduct';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateSalesProductOutputDto {
-  @ApiProperty()
+  @ApiProperty({ example: '01HG1MMNZRYYPFBKZDNQ4P08HB' })
   readonly productId: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Phone' })
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'An android phone' })
   readonly description: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 500 })
   readonly price: number;
 
   constructor(raw: NoMethods<CreateSalesProductOutputDto>) {
