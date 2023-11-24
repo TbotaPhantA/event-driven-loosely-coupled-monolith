@@ -1,5 +1,5 @@
-import { SalesProduct } from '../../src/sales/domain/salesProduct/salesProduct';
-import { NoMethods } from '../../src/infrastructure/shared/types/noMethods';
+import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';
+import { NoMethods } from '../../../src/infrastructure/shared/types/noMethods';
 
 describe('SalesProduct', () => {
   test('constructor', () => {
