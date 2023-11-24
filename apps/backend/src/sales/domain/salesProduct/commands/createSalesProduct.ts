@@ -27,6 +27,7 @@ export class CreateSalesProduct {
   @Min(0)
   @Max(MAX_INT_32)
   public readonly price: number;
+
   constructor(raw: NoMethods<CreateSalesProduct>) {
     this.name = raw.name;
     this.description = raw.description;
