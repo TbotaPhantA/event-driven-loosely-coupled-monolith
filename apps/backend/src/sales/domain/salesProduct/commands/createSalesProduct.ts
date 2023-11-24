@@ -17,16 +17,16 @@ import {
 export class CreateSalesProduct {
   @IsString()
   @Length(MIN_PRODUCT_NAME_LENGTH, MAX_PRODUCT_NAME_LENGTH)
-  public readonly name: string;
+  readonly name: string;
 
   @IsString()
   @MaxLength(MAX_PRODUCT_DESCRIPTION_LENGTH)
-  public readonly description: string;
+  readonly description: string;
 
   @IsNumber()
   @Min(0)
   @Max(MAX_INT_32)
-  public readonly price: number;
+  readonly price: number;
 
   constructor(raw: NoMethods<CreateSalesProduct>) {
     this.name = raw.name;
