@@ -8,6 +8,9 @@ export class SalesProductMapper {
       name: product.name,
       price: product.price,
       description: product.description,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+      removedAt: product.removedAt,
     });
   }
 
@@ -17,6 +20,9 @@ export class SalesProductMapper {
       name: entity.name,
       price: entity.price,
       description: entity.description,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      removedAt: entity.removedAt,
     });
   }
 }

@@ -5,14 +5,26 @@ import { AdjustPrice } from '../../../src/sales/domain/salesProduct/commands/adj
 import { AdjustPriceBuilder } from './__fixtures__/builders/commands/adjustPrice.builder';
 import { UpdateProductInfo } from '../../../src/sales/domain/salesProduct/commands/updateProductInfo';
 import { UpdateProductInfoBuilder } from './__fixtures__/builders/commands/updateProductInfo.builder';
+import { createFakeTimeService } from './__fixtures__/fakes/createFakeTimeService';
+
+const now = new Date(2022, 0, 3);
 
 describe('SalesProduct', () => {
+  let mockTimeService = createFakeTimeService();
+
+  beforeEach(() => {
+    mockTimeService = createFakeTimeService();
+  })
+
   test('constructor', () => {
     const raw: NoMethods<SalesProduct> = {
       productId: 'ulid',
       name: 'Phone',
       description: 'An android phone',
       price: 500,
+      createdAt: now,
+      updatedAt: now,
+      removedAt: null,
     };
 
     const salesProduct = new SalesProduct(raw);
@@ -21,6 +33,9 @@ describe('SalesProduct', () => {
       price: salesProduct.price,
       name: salesProduct.name,
       description: salesProduct.description,
+      createdAt: now,
+      updatedAt: now,
+      removedAt: null,
     };
 
     expect(attributes).toStrictEqual(raw);
@@ -47,11 +62,14 @@ describe('SalesProduct', () => {
 
     test.each(testCases)('%s', ({ oldPrice, newPrice }) => {
       const id = 'id';
+      const createdAt = new Date(2022, 0, 3);
+      const updatedAt = new Date(2022, 0, 4);
+      mockTimeService.now = jest.fn().mockReturnValue(updatedAt);
       const salesProduct = createStartingSalesProduct();
       const expectedSalesProduct = createExpectedSalesProduct();
       const command = createCommand();
 
-      salesProduct.adjustPrice(command);
+      salesProduct.adjustPrice(command, { time: mockTimeService });
 
       expect(salesProduct).toStrictEqual(expectedSalesProduct);
 
@@ -59,6 +77,8 @@ describe('SalesProduct', () => {
         return SalesProductBuilder.defaultAll.with({
           productId: id,
           price: oldPrice,
+          createdAt,
+          updatedAt: createdAt,
         }).result;
       }
 
@@ -66,6 +86,8 @@ describe('SalesProduct', () => {
         return SalesProductBuilder.defaultAll.with({
           productId: id,
           price: newPrice,
+          createdAt,
+          updatedAt,
         }).result;
       }
 
@@ -91,11 +113,14 @@ describe('SalesProduct', () => {
 
     test.each(testCases)('%s', ({ oldName, oldDescription, newName, newDescription }) => {
       const id = 'id';
+      const createdAt = new Date(2022, 0, 3);
+      const updatedAt = new Date(2022, 0, 4);
+      mockTimeService.now = jest.fn().mockReturnValue(updatedAt);
       const salesProduct = createStartingSalesProduct();
       const expectedProduct = createExpectedSalesProduct();
       const command = createCommand();
 
-      salesProduct.updateProductInfo(command);
+      salesProduct.updateProductInfo(command, { time: mockTimeService });
 
       expect(salesProduct).toStrictEqual(expectedProduct);
 
@@ -104,6 +129,8 @@ describe('SalesProduct', () => {
           productId: id,
           name: oldName,
           description: oldDescription,
+          createdAt,
+          updatedAt: createdAt
         }).result;
       }
 
@@ -112,6 +139,8 @@ describe('SalesProduct', () => {
           productId: id,
           name: newName,
           description: newDescription,
+          createdAt,
+          updatedAt,
         }).result;
       }
 

@@ -9,6 +9,7 @@ import { AdjustPriceOutputDto } from '../dto/output/adjustPriceOutput.dto';
 import { AdjustPrice } from '../../domain/salesProduct/commands/adjustPrice';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { GetSalesProductByIdQuery } from '../queries/getSalesProductByIdQuery';
+import { TimeService } from '../../../infrastructure/time/time.service';
 
 @Injectable()
 export class AdjustPriceService {
@@ -18,6 +19,7 @@ export class AdjustPriceService {
     @InjectSalesProductRepository()
     private readonly repo: ISalesProductRepository,
     private readonly getSalesProductByIdQuery: GetSalesProductByIdQuery,
+    private readonly time: TimeService,
   ) {}
 
   async runTransaction(command: AdjustPrice): Promise<AdjustPriceOutputDto> {
@@ -27,7 +29,7 @@ export class AdjustPriceService {
 
   async adjustPrice(command: AdjustPrice, transaction: ITransaction): Promise<AdjustPriceOutputDto> {
     const product = await this.getSalesProductByIdQuery.run(command, transaction);
-    product.adjustPrice(command);
+    product.adjustPrice(command, { time: this.time });
     const savedProduct = await this.repo.save(product, transaction);
     return AdjustPriceOutputDto.from(savedProduct);
   }

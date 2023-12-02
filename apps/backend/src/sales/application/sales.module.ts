@@ -10,9 +10,11 @@ import { DatabaseSalesProductRepository } from './repositories/databaseSalesProd
 import { AdjustPriceService } from './services/adjustPrice.service';
 import { GetSalesProductByIdQuery } from './queries/getSalesProductByIdQuery';
 import { UpdateProductInfoService } from './services/updateProductInfo.service';
+import { TimeModule } from '../../infrastructure/time/time.module';
+import { TimeService } from '../../infrastructure/time/time.service';
 
 @Module({
-  imports: [RandomModule, TransactionModule],
+  imports: [RandomModule, TransactionModule, TimeModule],
   controllers: [SalesProductController],
   providers: [
     GetSalesProductByIdQuery,
@@ -21,8 +23,9 @@ import { UpdateProductInfoService } from './services/updateProductInfo.service';
     UpdateProductInfoService,
     {
       provide: SalesProductFactory,
-      useFactory: (random: RandomService): SalesProductFactory => new SalesProductFactory({ random }),
-      inject: [RandomService],
+      useFactory: (random: RandomService, time: TimeService): SalesProductFactory =>
+        new SalesProductFactory({ random, time }),
+      inject: [RandomService, TimeService],
     },
     {
       provide: SALES_PRODUCT_REPOSITORY,

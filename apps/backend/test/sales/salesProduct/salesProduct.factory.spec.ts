@@ -3,9 +3,13 @@ import { SalesProductFactory } from '../../../src/sales/domain/salesProduct/sale
 import { createFakeRandomService } from './__fixtures__/fakes/createFakeRandomService';
 import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';
 import { CreateSalesProduct } from '../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { createFakeTimeService } from './__fixtures__/fakes/createFakeTimeService';
+
+const now = new Date(2022, 0, 3);
 
 describe('SalesProductFactory', () => {
   const mockRandomService = createFakeRandomService();
+  const mockTimeService = createFakeTimeService();
 
   describe('create', () => {
     const testCases = [
@@ -35,6 +39,7 @@ describe('SalesProductFactory', () => {
     test.each(testCases)('%s', ({ productId, name, description, price }) => {
       const command = createCommand();
       mockProductIdForRandomService();
+      mockNowForTimeService();
       const factory = createFactory();
       const expectedSalesProduct = createExpectedProduct();
 
@@ -54,9 +59,14 @@ describe('SalesProductFactory', () => {
         mockRandomService.generateULID.mockReturnValue(productId);
       }
 
+      function mockNowForTimeService(): void {
+        mockTimeService.now.mockReturnValue(now);
+      }
+
       function createFactory(): SalesProductFactory {
         return new SalesProductFactory({
           random: mockRandomService,
+          time: mockTimeService,
         });
       }
 
@@ -66,6 +76,9 @@ describe('SalesProductFactory', () => {
           name,
           description,
           price,
+          createdAt: now,
+          updatedAt: now,
+          removedAt: null,
         });
       }
     });
