@@ -1,6 +1,6 @@
-export interface IEvent<T extends object = object> {
-  readonly id: string;
+export interface IEvent {
+  readonly messageId: number;
+  readonly name: string;
   readonly aggregateId: string;
-  readonly data: T;
-  readonly version?: number;
+  readonly data: object;
 }
