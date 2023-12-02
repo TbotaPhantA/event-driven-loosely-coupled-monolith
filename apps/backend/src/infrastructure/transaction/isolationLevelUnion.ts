@@ -1,4 +1,4 @@
-export type IsolationLevel =
+export type IsolationLevelUnion =
   | 'READ UNCOMMITTED'
   | 'READ COMMITTED'
   | 'REPEATABLE READ'

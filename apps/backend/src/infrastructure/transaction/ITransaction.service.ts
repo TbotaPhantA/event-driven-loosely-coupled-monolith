@@ -1,9 +1,9 @@
-import { IsolationLevel } from './isolationLevel.enum';
+import { IsolationLevelUnion } from './isolationLevelUnion';
 import { ITransaction } from './shared/types/ITransaction';
 
 export interface ITransactionService {
   withTransaction<T>(
-    level: IsolationLevel,
-    fn: (transaction: ITransaction) => T,
-  ): T;
+    level: IsolationLevelUnion,
+    fn: (transaction: ITransaction) => Promise<T>,
+  ): Promise<T>;
 }

@@ -6,7 +6,7 @@ import { RandomService } from '../../infrastructure/random/random.service';
 import { RandomModule } from '../../infrastructure/random/random.module';
 import { TransactionModule } from '../../infrastructure/transaction/transaction.module';
 import { SALES_PRODUCT_REPOSITORY } from './shared/constants';
-import { InMemorySalesProductRepository } from './repositories/InMemorySalesProduct.repository';
+import { DatabaseSalesProductRepository } from './repositories/databaseSalesProdcutRepository.service';
 
 @Module({
   imports: [RandomModule, TransactionModule],
@@ -21,7 +21,7 @@ import { InMemorySalesProductRepository } from './repositories/InMemorySalesProd
     },
     {
       provide: SALES_PRODUCT_REPOSITORY,
-      useClass: InMemorySalesProductRepository,
+      useClass: DatabaseSalesProductRepository,
     },
   ],
 })

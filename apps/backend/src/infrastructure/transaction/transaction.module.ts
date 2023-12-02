@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TRANSACTION_SERVICE } from './shared/constants';
-import { NoTransactionService } from './noTransactionService';
+import { DatabaseTransactionService } from './databaseTransaction.service';
 
 const transactionServiceProvider = {
   provide: TRANSACTION_SERVICE,
-  useClass: NoTransactionService,
+  useClass: DatabaseTransactionService,
 };
 
 @Module({
