@@ -1,4 +1,5 @@
 import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
+import { AdjustPrice } from './commands/adjustPrice';
 
 export class SalesProduct {
   productId: string;
@@ -11,5 +12,9 @@ export class SalesProduct {
     this.name = raw.name;
     this.description = raw.description;
     this.price = raw.price;
+  }
+
+  adjustPrice(command: AdjustPrice): void {
+    this.price = command.newPrice;
   }
 }
