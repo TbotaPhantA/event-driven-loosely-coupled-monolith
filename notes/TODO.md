@@ -1,2 +1,1 @@
-1. add removeSalesProduct command
-2. put all events for salesProduct to outbox
+1. put all events for salesProduct to outbox
