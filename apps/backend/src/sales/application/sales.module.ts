@@ -7,12 +7,14 @@ import { RandomModule } from '../../infrastructure/random/random.module';
 import { TransactionModule } from '../../infrastructure/transaction/transaction.module';
 import { SALES_PRODUCT_REPOSITORY } from './shared/constants';
 import { DatabaseSalesProductRepository } from './repositories/databaseSalesProdcutRepository.service';
+import { AdjustPriceService } from './services/adjustPrice.service';
 
 @Module({
   imports: [RandomModule, TransactionModule],
   controllers: [SalesProductController],
   providers: [
     CreateSalesProductService,
+    AdjustPriceService,
     {
       provide: SalesProductFactory,
       useFactory: (random: RandomService): SalesProductFactory => new SalesProductFactory({ random }),
