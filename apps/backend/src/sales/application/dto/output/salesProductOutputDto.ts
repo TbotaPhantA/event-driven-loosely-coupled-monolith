@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 
-export class ProductOutputDto {
+export class SalesProductOutputDto {
   @ApiProperty({ example: '01HG1MMNZRYYPFBKZDNQ4P08HB' })
   readonly productId: string;
 
@@ -23,7 +23,7 @@ export class ProductOutputDto {
   @ApiProperty({ example: null })
   readonly removedAt: Date | null;
 
-  constructor(raw: NoMethods<ProductOutputDto>) {
+  constructor(raw: NoMethods<SalesProductOutputDto>) {
     this.productId = raw.productId;
     this.name = raw.name;
     this.description = raw.description;

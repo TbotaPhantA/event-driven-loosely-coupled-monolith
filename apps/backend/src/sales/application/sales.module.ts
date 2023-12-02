@@ -12,6 +12,7 @@ import { GetSalesProductByIdQuery } from './queries/getSalesProductByIdQuery';
 import { UpdateProductInfoService } from './services/updateProductInfo.service';
 import { TimeModule } from '../../infrastructure/time/time.module';
 import { TimeService } from '../../infrastructure/time/time.service';
+import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
 
 @Module({
   imports: [RandomModule, TransactionModule, TimeModule],
@@ -21,6 +22,7 @@ import { TimeService } from '../../infrastructure/time/time.service';
     CreateSalesProductService,
     AdjustPriceService,
     UpdateProductInfoService,
+    DeleteSalesProductService,
     {
       provide: SalesProductFactory,
       useFactory: (random: RandomService, time: TimeService): SalesProductFactory =>

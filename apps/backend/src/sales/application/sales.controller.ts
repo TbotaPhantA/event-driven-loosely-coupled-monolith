@@ -1,5 +1,5 @@
 import { CreateSalesProduct } from '../domain/salesProduct/commands/createSalesProduct';
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
 import { CreateSalesProductOutputDto } from './dto/output/createSalesProductOutput.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSalesProductService } from './services/createSalesProduct.service';
@@ -9,6 +9,9 @@ import { AdjustPriceService } from './services/adjustPrice.service';
 import { UpdateProductInfo } from '../domain/salesProduct/commands/updateProductInfo';
 import { UpdateProductInfoOutputDto } from './dto/output/updateProductInfoOutput.dto';
 import { UpdateProductInfoService } from './services/updateProductInfo.service';
+import { DeleteSalesProductOutputDto } from './dto/output/deleteSalesProductOutput.dto';
+import { DeleteSalesProductParamsDto } from './dto/input/deleteSalesProductParams.dto';
+import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
 
 @Controller('sales/product')
 @ApiTags('sales/product')
@@ -17,6 +20,7 @@ export class SalesProductController {
     private readonly createSalesProductService: CreateSalesProductService,
     private readonly adjustPriceService: AdjustPriceService,
     private readonly updateProductInfoService: UpdateProductInfoService,
+    private readonly deleteSalesProductService: DeleteSalesProductService,
   ) {}
 
   @Post('create-sales-product')
@@ -42,5 +46,14 @@ export class SalesProductController {
     @Body() command: UpdateProductInfo,
   ): Promise<UpdateProductInfoOutputDto> {
     return this.updateProductInfoService.runTransaction(command);
+  }
+
+  @Delete('delete-sales-product/:productId')
+  @ApiOperation({ summary: 'Delete the sales product' })
+  @ApiResponse({ type: DeleteSalesProductOutputDto })
+  async deleteSalesProduct(
+    @Param() dto: DeleteSalesProductParamsDto,
+  ): Promise<DeleteSalesProductOutputDto> {
+    return this.deleteSalesProductService.runTransaction(dto);
   }
 }

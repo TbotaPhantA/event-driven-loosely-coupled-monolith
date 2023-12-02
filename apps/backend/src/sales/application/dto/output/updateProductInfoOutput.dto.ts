@@ -1,7 +1,7 @@
 import { SalesProduct } from '../../../domain/salesProduct/salesProduct';
-import { ProductOutputDto } from './productOutput.dto';
+import { SalesProductOutputDto } from './salesProductOutputDto';
 
-export class UpdateProductInfoOutputDto extends ProductOutputDto {
+export class UpdateProductInfoOutputDto extends SalesProductOutputDto {
   static from(product: SalesProduct): UpdateProductInfoOutputDto {
     return new UpdateProductInfoOutputDto(product);
   }
