@@ -1,5 +1,5 @@
 import { CreateSalesProduct } from '../domain/salesProduct/commands/createSalesProduct';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { CreateSalesProductOutputDto } from './dto/output/createSalesProductOutput.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSalesProductService } from './services/createSalesProduct.service';
@@ -26,7 +26,7 @@ export class SalesProductController {
     return this.createSalesProductService.runTransaction(command);
   }
 
-  @Post('adjust-price')
+  @Put('adjust-price')
   @ApiOperation({ summary: 'Adjust price of the product' })
   @ApiResponse({ type: AdjustPriceOutputDto })
   async adjustPrice(
@@ -35,7 +35,7 @@ export class SalesProductController {
     return this.adjustPriceService.runTransaction(command);
   }
 
-  @Post('update-product-info')
+  @Put('update-product-info')
   @ApiOperation({ summary: 'Update the product name and description' })
   @ApiResponse({ type: UpdateProductInfoOutputDto })
   async updateProductInfo(
