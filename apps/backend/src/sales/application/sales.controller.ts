@@ -6,6 +6,9 @@ import { CreateSalesProductService } from './services/createSalesProduct.service
 import { AdjustPrice } from '../domain/salesProduct/commands/adjustPrice';
 import { AdjustPriceOutputDto } from './dto/output/adjustPriceOutput.dto';
 import { AdjustPriceService } from './services/adjustPrice.service';
+import { UpdateProductInfo } from '../domain/salesProduct/commands/updateProductInfo';
+import { UpdateProductInfoOutputDto } from './dto/output/updateProductInfoOutput.dto';
+import { UpdateProductInfoService } from './services/updateProductInfo.service';
 
 @Controller('sales/product')
 @ApiTags('sales/product')
@@ -13,6 +16,7 @@ export class SalesProductController {
   constructor(
     private readonly createSalesProductService: CreateSalesProductService,
     private readonly adjustPriceService: AdjustPriceService,
+    private readonly updateProductInfoService: UpdateProductInfoService,
   ) {}
 
   @Post('create-sales-product')
@@ -29,5 +33,14 @@ export class SalesProductController {
     @Body() command: AdjustPrice,
   ): Promise<AdjustPriceOutputDto> {
     return this.adjustPriceService.runTransaction(command);
+  }
+
+  @Post('update-product-info')
+  @ApiOperation({ summary: 'Update the product name and description' })
+  @ApiResponse({ type: UpdateProductInfoOutputDto })
+  async updateProductInfo(
+    @Body() command: UpdateProductInfo,
+  ): Promise<UpdateProductInfoOutputDto> {
+    return this.updateProductInfoService.runTransaction(command);
   }
 }

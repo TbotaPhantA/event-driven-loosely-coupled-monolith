@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import {
-  InjectTransactionService,
+  InjectTransactionService
 } from '../../../infrastructure/transaction/shared/decorators/injectTransactionService';
 import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
 import { ISalesProductRepository } from '../repositories/ISalesProduct.repository';
-import { AdjustPriceOutputDto } from '../dto/output/adjustPriceOutput.dto';
-import { AdjustPrice } from '../../domain/salesProduct/commands/adjustPrice';
+import { UpdateProductInfoOutputDto } from '../dto/output/updateProductInfoOutput.dto';
+import { UpdateProductInfo } from '../../domain/salesProduct/commands/updateProductInfo';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { GetSalesProductByIdQuery } from '../queries/getSalesProductByIdQuery';
 
 @Injectable()
-export class AdjustPriceService {
+export class UpdateProductInfoService {
   constructor(
     @InjectTransactionService()
     private readonly transactionService: ITransactionService,
@@ -20,15 +20,15 @@ export class AdjustPriceService {
     private readonly getSalesProductByIdQuery: GetSalesProductByIdQuery,
   ) {}
 
-  async runTransaction(command: AdjustPrice): Promise<AdjustPriceOutputDto> {
+  async runTransaction(command: UpdateProductInfo): Promise<UpdateProductInfoOutputDto> {
     return this.transactionService.withTransaction('SERIALIZABLE', (transaction) =>
-      this.adjustPrice(command, transaction));
+      this.updateProductInfo(command, transaction));
   }
 
-  async adjustPrice(command: AdjustPrice, transaction: ITransaction): Promise<AdjustPriceOutputDto> {
+  async updateProductInfo(command: UpdateProductInfo, transaction: ITransaction): Promise<UpdateProductInfoOutputDto> {
     const product = await this.getSalesProductByIdQuery.run(command, transaction);
-    product.adjustPrice(command);
+    product.updateProductInfo(command);
     const savedProduct = await this.repo.save(product, transaction);
-    return AdjustPriceOutputDto.from(savedProduct);
+    return UpdateProductInfoOutputDto.from(savedProduct);
   }
 }
