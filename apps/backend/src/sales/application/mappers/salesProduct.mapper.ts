@@ -1,4 +1,4 @@
-import { SalesProductEntity } from './entities/salesProduct.entity';
+import { SalesProductEntity } from '../entities/salesProduct.entity';
 import { SalesProduct } from '../../domain/salesProduct/salesProduct';
 
 export class SalesProductMapper {
