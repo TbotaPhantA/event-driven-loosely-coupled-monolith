@@ -7,10 +7,7 @@ import { SalesProductMapper } from '../mappers/salesProduct.mapper';
 
 @Injectable()
 export class DatabaseSalesProductRepository implements ISalesProductRepository {
-  async findOneById(
-    productId: string,
-    transaction: EntityManager,
-  ): Promise<SalesProduct | null> {
+  async findOneById(productId: string, transaction: EntityManager): Promise<SalesProduct | null> {
     const entity = await transaction.findOne(SalesProductEntity, {
       where: { productId },
     });
@@ -18,10 +15,7 @@ export class DatabaseSalesProductRepository implements ISalesProductRepository {
     return entity ? SalesProductMapper.toDomain(entity) : null;
   }
 
-  async save(
-    product: SalesProduct,
-    transaction: EntityManager,
-  ): Promise<SalesProduct> {
+  async save(product: SalesProduct, transaction: EntityManager): Promise<SalesProduct> {
     const entity = SalesProductMapper.toEntity(product);
     const savedEntity = await transaction.save(entity);
     return SalesProductMapper.toDomain(savedEntity);

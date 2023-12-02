@@ -7,16 +7,12 @@ import { CreateSalesProductService } from './services/createSalesProduct.service
 @Controller('sales/product')
 @ApiTags('sales/product')
 export class SalesProductController {
-  constructor(
-    private readonly createSalesProductService: CreateSalesProductService,
-  ) {}
+  constructor(private readonly createSalesProductService: CreateSalesProductService) {}
 
   @Post('create-sales-product')
   @ApiOperation({ summary: 'Create sales product' })
   @ApiResponse({ type: CreateSalesProductOutputDto })
-  async createSalesProduct(
-    @Body() command: CreateSalesProduct,
-  ): Promise<CreateSalesProductOutputDto> {
+  async createSalesProduct(@Body() command: CreateSalesProduct): Promise<CreateSalesProductOutputDto> {
     return this.createSalesProductService.runTransaction(command);
   }
 }

@@ -15,8 +15,7 @@ import { DatabaseSalesProductRepository } from './repositories/databaseSalesProd
     CreateSalesProductService,
     {
       provide: SalesProductFactory,
-      useFactory: (random: RandomService): SalesProductFactory =>
-        new SalesProductFactory({ random }),
+      useFactory: (random: RandomService): SalesProductFactory => new SalesProductFactory({ random }),
       inject: [RandomService],
     },
     {

@@ -8,10 +8,7 @@ import { Injectable } from '@nestjs/common';
 export class DatabaseTransactionService implements ITransactionService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async withTransaction<T>(
-    level: IsolationLevelUnion,
-    fn: (transaction: ITransaction) => Promise<T>,
-  ): Promise<T> {
+  async withTransaction<T>(level: IsolationLevelUnion, fn: (transaction: ITransaction) => Promise<T>): Promise<T> {
     return this.dataSource.transaction(level, (entityManager): Promise<T> => {
       return fn(entityManager);
     });

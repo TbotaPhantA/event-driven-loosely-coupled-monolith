@@ -1,5 +1,1 @@
-export type IsolationLevelUnion =
-  | 'READ UNCOMMITTED'
-  | 'READ COMMITTED'
-  | 'REPEATABLE READ'
-  | 'SERIALIZABLE';
+export type IsolationLevelUnion = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';

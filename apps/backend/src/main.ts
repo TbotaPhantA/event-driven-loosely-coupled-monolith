@@ -6,10 +6,7 @@ import { HttpStatus, ValidationPipe } from '@nestjs/common';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('Nestjs DDD example')
-    .setVersion('1.0.0')
-    .build();
+  const config = new DocumentBuilder().setTitle('Nestjs DDD example').setVersion('1.0.0').build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
