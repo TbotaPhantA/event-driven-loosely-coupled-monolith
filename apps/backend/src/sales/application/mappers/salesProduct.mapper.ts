@@ -3,7 +3,7 @@ import { SalesProduct } from '../../domain/salesProduct/salesProduct';
 
 export class SalesProductMapper {
   static toEntity(product: SalesProduct): SalesProductEntity {
-    return new SalesProductEntity({
+    return SalesProductEntity.createByRaw({
       productId: product.productId,
       name: product.name,
       price: product.price,
