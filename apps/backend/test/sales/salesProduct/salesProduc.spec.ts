@@ -153,4 +153,29 @@ describe('SalesProduct', () => {
       }
     });
   });
+
+  describe('markAsRemoved', () => {
+    const testCases = [
+      {
+        toString: (): string => '1 - should mark updatedAt and removedAt as removed',
+        now: new Date(2022, 0, 4),
+        givenSalesProduct: SalesProductBuilder.defaultAll.with({
+          updatedAt: new Date(2022, 0, 3),
+          removedAt: null,
+        }).result,
+        expectedSalesProduct: SalesProductBuilder.defaultAll.with({
+          updatedAt: new Date(2022, 0, 4),
+          removedAt: new Date(2022, 0, 4),
+        }).result,
+      },
+    ];
+
+    test.each(testCases)('%s', ({ now, givenSalesProduct, expectedSalesProduct }) => {
+      mockTimeService.now = jest.fn().mockReturnValue(now);
+
+      givenSalesProduct.markAsRemoved({ time: mockTimeService });
+
+      expect(givenSalesProduct).toStrictEqual(expectedSalesProduct)
+    });
+  });
 });

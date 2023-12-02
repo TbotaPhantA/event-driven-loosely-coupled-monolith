@@ -36,4 +36,10 @@ export class SalesProduct {
     this.description = command.description;
     this.updatedAt = deps.time.now();
   }
+
+  markAsRemoved(deps: Deps): void {
+    const now = deps.time.now();
+    this.updatedAt = now;
+    this.removedAt = now;
+  }
 }
