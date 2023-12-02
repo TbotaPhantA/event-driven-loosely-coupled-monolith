@@ -1,4 +1,4 @@
-import { CreateSalesProductBuilder } from './__fixtures__/builders/createSalesProduct.builder';
+import { CreateSalesProductBuilder } from './__fixtures__/builders/commands/createSalesProduct.builder';
 import { SalesProductFactory } from '../../../src/sales/domain/salesProduct/salesProduct.factory';
 import { createFakeRandomService } from './__fixtures__/fakes/createFakeRandomService';
 import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';

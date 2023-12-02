@@ -3,6 +3,8 @@ import { NoMethods } from '../../../src/infrastructure/shared/types/noMethods';
 import { SalesProductBuilder } from './__fixtures__/builders/salesProduct.builder';
 import { AdjustPrice } from '../../../src/sales/domain/salesProduct/commands/adjustPrice';
 import { AdjustPriceBuilder } from './__fixtures__/builders/commands/adjustPrice.builder';
+import { UpdateProductInfo } from '../../../src/sales/domain/salesProduct/commands/updateProductInfo';
+import { UpdateProductInfoBuilder } from './__fixtures__/builders/commands/updateProductInfo.builder';
 
 describe('SalesProduct', () => {
   test('constructor', () => {
@@ -71,6 +73,53 @@ describe('SalesProduct', () => {
         return AdjustPriceBuilder.defaultAll.with({
           productId: id,
           newPrice: newPrice,
+        }).result;
+      }
+    });
+  });
+
+  describe('updateProductInfo', () => {
+    const testCases = [
+      {
+        toString: (): string => '1 when change name and description - should properly change it',
+        oldName: 'oldName',
+        oldDescription: 'oldDescription',
+        newName: 'newName',
+        newDescription: 'newDescription',
+      },
+    ];
+
+    test.each(testCases)('%s', ({ oldName, oldDescription, newName, newDescription }) => {
+      const id = 'id';
+      const salesProduct = createStartingSalesProduct();
+      const expectedProduct = createExpectedSalesProduct();
+      const command = createCommand();
+
+      salesProduct.updateProductInfo(command);
+
+      expect(salesProduct).toStrictEqual(expectedProduct);
+
+      function createStartingSalesProduct(): SalesProduct {
+        return SalesProductBuilder.defaultAll.with({
+          productId: id,
+          name: oldName,
+          description: oldDescription,
+        }).result;
+      }
+
+      function createExpectedSalesProduct(): SalesProduct {
+        return SalesProductBuilder.defaultAll.with({
+          productId: id,
+          name: newName,
+          description: newDescription,
+        }).result;
+      }
+
+      function createCommand(): UpdateProductInfo {
+        return UpdateProductInfoBuilder.defaultAll.with({
+          productId: id,
+          name: newName,
+          description: newDescription,
         }).result;
       }
     });
