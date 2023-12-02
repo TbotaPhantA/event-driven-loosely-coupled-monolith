@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
+import { config } from './infrastructure/config/config';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,8 @@ async function bootstrap(): Promise<void> {
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
     }),
   );
-  await app.listen(3000);
+  await app.listen(config.app.port, () => {
+    console.log('Application started on port ', config.app.port);
+  });
 }
 bootstrap();
