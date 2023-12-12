@@ -1,5 +1,5 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { UpdateProductInfo } from '../../../../../../../src/sales/domain/salesProduct/commands/updateProductInfo';
+import { UpdateProductInfo } from '../../../../src/sales/domain/salesProduct/commands/updateProductInfo';
 
 export class UpdateProductInfoBuilder {
   static get defaultAll(): InjectionBuilder<UpdateProductInfo> {

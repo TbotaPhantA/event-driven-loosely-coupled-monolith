@@ -1,5 +1,5 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { SalesProduct } from '../../../../../../src/sales/domain/salesProduct/salesProduct';
+import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';
 
 export class SalesProductBuilder {
   static get defaultAll(): InjectionBuilder<SalesProduct> {
