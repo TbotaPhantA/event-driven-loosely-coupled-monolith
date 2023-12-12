@@ -1,9 +1,9 @@
-import { CreateSalesProductBuilder } from './__fixtures__/builders/commands/createSalesProduct.builder';
-import { SalesProductFactory } from '../../../src/sales/domain/salesProduct/salesProduct.factory';
-import { createFakeRandomService } from './__fixtures__/fakes/createFakeRandomService';
-import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';
-import { CreateSalesProduct } from '../../../src/sales/domain/salesProduct/commands/createSalesProduct';
-import { createFakeTimeService } from './__fixtures__/fakes/createFakeTimeService';
+import { CreateSalesProductBuilder } from '../__fixtures__/builders/commands/createSalesProduct.builder';
+import { SalesProductFactory } from '../../../../src/sales/domain/salesProduct/salesProduct.factory';
+import { createFakeRandomService } from '../__fixtures__/fakes/createFakeRandomService';
+import { SalesProduct } from '../../../../src/sales/domain/salesProduct/salesProduct';
+import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { createFakeTimeService } from '../__fixtures__/fakes/createFakeTimeService';
 
 const now = new Date(2022, 0, 3);
 
