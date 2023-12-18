@@ -3,30 +3,10 @@ import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../../../../src/app.module';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
-import { DataSource } from 'typeorm';
-
-async function deleteSalesProduct(productId: string, dataSource: DataSource): Promise<void> {
-  const queryRunner = dataSource.createQueryRunner();
-
-  try {
-    await queryRunner.startTransaction();
-    await queryRunner.query(
-      `DELETE FROM sales_products WHERE product_id = '${productId}'`
-    );
-    await queryRunner.commitTransaction();
-  } catch (error) {
-    console.error('Error occurred during deletion:', error);
-    await queryRunner.rollbackTransaction();
-    throw error;
-  } finally {
-    await queryRunner.release();
-  }
-}
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
   let app: INestApplication;
-  let dataSource: DataSource;
 
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
@@ -42,8 +22,6 @@ describe('SalesProduct', () => {
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
-
-    dataSource = app.get(DataSource);
 
     await app.init();
   })
@@ -63,7 +41,6 @@ describe('SalesProduct', () => {
 
     test.each(successfulTestCases)('%s', async ({ requestBody }) => {
       const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
-      const productId = body.productId;
 
       expect(status).toStrictEqual(HttpStatus.CREATED);
       expect({
@@ -75,8 +52,6 @@ describe('SalesProduct', () => {
         price: requestBody.price,
         description: requestBody.description,
       });
-
-      await deleteSalesProduct(productId, dataSource);
     });
 
     const unprocessableTestCases = [
@@ -98,7 +73,6 @@ describe('SalesProduct', () => {
   });
 
   afterAll(async () => {
-    await dataSource.destroy();
     await moduleRef.close();
     await app.close();
   })
