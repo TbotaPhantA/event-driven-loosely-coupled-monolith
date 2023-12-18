@@ -3,10 +3,12 @@ import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../../../../src/app.module';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
+import { DataSource } from 'typeorm';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
   let app: INestApplication;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
@@ -22,6 +24,8 @@ describe('SalesProduct', () => {
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
+
+    dataSource = app.get(DataSource);
 
     await app.init();
   })
@@ -73,6 +77,7 @@ describe('SalesProduct', () => {
   });
 
   afterAll(async () => {
+    await dataSource.query(`DELETE FROM sales_products`);
     await moduleRef.close();
     await app.close();
   })
