@@ -32,48 +32,54 @@ describe('SalesProduct', () => {
 
   describe('POST /sales/product/create-sales-product', () => {
     const path = '/sales/product/create-sales-product'
-    const successfulTestCases = [
-      {
-        toString: (): string => '1 when given valid body - should successfully respond',
-        requestBody: CreateSalesProductBuilder.defaultAll.with({
-          name: 'Xiaomi',
-          price: 500,
-          description: 'An android phone',
-        }).result,
-      },
-    ];
+    describe('successfulTestCases', () => {
+      const successfulTestCases = [
+        {
+          toString: (): string => '1 when given valid body - should successfully respond',
+          requestBody: CreateSalesProductBuilder.defaultAll.with({
+            name: 'Xiaomi',
+            price: 500,
+            description: 'An android phone',
+          }).result,
+        },
+      ];
 
-    test.each(successfulTestCases)('%s', async ({ requestBody }) => {
-      const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
+      test.each(successfulTestCases)('%s', async ({ requestBody }) => {
+        const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
 
-      expect(status).toStrictEqual(HttpStatus.CREATED);
-      expect({
-        name: body.name,
-        price: body.price,
-        description: body.description,
-      }).toStrictEqual({
-        name: requestBody.name,
-        price: requestBody.price,
-        description: requestBody.description,
+        expect(status).toStrictEqual(HttpStatus.CREATED);
+        expect({
+          name: body.name,
+          price: body.price,
+          description: body.description,
+        }).toStrictEqual({
+          name: requestBody.name,
+          price: requestBody.price,
+          description: requestBody.description,
+        });
       });
     });
 
-    const unprocessableTestCases = [
-      {
-        toString: (): string => '1 when invalid body - should respond with validation error',
-        requestBody: CreateSalesProductBuilder.defaultAll.with({
-          // @ts-expect-error intentionally incorrect type
-          name: true,
-          price: 500,
-          description: 'An android phone',
-        }).result,
-      },
-    ]
+    describe('unprocessableTestCases', () => {
+      const unprocessableTestCases = [
+        {
+          toString: (): string => '1 when invalid body - should respond with validation error',
+          requestBody: CreateSalesProductBuilder.defaultAll.with({
+            // @ts-expect-error intentionally incorrect type
+            name: true,
+            price: 500,
+            description: 'An android phone',
+          }).result,
+        },
+      ]
 
-    test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
-      const { status } = await request(app.getHttpServer()).post(path).send(requestBody);
-      expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
+      test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
+        const { status } = await request(app.getHttpServer()).post(path).send(requestBody);
+        expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
+      });
     });
+
+
   });
 
   afterAll(async () => {
