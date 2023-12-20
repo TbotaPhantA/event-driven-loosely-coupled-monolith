@@ -48,11 +48,7 @@ describe('SalesProduct', () => {
         const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
 
         expect(status).toStrictEqual(HttpStatus.CREATED);
-        expect({
-          name: body.name,
-          price: body.price,
-          description: body.description,
-        }).toStrictEqual({
+        expect(body).toMatchObject({
           name: requestBody.name,
           price: requestBody.price,
           description: requestBody.description,
