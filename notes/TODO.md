@@ -13,7 +13,8 @@ kafka message:
     "messageId": 1,
     "messageType": "event",
     "messageName": "SalesProductCreated",
-    "correlationId": "01HJ4SD9SKBHA2HZEG9RM7E2WH"
+    "correlationId": "01HJ4SD9SKBHA2HZEG9RM7E2WH",
+    "producerName": "Sales"
   },
   "key": {
     "aggregateId": "01HJ4SDVVFQTKB7YA8HNS26P8Q"
