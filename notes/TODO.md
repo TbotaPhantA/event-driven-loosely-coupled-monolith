@@ -3,7 +3,7 @@
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
 - [ ] add correlationId to header
-- [ ] move validation pipe from main to controller
+- [X] move validation pipe from main to controller
 - [ ] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
 ### infrastructure
 - [ ] add request logging
@@ -13,7 +13,9 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] create single `beforeAll` and `afterAll` for multiple files (or try to launch app into docker-compose)
 ### kafka
 - [ ] implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
-- [ ] send events for price adjusted -> all events should be sent to kafka topic
+- [ ] send PriceAdjusted event to kafka
+- [ ] send SalesProductInfoUpdated event to kafka
+- [ ] send SalesProductRemoved event to kafka
 
 ## storage context 
 - [ ] add mechanism for read, retry, and error topics

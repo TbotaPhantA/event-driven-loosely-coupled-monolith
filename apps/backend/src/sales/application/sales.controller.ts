@@ -12,9 +12,11 @@ import { UpdateProductInfoService } from './services/updateProductInfo.service';
 import { DeleteSalesProductOutputDto } from './dto/output/deleteSalesProductOutput.dto';
 import { DeleteSalesProductParamsDto } from './dto/input/deleteSalesProductParams.dto';
 import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
+import { Validate } from '../../infrastructure/shared/decorators/validate';
 
 @Controller('sales/product')
 @ApiTags('sales/product')
+@Validate()
 export class SalesProductController {
   constructor(
     private readonly createSalesProductService: CreateSalesProductService,
