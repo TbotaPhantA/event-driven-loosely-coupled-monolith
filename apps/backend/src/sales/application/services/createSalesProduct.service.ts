@@ -28,6 +28,7 @@ export class CreateSalesProductService {
   async create(command: CreateSalesProduct, transaction: ITransaction): Promise<CreateSalesProductOutputDto> {
     const product = this.factory.create(command);
     const savedProduct = await this.repo.save(product, transaction);
+    // TODO: save event
     return CreateSalesProductOutputDto.from(savedProduct);
   }
 }

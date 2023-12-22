@@ -1,7 +1,9 @@
+- configure kafka in docker-compose
+- add correlationId to header
 - add request logging
-- add trace/correlationId logic
-- add idempotency for `CreateSalesProduct` command
-- implement sending `SalesProductCreated` to kafka with acceptance service test
+- add tracing
+- add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
+- implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
 - move validation pipe from main to controller
 - create single `beforeAll` and `afterAll` for multiple files
 
