@@ -9,4 +9,4 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - 5432:${DB_PORT}
+      - ${DB_PORT}:5432
