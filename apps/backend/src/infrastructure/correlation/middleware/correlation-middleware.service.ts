@@ -4,13 +4,13 @@ import { CorrelationService } from '../correlation.service';
 import { CORRELATION_ID_HEADER } from '../correlationConstants';
 
 @Injectable()
-export class TraceMiddleware implements NestMiddleware {
-  constructor(private readonly traceService: CorrelationService) {}
+export class CorrelationMiddleware implements NestMiddleware {
+  constructor(private readonly correlationService: CorrelationService) {}
 
   public use(req: http.IncomingMessage, res: http.ServerResponse, next: () => void): void {
-    const traceIdHeader = req.headers[CORRELATION_ID_HEADER];
+    const correlationIdHeader = req.headers[CORRELATION_ID_HEADER];
 
-    req.headers[CORRELATION_ID_HEADER] = this.traceService.startNewTraceId(traceIdHeader);
+    req.headers[CORRELATION_ID_HEADER] = this.correlationService.startNewCorrelationId(correlationIdHeader);
 
     next();
   }

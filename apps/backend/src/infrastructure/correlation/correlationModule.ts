@@ -1,7 +1,7 @@
 import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AsyncContextModule } from '../async-context';
 import { CorrelationService } from './correlation.service';
-import { TraceMiddleware } from './middleware/trace.middleware';
+import { CorrelationMiddleware } from './middleware/correlation-middleware.service';
 
 @Global()
 @Module({
@@ -11,6 +11,6 @@ import { TraceMiddleware } from './middleware/trace.middleware';
 })
 export class CorrelationModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(TraceMiddleware).forRoutes('*');
+    consumer.apply(CorrelationMiddleware).forRoutes('*');
   }
 }
