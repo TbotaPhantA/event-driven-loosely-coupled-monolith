@@ -2,7 +2,6 @@
 
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
-- [ ] add correlationId to header
 - [X] move validation pipe from main to controller
 - [ ] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
 ### infrastructure
