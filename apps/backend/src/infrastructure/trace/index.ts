@@ -1,4 +1,4 @@
-export { TraceService } from './trace.service';
-export { TraceModule } from './trace.module';
+export { CorrelationService } from './correlation.service';
+export { CorrelationModule } from './correlationModule';
 export { TraceMiddleware } from './middleware/trace.middleware';
-export * from './trace-constants';
+export * from './correlationConstants';

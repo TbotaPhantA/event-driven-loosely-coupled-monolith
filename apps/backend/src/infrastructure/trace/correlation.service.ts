@@ -4,20 +4,19 @@ import { ulid } from 'ulid';
 
 import { AsyncContextStorage, InjectAsyncContextStorage } from '../async-context';
 
-import { TraceId } from './interfaces/traceId';
-import { TRACE_ID_KEY } from './trace-constants';
 import { isString } from 'class-validator';
+import { TRACE_ID_KEY } from './correlationConstants';
 
 const isExistsAndValid = isString;
 
 @Injectable()
-export class TraceService {
+export class CorrelationService {
   constructor(
     @InjectAsyncContextStorage()
     private readonly asyncContextStorage: AsyncContextStorage,
   ) {}
 
-  public startNewTraceId(existingTraceId?: string | any): TraceId {
+  public startNewTraceId(existingTraceId?: string | any): string {
     const traceId = isExistsAndValid(existingTraceId) ? existingTraceId : ulid();
 
     const contextStore = this.asyncContextStorage.getStore();
@@ -29,7 +28,7 @@ export class TraceService {
     return traceId;
   }
 
-  public getTraceId(): TraceId {
+  public getTraceId(): string {
     const store = this.asyncContextStorage.getStore();
     return store?.get(TRACE_ID_KEY) ?? '';
   }

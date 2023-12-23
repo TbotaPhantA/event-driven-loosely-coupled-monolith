@@ -1,11 +1,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as http from 'http';
-import { TraceService } from '../trace.service';
-import { CORRELATION_ID_HEADER } from '../../shared/constants';
+import { CorrelationService } from '../correlation.service';
+import { CORRELATION_ID_HEADER } from '../correlationConstants';
 
 @Injectable()
 export class TraceMiddleware implements NestMiddleware {
-  constructor(private readonly traceService: TraceService) {}
+  constructor(private readonly traceService: CorrelationService) {}
 
   public use(req: http.IncomingMessage, res: http.ServerResponse, next: () => void): void {
     const traceIdHeader = req.headers[CORRELATION_ID_HEADER];
