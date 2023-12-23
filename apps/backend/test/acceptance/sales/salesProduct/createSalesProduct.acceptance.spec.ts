@@ -42,7 +42,7 @@ describe('SalesProduct', () => {
         const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
 
         expect(status).toStrictEqual(HttpStatus.CREATED);
-        expect(body).toMatchObject({
+        expect(body.salesProduct).toMatchObject({
           name: requestBody.name,
           price: requestBody.price,
           description: requestBody.description,
