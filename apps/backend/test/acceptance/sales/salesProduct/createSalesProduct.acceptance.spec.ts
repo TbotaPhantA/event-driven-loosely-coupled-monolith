@@ -4,6 +4,8 @@ import { AppModule } from '../../../../src/app.module';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
 import { DataSource } from 'typeorm';
+import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
+import { PRODUCT_ALREADY_EXISTS } from '../../../../src/infrastructure/shared/errorMessages';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
@@ -67,7 +69,36 @@ describe('SalesProduct', () => {
       });
     });
 
+    describe('idempotencyTestCases', () => {
+      const testCases = [
+        {
+          toString: (): string => '1 2 requests same correlationId - should respond that product is already created',
+          correlationId: '01HJBWJ82NM47AAG14RV17R2R4',
+          requestBody: CreateSalesProductBuilder.defaultAll.with({
+            name: 'Xiaomi',
+            price: 500,
+            description: 'An android phone',
+          }).result,
+        },
+      ];
 
+      test.each(testCases)('%s', async ({ correlationId, requestBody }) => {
+        await request(app.getHttpServer())
+          .post(path)
+          .set(CORRELATION_ID_HEADER, correlationId)
+          .send(requestBody);
+
+        const secondResponse = await request(app.getHttpServer())
+          .post(path)
+          .set(CORRELATION_ID_HEADER, correlationId)
+          .send(requestBody);
+
+        expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
+        expect(secondResponse.body).toMatchObject({
+          message: PRODUCT_ALREADY_EXISTS,
+        })
+      });
+    });
   });
 
   afterAll(async () => {
