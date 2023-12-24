@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/config';
 import { SalesProductEntity } from '../../sales/application/entities/salesProduct.entity';
+import { SalesProductRequestEntity } from '../../sales/application/entities/salesProductRequest.entity';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { SalesProductEntity } from '../../sales/application/entities/salesProduc
       username: config.database.username,
       password: config.database.password,
       database: config.database.database,
-      entities: [SalesProductEntity],
+      entities: [SalesProductEntity, SalesProductRequestEntity],
       synchronize: config.database.synchronize,
     }),
   ],

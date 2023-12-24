@@ -7,8 +7,9 @@ import {
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { SalesProductFactory } from '../../domain/salesProduct/salesProduct.factory';
-import { ISalesProductRepository } from '../repositories/ISalesProduct.repository';
+import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
+import { SalesProductRequestIdempotencyService } from './salesProductRequestIdempotency.service';
 
 @Injectable()
 export class CreateSalesProductService {
@@ -18,6 +19,7 @@ export class CreateSalesProductService {
     @InjectSalesProductRepository()
     private readonly repo: ISalesProductRepository,
     private readonly factory: SalesProductFactory,
+    private readonly idempotencyService: SalesProductRequestIdempotencyService,
   ) {}
 
   async runTransaction(command: CreateSalesProduct): Promise<CreateSalesProductOutputDto> {
@@ -26,9 +28,13 @@ export class CreateSalesProductService {
   }
 
   async create(command: CreateSalesProduct, transaction: ITransaction): Promise<CreateSalesProductOutputDto> {
+    await this.idempotencyService.assertCreateSalesProductIdempotent(transaction);
     const product = this.factory.create(command);
-    const savedProduct = await this.repo.save(product, transaction);
-    // TODO: save event
+    const [savedProduct] = await Promise.all([
+      this.repo.save(product, transaction),
+      this.idempotencyService.insertRequest(product, transaction)
+      // TODO: save event
+    ]);
     return CreateSalesProductOutputDto.from(savedProduct);
   }
 }

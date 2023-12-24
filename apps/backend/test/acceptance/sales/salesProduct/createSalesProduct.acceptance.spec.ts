@@ -5,7 +5,7 @@ import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/comman
 import * as request from 'supertest';
 import { DataSource } from 'typeorm';
 import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
-import { PRODUCT_ALREADY_EXISTS } from '../../../../src/infrastructure/shared/errorMessages';
+import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
@@ -39,7 +39,12 @@ describe('SalesProduct', () => {
       ];
 
       test.each(successfulTestCases)('%s', async ({ requestBody }) => {
-        const { body, status } = await request(app.getHttpServer()).post(path).send(requestBody);
+        const correlationId = 'correlationId999';
+
+        const { body, status } = await request(app.getHttpServer())
+          .post(path)
+          .set(CORRELATION_ID_HEADER, correlationId)
+          .send(requestBody);
 
         expect(status).toStrictEqual(HttpStatus.CREATED);
         expect(body.salesProduct).toMatchObject({
@@ -83,7 +88,7 @@ describe('SalesProduct', () => {
       ];
 
       test.each(testCases)('%s', async ({ correlationId, requestBody }) => {
-        await request(app.getHttpServer())
+        const firstResponse = await request(app.getHttpServer())
           .post(path)
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
@@ -95,13 +100,15 @@ describe('SalesProduct', () => {
 
         expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
         expect(secondResponse.body).toMatchObject({
-          message: PRODUCT_ALREADY_EXISTS,
+          message: PRODUCT_ALREADY_CREATED,
+          salesProduct: firstResponse.body.salesProduct,
         })
       });
     });
   });
 
   afterAll(async () => {
+    await dataSource.query(`DELETE FROM sales_product_requests`);
     await dataSource.query(`DELETE FROM sales_products`);
     await moduleRef.close();
     await app.close();

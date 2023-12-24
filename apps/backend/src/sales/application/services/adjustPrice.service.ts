@@ -4,7 +4,7 @@ import {
 } from '../../../infrastructure/transaction/shared/decorators/injectTransactionService';
 import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
-import { ISalesProductRepository } from '../repositories/ISalesProduct.repository';
+import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { AdjustPriceOutputDto } from '../dto/output/adjustPriceOutput.dto';
 import { AdjustPrice } from '../../domain/salesProduct/commands/adjustPrice';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';

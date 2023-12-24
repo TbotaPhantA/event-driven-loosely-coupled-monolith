@@ -1,5 +1,5 @@
 import { CreateSalesProduct } from '../domain/salesProduct/commands/createSalesProduct';
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put, UseFilters } from '@nestjs/common';
 import { CreateSalesProductOutputDto } from './dto/output/createSalesProductOutput.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSalesProductService } from './services/createSalesProduct.service';
@@ -13,10 +13,12 @@ import { DeleteSalesProductOutputDto } from './dto/output/deleteSalesProductOutp
 import { DeleteSalesProductParamsDto } from './dto/input/deleteSalesProductParams.dto';
 import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
 import { Validate } from '../../infrastructure/shared/decorators/validate';
+import { HttpExceptionFilter } from '../../infrastructure/shared/exceptionFilters/httpException.filter';
 
 @Controller('sales/product')
 @ApiTags('sales/product')
 @Validate()
+@UseFilters(HttpExceptionFilter)
 export class SalesProductController {
   constructor(
     private readonly createSalesProductService: CreateSalesProductService,

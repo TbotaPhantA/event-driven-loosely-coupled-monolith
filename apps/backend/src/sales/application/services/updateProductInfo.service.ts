@@ -4,7 +4,7 @@ import {
 } from '../../../infrastructure/transaction/shared/decorators/injectTransactionService';
 import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
-import { ISalesProductRepository } from '../repositories/ISalesProduct.repository';
+import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { UpdateProductInfoOutputDto } from '../dto/output/updateProductInfoOutput.dto';
 import { UpdateProductInfo } from '../../domain/salesProduct/commands/updateProductInfo';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';

@@ -1,9 +1,9 @@
 import { ISalesProductRepository } from './ISalesProduct.repository';
-import { SalesProduct } from '../../domain/salesProduct/salesProduct';
+import { SalesProduct } from '../../../domain/salesProduct/salesProduct';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
-import { SalesProductEntity } from '../entities/salesProduct.entity';
-import { SalesProductMapper } from '../mappers/salesProduct.mapper';
+import { SalesProductEntity } from '../../entities/salesProduct.entity';
+import { SalesProductMapper } from '../../mappers/salesProduct.mapper';
 
 @Injectable()
 export class DatabaseSalesProductRepository implements ISalesProductRepository {

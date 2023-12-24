@@ -5,14 +5,20 @@ import { SalesProductFactory } from '../domain/salesProduct/salesProduct.factory
 import { RandomService } from '../../infrastructure/random/random.service';
 import { RandomModule } from '../../infrastructure/random/random.module';
 import { TransactionModule } from '../../infrastructure/transaction/transaction.module';
-import { SALES_PRODUCT_REPOSITORY } from './shared/constants';
-import { DatabaseSalesProductRepository } from './repositories/databaseSalesProdcutRepository.service';
+import { SALES_PRODUCT_IDEMPOTENT_REQUEST_REPOSITORY, SALES_PRODUCT_REPOSITORY } from './shared/constants';
+import {
+  DatabaseSalesProductRepository,
+} from './repositories/salesProductRepository/databaseSalesProdcutRepository.service';
 import { AdjustPriceService } from './services/adjustPrice.service';
 import { GetSalesProductByIdQuery } from './queries/getSalesProductByIdQuery';
 import { UpdateProductInfoService } from './services/updateProductInfo.service';
 import { TimeModule } from '../../infrastructure/time/time.module';
 import { TimeService } from '../../infrastructure/time/time.service';
 import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
+import {
+  DatabaseSalesProductIdempotentRequestRepository
+} from './repositories/salesProductIdempotentRequest/databaseSalesProductIdempotentRequestRepository';
+import { SalesProductRequestIdempotencyService } from './services/salesProductRequestIdempotency.service';
 
 @Module({
   imports: [RandomModule, TransactionModule, TimeModule],
@@ -23,6 +29,7 @@ import { DeleteSalesProductService } from './services/deleteSalesProduct.service
     AdjustPriceService,
     UpdateProductInfoService,
     DeleteSalesProductService,
+    SalesProductRequestIdempotencyService,
     {
       provide: SalesProductFactory,
       useFactory: (random: RandomService, time: TimeService): SalesProductFactory =>
@@ -32,6 +39,10 @@ import { DeleteSalesProductService } from './services/deleteSalesProduct.service
     {
       provide: SALES_PRODUCT_REPOSITORY,
       useClass: DatabaseSalesProductRepository,
+    },
+    {
+      provide: SALES_PRODUCT_IDEMPOTENT_REQUEST_REPOSITORY,
+      useClass: DatabaseSalesProductIdempotentRequestRepository,
     },
   ],
 })
