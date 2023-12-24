@@ -4,6 +4,7 @@ Before you implement the feature, you should write a failing acceptance test.
 ## sales context
 - [X] move validation pipe from main to controller
 - [X] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
+- [ ] unit test services using Nestjs Automock https://docs.nestjs.com/recipes/automock
 ### infrastructure
 - [ ] add request logging
 - [X] add tracing
