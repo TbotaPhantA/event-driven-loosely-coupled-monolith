@@ -19,7 +19,7 @@ export class CreateSalesProductService {
     @InjectSalesProductRepository()
     private readonly repo: ISalesProductRepository,
     private readonly factory: SalesProductFactory,
-    private readonly idempotencyService: SalesProductRequestIdempotencyService,
+    private readonly idempotentRequestService: SalesProductRequestIdempotencyService,
   ) {}
 
   async runTransaction(command: CreateSalesProduct): Promise<CreateSalesProductOutputDto> {
@@ -28,11 +28,11 @@ export class CreateSalesProductService {
   }
 
   async create(command: CreateSalesProduct, transaction: ITransaction): Promise<CreateSalesProductOutputDto> {
-    await this.idempotencyService.assertCreateSalesProductIdempotent(transaction);
+    await this.idempotentRequestService.assertCreateSalesProductIdempotent(transaction);
     const product = this.factory.create(command);
     const [savedProduct] = await Promise.all([
       this.repo.save(product, transaction),
-      this.idempotencyService.insertIdempotentRequest(product, transaction)
+      this.idempotentRequestService.insert(product, transaction)
       // TODO: save event
     ]);
     return CreateSalesProductOutputDto.from(savedProduct);
