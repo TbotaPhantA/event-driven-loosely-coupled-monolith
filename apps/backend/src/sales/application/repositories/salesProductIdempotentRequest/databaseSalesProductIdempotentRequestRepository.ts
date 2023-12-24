@@ -5,16 +5,16 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DatabaseSalesProductIdempotentRequestRepository implements ISalesProductIdempotentRequestRepository {
-    async findRequestByCorrelationId(
+    findRequestByCorrelationId(
       correlationId: string,
       transaction: EntityManager,
     ): Promise<SalesProductRequestEntity | null> {
-      return await transaction.findOne(SalesProductRequestEntity, {
+      return transaction.findOne(SalesProductRequestEntity, {
         where: { correlationId },
         relations: ['salesProduct'],
       });
     }
-    async insertRequest(
+    insertRequest(
       request: SalesProductRequestEntity,
       transaction: EntityManager,
     ): Promise<SalesProductRequestEntity> {
