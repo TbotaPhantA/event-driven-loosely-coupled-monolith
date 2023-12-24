@@ -3,7 +3,7 @@
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
 - [X] move validation pipe from main to controller
-- [ ] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
+- [X] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
 ### infrastructure
 - [ ] add request logging
 - [X] add tracing
