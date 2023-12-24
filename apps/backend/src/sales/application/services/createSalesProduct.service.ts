@@ -10,6 +10,7 @@ import { SalesProductFactory } from '../../domain/salesProduct/salesProduct.fact
 import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
 import { SalesProductRequestIdempotencyService } from './salesProductRequestIdempotency.service';
+import { SalesProduct } from '../../domain/salesProduct/salesProduct';
 
 @Injectable()
 export class CreateSalesProductService {
@@ -30,11 +31,15 @@ export class CreateSalesProductService {
   async create(command: CreateSalesProduct, transaction: ITransaction): Promise<CreateSalesProductOutputDto> {
     await this.idempotentRequestService.assertCreateSalesProductIdempotent(transaction);
     const product = this.factory.create(command);
-    const [savedProduct] = await Promise.all([
+    const [savedProduct] = await this.saveChanges(product, transaction);
+    return CreateSalesProductOutputDto.from(savedProduct);
+  }
+
+  private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
+    return Promise.all([
       this.repo.save(product, transaction),
       this.idempotentRequestService.insert(product, transaction)
       // TODO: save event
     ]);
-    return CreateSalesProductOutputDto.from(savedProduct);
   }
 }
