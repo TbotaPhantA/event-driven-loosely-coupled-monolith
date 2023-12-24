@@ -32,7 +32,7 @@ export class CreateSalesProductService {
     const product = this.factory.create(command);
     const [savedProduct] = await Promise.all([
       this.repo.save(product, transaction),
-      this.idempotencyService.insertRequest(product, transaction)
+      this.idempotencyService.insertIdempotentRequest(product, transaction)
       // TODO: save event
     ]);
     return CreateSalesProductOutputDto.from(savedProduct);

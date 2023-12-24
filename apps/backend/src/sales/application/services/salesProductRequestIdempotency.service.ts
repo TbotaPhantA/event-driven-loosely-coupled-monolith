@@ -28,7 +28,7 @@ export class SalesProductRequestIdempotencyService {
     }
   }
 
-  async insertRequest(salesProduct: SalesProduct, transaction: ITransaction): Promise<void> {
+  async insertIdempotentRequest(salesProduct: SalesProduct, transaction: ITransaction): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
     const request = SalesProductRequestEntity.from({ salesProduct, correlationId });
     await this.repo.insertRequest(request, transaction);
