@@ -7,7 +7,7 @@ import { AsyncContextStorage, InjectAsyncContextStorage } from '../async-context
 import { isString } from 'class-validator';
 import { CORRELATION_ID_KEY } from './correlationConstants';
 
-const isExistsAndValid = isString;
+const doesExistAndValid = isString;
 
 @Injectable()
 export class CorrelationService {
@@ -17,7 +17,7 @@ export class CorrelationService {
   ) {}
 
   public startNewCorrelationId(existingCorrelationId?: string | any): string {
-    const correlationId = isExistsAndValid(existingCorrelationId) ? existingCorrelationId : ulid();
+    const correlationId = doesExistAndValid(existingCorrelationId) ? existingCorrelationId : ulid();
 
     const contextStore = this.asyncContextStorage.getStore();
 
