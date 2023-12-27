@@ -3,23 +3,21 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { AppModule } from '../../../../src/app.module';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
-import { DataSource } from 'typeorm';
 import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
+import { TestApiController } from '../../testApi.controller';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
   let app: INestApplication;
-  let dataSource: DataSource;
 
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
+      controllers: [TestApiController],
       imports: [AppModule],
     }).compile()
 
     app = moduleRef.createNestApplication();
-
-    dataSource = app.get(DataSource);
 
     await app.init();
   })
@@ -108,8 +106,7 @@ describe('SalesProduct', () => {
   });
 
   afterAll(async () => {
-    await dataSource.query(`DELETE FROM sales_product_requests`);
-    await dataSource.query(`DELETE FROM sales_products`);
+    await request(app.getHttpServer()).post('/test-api/clean-db')
     await moduleRef.close();
     await app.close();
   })
