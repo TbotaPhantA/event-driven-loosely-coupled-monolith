@@ -17,31 +17,30 @@ import { IsolationLevelUnion } from '../../../../../src/infrastructure/transacti
 
 describe('CreateSalesProductService', () => {
   let createSalesProductService: CreateSalesProductService;
-  let transactionService: jest.Mocked<ITransactionService>;
-  let salesProductRepository: jest.Mocked<ISalesProductRepository>;
-  let salesProductFactory: jest.Mocked<SalesProductFactory>;
-  let idempotentRequestService: jest.Mocked<SalesProductRequestIdempotencyService>;
+  let stubTransactionService: jest.Mocked<ITransactionService>;
+  let stubSalesProductRepository: jest.Mocked<ISalesProductRepository>;
+  let stubSalesProductFactory: jest.Mocked<SalesProductFactory>;
+  let stubIdempotentRequestService: jest.Mocked<SalesProductRequestIdempotencyService>;
   const transaction = {}
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(CreateSalesProductService).compile()
 
     createSalesProductService = unit;
-    transactionService = unitRef.get(TRANSACTION_SERVICE);
-    salesProductRepository = unitRef.get(SALES_PRODUCT_REPOSITORY)
-    salesProductFactory = unitRef.get(SalesProductFactory);
-    idempotentRequestService = unitRef.get(SalesProductRequestIdempotencyService);
+    stubTransactionService = unitRef.get(TRANSACTION_SERVICE);
+    stubSalesProductRepository = unitRef.get(SALES_PRODUCT_REPOSITORY)
+    stubSalesProductFactory = unitRef.get(SalesProductFactory);
+    stubIdempotentRequestService = unitRef.get(SalesProductRequestIdempotencyService);
 
-
-    transactionService.withTransaction = jest.fn().mockImplementation(<T>(
+    stubTransactionService.withTransaction = jest.fn().mockImplementation(<T>(
       level: IsolationLevelUnion,
       fn: (transaction: ITransaction) => Promise<T>
     ) => {
       fn(transaction);
     })
     const salesProduct = SalesProductBuilder.defaultAll.result;
-    salesProductFactory.create = jest.fn().mockReturnValue(salesProduct);
-    salesProductRepository.save = jest.fn().mockResolvedValue(salesProduct);
+    stubSalesProductFactory.create = jest.fn().mockReturnValue(salesProduct);
+    stubSalesProductRepository.save = jest.fn().mockResolvedValue(salesProduct);
   })
 
   describe('runTransaction', () => {
@@ -50,17 +49,17 @@ describe('CreateSalesProductService', () => {
 
       await createSalesProductService.runTransaction(command);
 
-      expect(idempotentRequestService.assertCreateSalesProductIdempotent).toHaveBeenCalledWith(transaction);
+      expect(stubIdempotentRequestService.assertCreateSalesProductIdempotent).toHaveBeenCalledWith(transaction);
     });
 
     test('idempotent request insert - should be called', async () => {
       const product = SalesProductBuilder.defaultAll.result;
-      salesProductFactory.create = jest.fn().mockReturnValue(product);
+      stubSalesProductFactory.create = jest.fn().mockReturnValue(product);
       const command = CreateSalesProductBuilder.defaultAll.result;
 
       await createSalesProductService.runTransaction(command);
 
-      expect(idempotentRequestService.insert).toHaveBeenCalledWith(product, transaction);
+      expect(stubIdempotentRequestService.insert).toHaveBeenCalledWith(product, transaction);
     });
 
     describe('save SalesProduct', () => {
@@ -90,9 +89,9 @@ describe('CreateSalesProductService', () => {
       ];
 
       test.each(saveSalesProductTestCases)('%s', async ({ givenSalesProduct, command }) => {
-        salesProductFactory.create = jest.fn().mockReturnValue(givenSalesProduct);
+        stubSalesProductFactory.create = jest.fn().mockReturnValue(givenSalesProduct);
         await createSalesProductService.runTransaction(command);
-        expect(salesProductRepository.save).toHaveBeenCalledWith(givenSalesProduct, transaction);
+        expect(stubSalesProductRepository.save).toHaveBeenCalledWith(givenSalesProduct, transaction);
       });
     });
   });
