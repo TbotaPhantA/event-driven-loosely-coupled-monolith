@@ -16,8 +16,14 @@ import { Validate } from '../../infrastructure/shared/decorators/validate';
 import { HttpExceptionFilter } from '../../infrastructure/shared/exceptionFilters/httpException.filter';
 import { CORRELATION_ID_HEADER } from '../../infrastructure/correlation';
 
-@Controller('sales/product')
-@ApiTags('sales/product')
+export const salesProductResource = 'sales/product';
+export const createSalesProductResource = 'create-sales-product';
+export const adjustPriceResource = 'adjust-price';
+export const updateProductInfoResource = 'update-product-info';
+export const deleteSalesProductResource = 'delete-sales-product';
+
+@Controller(salesProductResource)
+@ApiTags(salesProductResource)
 @Validate()
 @UseFilters(HttpExceptionFilter)
 export class SalesProductController {
@@ -28,7 +34,7 @@ export class SalesProductController {
     private readonly deleteSalesProductService: DeleteSalesProductService,
   ) {}
 
-  @Post('create-sales-product')
+  @Post(createSalesProductResource)
   @ApiOperation({ summary: 'Create sales product' })
   @ApiResponse({ type: CreateSalesProductOutputDto })
   @ApiHeader({ name: CORRELATION_ID_HEADER })
@@ -36,7 +42,7 @@ export class SalesProductController {
     return this.createSalesProductService.runTransaction(command);
   }
 
-  @Put('adjust-price')
+  @Put(adjustPriceResource)
   @ApiOperation({ summary: 'Adjust price of the product' })
   @ApiResponse({ type: AdjustPriceOutputDto })
   async adjustPrice(
@@ -45,7 +51,7 @@ export class SalesProductController {
     return this.adjustPriceService.runTransaction(command);
   }
 
-  @Put('update-product-info')
+  @Put(updateProductInfoResource)
   @ApiOperation({ summary: 'Update the product name and description' })
   @ApiResponse({ type: UpdateProductInfoOutputDto })
   async updateProductInfo(
@@ -54,7 +60,7 @@ export class SalesProductController {
     return this.updateProductInfoService.runTransaction(command);
   }
 
-  @Delete('delete-sales-product/:productId')
+  @Delete(`:productId/${deleteSalesProductResource}`)
   @ApiOperation({ summary: 'Delete the sales product' })
   @ApiResponse({ type: DeleteSalesProductOutputDto })
   async deleteSalesProduct(
