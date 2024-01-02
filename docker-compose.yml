@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}:5432
 
   zoo1:
     image: confluentinc/cp-zookeeper:7.3.2
