@@ -15,12 +15,13 @@ import { DeleteSalesProductService } from './services/deleteSalesProduct.service
 import { Validate } from '../../infrastructure/shared/decorators/validate';
 import { HttpExceptionFilter } from '../../infrastructure/shared/exceptionFilters/httpException.filter';
 import { CORRELATION_ID_HEADER } from '../../infrastructure/correlation';
-
-export const salesProductResource = 'sales/product';
-export const createSalesProductResource = 'create-sales-product';
-export const adjustPriceResource = 'adjust-price';
-export const updateProductInfoResource = 'update-product-info';
-export const deleteSalesProductResource = 'delete-sales-product';
+import {
+  adjustPriceResource,
+  createSalesProductResource,
+  deleteSalesProductResource,
+  salesProductResource,
+  updateProductInfoResource
+} from './shared/resources';
 
 @Controller(salesProductResource)
 @ApiTags(salesProductResource)

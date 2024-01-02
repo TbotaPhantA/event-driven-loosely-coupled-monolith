@@ -1,7 +1,7 @@
 import { Link } from './link';
-import { createSalesProductResource, salesProductResource } from '../../../sales.controller';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
 import { CreateSalesProduct } from '../../../../domain/salesProduct/commands/createSalesProduct';
+import { createSalesProductResource, salesProductResource } from '../../../shared/resources';
 
 export class CreateSalesProductLink extends Link {
   static create(): CreateSalesProductLink {

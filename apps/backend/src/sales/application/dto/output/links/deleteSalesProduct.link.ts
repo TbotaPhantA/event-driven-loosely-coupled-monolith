@@ -1,7 +1,7 @@
 import { Link } from './link';
 import { SalesProduct } from '../../../../domain/salesProduct/salesProduct';
-import { deleteSalesProductResource, salesProductResource } from '../../../sales.controller';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
+import { deleteSalesProductResource, salesProductResource } from '../../../shared/resources';
 
 export class DeleteSalesProductLink extends Link {
   static from(product: Pick<SalesProduct, 'productId'>): DeleteSalesProductLink {

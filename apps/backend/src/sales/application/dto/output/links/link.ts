@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AdjustPrice } from '../../../../domain/salesProduct/commands/adjustPrice';
-import { adjustPriceResource, salesProductResource } from '../../../sales.controller';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
+import { adjustPriceResource, salesProductResource } from '../../../shared/resources';
 
 export class Link {
-  @ApiProperty({ example: AdjustPrice.name })
+  @ApiProperty({ example: 'AdjustPrice' })
   name!: string;
 
   @ApiProperty({ example: `/${salesProductResource}/${adjustPriceResource}` })

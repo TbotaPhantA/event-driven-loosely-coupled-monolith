@@ -3,7 +3,7 @@ import { CreateSalesProductLink } from '../createSalesProduct.link';
 import { AdjustPriceLink } from '../adjustPrice.link';
 import { UpdateProductInfoLink } from '../updateProductInfo.link';
 import { DeleteSalesProductLink } from '../deleteSalesProduct.link';
-import { Link } from '../link';
+import type { Link } from '../link';
 
 export const createSalesProductLinksFrom = (product: Pick<SalesProduct, 'productId'>): Link[] => {
   return [
