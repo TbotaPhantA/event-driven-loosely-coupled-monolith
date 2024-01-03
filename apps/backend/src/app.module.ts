@@ -4,9 +4,10 @@ import { StorageModule } from './storage/application/storage.module';
 import { DatabaseModule } from './infrastructure/db/database.module';
 import { AsyncContextMiddleware } from './infrastructure/async-context/middlewares/async-context.middleware';
 import { CorrelationModule } from './infrastructure/correlation';
+import { ConfigModule } from './infrastructure/config/config.module';
 
 @Module({
-  imports: [SalesModule, StorageModule, DatabaseModule, CorrelationModule],
+  imports: [SalesModule, StorageModule, DatabaseModule, CorrelationModule, ConfigModule],
   controllers: [],
   providers: [],
 })
