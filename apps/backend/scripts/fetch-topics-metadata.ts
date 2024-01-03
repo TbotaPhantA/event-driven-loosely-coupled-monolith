@@ -2,11 +2,6 @@ import { Kafka } from 'kafkajs';
 import { config } from '../src/infrastructure/config/config';
 import { inspect } from 'util';
 
-/**
- * console script:
- * docker-compose exec kafka1 kafka-topics --create --topic bananus.topic --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092
- */
-
 (async (): Promise<void> => {
   const kafka = createKafka();
   const producer = kafka.producer();
