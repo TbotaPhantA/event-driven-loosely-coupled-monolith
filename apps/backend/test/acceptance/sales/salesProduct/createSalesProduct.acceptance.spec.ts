@@ -143,7 +143,10 @@ describe('SalesProduct', () => {
 
   afterAll(async () => {
     await request(app.getHttpServer()).post('/test-api/clean-db')
-    await moduleRef.close();
+    await Promise.all([
+      moduleRef.close(),
+      consumer.stop(),
+    ])
     await Promise.all([
       consumer.disconnect(),
       app.close(),
