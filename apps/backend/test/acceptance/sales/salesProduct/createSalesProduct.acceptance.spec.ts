@@ -20,9 +20,9 @@ describe('SalesProduct', () => {
   beforeAll(async () => {
     moduleRef = await createTestingModule().compile()
     app = moduleRef.createNestApplication();
-    const [startedConsumer] = await Promise.all([
-      startConsumerFillingMessagePayloads(messagePayloads),
+    const [,startedConsumer] = await Promise.all([
       app.init(),
+      startConsumerFillingMessagePayloads(messagePayloads),
     ])
     consumer = startedConsumer;
 
