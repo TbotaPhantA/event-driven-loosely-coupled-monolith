@@ -6,6 +6,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [X] add idempotency for `CreateSalesProduct` command using `correlationId`( Google how to make idempotent endpoint)
 - [X] unit test services using Nestjs Automock https://docs.nestjs.com/recipes/automock
 - [ ] add `HOST` to `config` and rename `path` to `href` for api hypermedia
+- [ ] put output dto to idempotent request and to outbox instead of an actual entity
 ### infrastructure
 - [ ] add request logging
 - [X] add tracing

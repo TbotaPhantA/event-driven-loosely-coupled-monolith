@@ -1,10 +1,9 @@
-import { SalesProductRequestEntity } from '../../entities/salesProductRequest.entity';
-import { ISalesProductIdempotentRequestRepository } from './ISalesProductIdempotentRequestRepository';
-import { EntityManager } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { EntityManager } from 'typeorm';
+import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 
 @Injectable()
-export class DatabaseSalesProductIdempotentRequestRepository implements ISalesProductIdempotentRequestRepository {
+export class DatabaseSalesProductIdempotentRequestRepository {
     findRequestByCorrelationId(
       correlationId: string,
       transaction: EntityManager,

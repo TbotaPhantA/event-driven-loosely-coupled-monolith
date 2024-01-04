@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/config';
 import { SalesProductEntity } from '../../sales/application/entities/salesProduct.entity';
-import { SalesProductRequestEntity } from '../../sales/application/entities/salesProductRequest.entity';
+import { SalesProductRequestEntity } from '../idempotency/entities/salesProductRequest.entity';
+import { SalesProductMessage } from '../messages/entities/salesProduct.message';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { SalesProductRequestEntity } from '../../sales/application/entities/sale
       username: config.database.username,
       password: config.database.password,
       database: config.database.database,
-      entities: [SalesProductEntity, SalesProductRequestEntity],
+      entities: [SalesProductEntity, SalesProductRequestEntity, SalesProductMessage],
       synchronize: config.database.synchronize,
     }),
   ],

@@ -1,14 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { SalesProduct } from '../../domain/salesProduct/salesProduct';
 import { PRODUCT_NOT_FOUND } from '../../../infrastructure/shared/errorMessages';
+import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 
 @Injectable()
 export class GetSalesProductByIdQuery {
   constructor(
-    @InjectSalesProductRepository()
+    @Inject(SALES_PRODUCT_REPOSITORY)
     private readonly repo: ISalesProductRepository,
   ) {}
 

@@ -1,6 +1,6 @@
 import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { SalesProductEntity } from './salesProduct.entity';
-import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
+import { SalesProductEntity } from '../../../sales/application/entities/salesProduct.entity';
+import { NoMethods } from '../../shared/types/noMethods';
 
 @Entity({ name: 'sales_product_requests' })
 export class SalesProductRequestEntity {

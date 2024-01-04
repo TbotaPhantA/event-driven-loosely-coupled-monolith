@@ -6,21 +6,30 @@ import {
   ISalesProductRepository
 } from '../../../../../src/sales/application/repositories/salesProductRepository/ISalesProduct.repository';
 import { SalesProductFactory } from '../../../../../src/sales/domain/salesProduct/salesProduct.factory';
-import {
-  SalesProductRequestIdempotencyService
-} from '../../../../../src/sales/application/services/salesProductRequestIdempotency.service';
 import { SalesProductBuilder } from '../../../../__fixtures__/builders/salesProduct.builder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';
-import { SALES_PRODUCT_REPOSITORY } from '../../../../../src/sales/application/shared/constants';
+import { SALES_CONTEXT_NAME, SALES_PRODUCT_REPOSITORY } from '../../../../../src/sales/application/shared/constants';
 import { ITransaction } from '../../../../../src/infrastructure/transaction/shared/types/ITransaction';
 import { IsolationLevelUnion } from '../../../../../src/infrastructure/transaction/isolationLevelUnion';
+import {
+  ISalesProductMessagesService
+} from '../../../../../src/sales/application/services/interfaces/ISalesProductMessagesService';
+import {
+  SalesProductCreatedEventBuilder
+} from '../../../../__fixtures__/builders/events/salesProductCreated.event.builder';
+import {
+  ISalesProductIdempotencyService
+} from '../../../../../src/sales/application/services/interfaces/ISalesProductIdempotency.service';
+import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
+import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 
 describe('CreateSalesProductService', () => {
   let createSalesProductService: CreateSalesProductService;
   let stubTransactionService: jest.Mocked<ITransactionService>;
   let stubSalesProductRepository: jest.Mocked<ISalesProductRepository>;
   let stubSalesProductFactory: jest.Mocked<SalesProductFactory>;
-  let stubIdempotentRequestService: jest.Mocked<SalesProductRequestIdempotencyService>;
+  let stubIdempotencyService: jest.Mocked<ISalesProductIdempotencyService>;
+  let stubSalesProductMessageService: jest.Mocked<ISalesProductMessagesService>;
   const transaction = {}
 
   beforeAll(() => {
@@ -29,8 +38,9 @@ describe('CreateSalesProductService', () => {
     createSalesProductService = unit;
     stubTransactionService = unitRef.get(TRANSACTION_SERVICE);
     stubSalesProductRepository = unitRef.get(SALES_PRODUCT_REPOSITORY)
+    stubSalesProductMessageService = unitRef.get(SALES_PRODUCT_MESSAGES_SERVICE);
     stubSalesProductFactory = unitRef.get(SalesProductFactory);
-    stubIdempotentRequestService = unitRef.get(SalesProductRequestIdempotencyService);
+    stubIdempotencyService = unitRef.get(SALES_PRODUCT_IDEMPOTENCY_SERVICE);
 
     stubTransactionService.withTransaction = jest.fn().mockImplementation(<T>(
       level: IsolationLevelUnion,
@@ -49,7 +59,7 @@ describe('CreateSalesProductService', () => {
 
       await createSalesProductService.runTransaction(command);
 
-      expect(stubIdempotentRequestService.assertCreateSalesProductIdempotent).toHaveBeenCalledWith(transaction);
+      expect(stubIdempotencyService.assertCreateSalesProductIdempotent).toHaveBeenCalledWith(transaction);
     });
 
     test('idempotent request insert - should be called', async () => {
@@ -59,8 +69,19 @@ describe('CreateSalesProductService', () => {
 
       await createSalesProductService.runTransaction(command);
 
-      expect(stubIdempotentRequestService.insert).toHaveBeenCalledWith(product, transaction);
+      expect(stubIdempotencyService.insert).toHaveBeenCalledWith(product, transaction);
     });
+
+    test('event insert - should be called', async () => {
+      const product = SalesProductBuilder.defaultAll.result;
+      stubSalesProductFactory.create = jest.fn().mockReturnValue(product);
+      const command = CreateSalesProductBuilder.defaultAll.result;
+      const event = SalesProductCreatedEventBuilder.defaultAll.result;
+
+      await createSalesProductService.runTransaction(command);
+
+      expect(stubSalesProductMessageService.insertEvent).toHaveBeenCalledWith(event, SALES_CONTEXT_NAME, transaction);
+    })
 
     describe('save SalesProduct', () => {
       const saveSalesProductTestCases = [

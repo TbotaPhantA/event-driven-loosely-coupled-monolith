@@ -1,8 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import {
-  InjectTransactionService,
-} from '../../../infrastructure/transaction/shared/decorators/injectTransactionService';
-import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
+import { Inject, Injectable } from '@nestjs/common';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
 import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { AdjustPriceOutputDto } from '../dto/output/adjustPriceOutput.dto';
@@ -10,13 +6,15 @@ import { AdjustPrice } from '../../domain/salesProduct/commands/adjustPrice';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { GetSalesProductByIdQuery } from '../queries/getSalesProductByIdQuery';
 import { TimeService } from '../../../infrastructure/time/time.service';
+import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
+import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/constants';
 
 @Injectable()
 export class AdjustPriceService {
   constructor(
-    @InjectTransactionService()
+    @Inject(TRANSACTION_SERVICE)
     private readonly transactionService: ITransactionService,
-    @InjectSalesProductRepository()
+    @Inject(SALES_PRODUCT_REPOSITORY)
     private readonly repo: ISalesProductRepository,
     private readonly getSalesProductByIdQuery: GetSalesProductByIdQuery,
     private readonly time: TimeService,

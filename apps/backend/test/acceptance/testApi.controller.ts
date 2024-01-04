@@ -9,6 +9,7 @@ export class TestApiController {
 
   @Post('clean-db')
   async cleanDB(): Promise<void> {
+    await this.dataSource.query(`DELETE FROM sales_product_outbox_messages`);
     await this.dataSource.query(`DELETE FROM sales_product_requests`);
     await this.dataSource.query(`DELETE FROM sales_products`);
   }

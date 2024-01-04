@@ -1,22 +1,20 @@
-import {
-  InjectTransactionService
-} from '../../../infrastructure/transaction/shared/decorators/injectTransactionService';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
-import { InjectSalesProductRepository } from '../shared/decorators/injectSalesProductRepository';
 import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
 import { DeleteSalesProductParamsDto } from '../dto/input/deleteSalesProductParams.dto';
 import { DeleteSalesProductOutputDto } from '../dto/output/deleteSalesProductOutput.dto';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { GetSalesProductByIdQuery } from '../queries/getSalesProductByIdQuery';
 import { TimeService } from '../../../infrastructure/time/time.service';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/constants';
+import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 
 @Injectable()
 export class DeleteSalesProductService {
   constructor(
-    @InjectTransactionService()
+    @Inject(TRANSACTION_SERVICE)
     private readonly transactionService: ITransactionService,
-    @InjectSalesProductRepository()
+    @Inject(SALES_PRODUCT_REPOSITORY)
     private readonly repo: ISalesProductRepository,
     private readonly getSalesProductByIdQuery: GetSalesProductByIdQuery,
     private readonly time: TimeService,
