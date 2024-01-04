@@ -6,10 +6,10 @@ import * as request from 'supertest';
 import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { TestApiController } from '../../testApi.controller';
-import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
-import { config } from '../../../../src/infrastructure/config/config';
+import { Consumer, EachMessagePayload } from 'kafkajs';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
+import { startConsumerFillingMessagePayloads } from '../../../shared/utils/startConsumerFillingMessagePayloads';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
@@ -20,39 +20,17 @@ describe('SalesProduct', () => {
   beforeAll(async () => {
     moduleRef = await createTestingModule().compile()
     app = moduleRef.createNestApplication();
-    const kafka = createKafka();
-    consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
-
-    await Promise.all([
+    const [startedConsumer] = await Promise.all([
+      startConsumerFillingMessagePayloads(messagePayloads),
       app.init(),
-      consumer.connect(),
-    ]);
-    await consumer.subscribe({
-      topic: config.kafka.kafkaSalesProductsTopic,
-      fromBeginning: false,
-    });
-    await consumer.run({
-      eachMessage: async (payload) => {
-        messagePayloads.push(payload);
-      },
-    })
+    ])
+    consumer = startedConsumer;
 
     function createTestingModule(): TestingModuleBuilder {
       return Test.createTestingModule({
         controllers: [TestApiController],
         imports: [AppModule],
       })
-    }
-
-    function createKafka(): Kafka {
-      return new Kafka({
-        clientId: 'acceptance-tests',
-        brokers: [
-          `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
-          `${config.kafka.kafka2Host}:${config.kafka.kafka2ExternalPort}`,
-          `${config.kafka.kafka3Host}:${config.kafka.kafka3ExternalPort}`,
-        ],
-      });
     }
   })
 
