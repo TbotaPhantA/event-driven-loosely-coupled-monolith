@@ -10,6 +10,7 @@ import { Consumer, EachMessagePayload } from 'kafkajs';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
 import { startConsumerFillingMessagePayloads } from '../../../shared/utils/startConsumerFillingMessagePayloads';
+import { createSalesProductResource, salesProductResource } from '../../../../src/sales/application/shared/resources';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
@@ -34,8 +35,8 @@ describe('SalesProduct', () => {
     }
   })
 
-  describe('POST /sales/product/create-sales-product', () => {
-    const path = '/sales/product/create-sales-product'
+  describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
+    const path = `/${salesProductResource}/${createSalesProductResource}`
     describe('successfulTestCases', () => {
       const successfulTestCases = [
         {
