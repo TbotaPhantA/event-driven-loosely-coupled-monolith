@@ -92,7 +92,7 @@ services:
       - kafka2
       - kafka3
     ports:
-      - ${DEBEZIUM_PORT}:${DEBEZIUM_PORT}
+      - ${DEBEZIUM_PORT}:8083
     environment:
       BOOTSTRAP_SERVERS: ${DOCKER_HOST_IP}:${KAFKA1_EXTERNAL_PORT},${DOCKER_HOST_IP}:${KAFKA2_EXTERNAL_PORT},${DOCKER_HOST_IP}:${KAFKA3_EXTERNAL_PORT}
       GROUP_ID: 1
@@ -108,6 +108,6 @@ services:
     depends_on:
       - debezium
     ports:
-      - ${DEBEZIUM_UI_PORT}:${DEBEZIUM_UI_PORT}
+      - ${DEBEZIUM_UI_PORT}:8080
     environment:
       KAFKA_CONNECT_URIS: ${DEBEZIUM_PROTOCOL}://${DEBEZIUM_HOST}:${DEBEZIUM_PORT}
