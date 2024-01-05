@@ -4,7 +4,6 @@ import { config } from '../src/infrastructure/config/config';
 
 dotenv.config({ path: '.env.test.local' });
 
-
 (async (): Promise<void> => {
   const kafka = createKafka();
   const admin = kafka.admin();
