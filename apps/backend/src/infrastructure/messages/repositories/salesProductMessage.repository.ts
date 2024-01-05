@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SalesProductMessage } from '../entities/salesProduct.message';
+import { SalesProductMessage } from '../entities/salesProductMessage.entity';
 import { EntityManager } from 'typeorm';
 
 @Injectable()

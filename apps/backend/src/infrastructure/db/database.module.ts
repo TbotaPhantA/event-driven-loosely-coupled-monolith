@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/config';
 import { SalesProductEntity } from '../../sales/application/entities/salesProduct.entity';
 import { SalesProductRequestEntity } from '../idempotency/entities/salesProductRequest.entity';
-import { SalesProductMessage } from '../messages/entities/salesProduct.message';
+import { SalesProductMessage } from '../messages/entities/salesProductMessage.entity';
 
 @Module({
   imports: [
