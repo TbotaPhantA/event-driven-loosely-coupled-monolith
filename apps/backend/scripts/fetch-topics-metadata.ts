@@ -1,28 +1,24 @@
+import * as dotenv from 'dotenv';
 import { Kafka } from 'kafkajs';
 import { config } from '../src/infrastructure/config/config';
 import { inspect } from 'util';
 
+dotenv.config({ path: '.env.test.local' });
+
 (async (): Promise<void> => {
   const kafka = createKafka();
-  const producer = kafka.producer();
-  const consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
   const admin = kafka.admin();
 
-  await Promise.all([
-    producer.connect(),
-    consumer.connect(),
-    admin.connect(),
-  ]);
+  await admin.connect();
+
+  const topics = await admin.listTopics();
+  console.log(inspect({ topics }, { depth: 15 }));
 
   const topic = config.kafka.kafkaSalesProductsTopic;
   const metadata = await admin.fetchTopicMetadata({ topics: [topic] });
   console.log(inspect({ metadata }, { depth: 15 }));
 
-  await Promise.all([
-    producer.disconnect(),
-    consumer.disconnect(),
-    admin.disconnect(),
-  ])
+  await admin.disconnect();
 
   function createKafka(): Kafka {
     return new Kafka({
