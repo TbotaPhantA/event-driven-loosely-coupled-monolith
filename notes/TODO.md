@@ -11,7 +11,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] add request logging
 - [X] add tracing
 ### docker-compose
-- [ ] configure kafka in docker-compose
+- [X] configure kafka in docker-compose
 - [ ] create single `beforeAll` and `afterAll` for multiple files (or try to launch app into docker-compose)
 ### kafka
 - [ ] implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
