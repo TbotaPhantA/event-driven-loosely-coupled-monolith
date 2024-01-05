@@ -33,7 +33,7 @@ describe('SalesProduct', () => {
         imports: [AppModule],
       })
     }
-  })
+  }, 30000)
 
   describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
     const path = `/${salesProductResource}/${createSalesProductResource}`

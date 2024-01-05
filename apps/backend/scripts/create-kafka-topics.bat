@@ -1,7 +1,7 @@
 @echo off
 
 rem Define the path to the .env file
-set "envFile=.env"
+set "envFile=.env.test.local"
 
 rem Load environment variables from the .env file
 for /f "usebackq delims=" %%a in ("%envFile%") do (set "%%a")
