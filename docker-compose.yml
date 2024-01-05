@@ -100,14 +100,3 @@ services:
       STATUS_STORAGE_TOPIC: connect_statuses
       OFFSET_STORAGE_TOPIC: connect_offsets
       ENABLE_DEBEZIUM_SCRIPTING: 'true'
-
-  debezium-ui:
-    image: debezium/debezium-ui:2.5
-    container_name: debezium-ui
-    hostname: debezium-ui
-    depends_on:
-      - debezium
-    ports:
-      - ${DEBEZIUM_UI_PORT}:8080
-    environment:
-      KAFKA_CONNECT_URIS: ${DEBEZIUM_PROTOCOL}://${DEBEZIUM_HOST}:${DEBEZIUM_PORT}
