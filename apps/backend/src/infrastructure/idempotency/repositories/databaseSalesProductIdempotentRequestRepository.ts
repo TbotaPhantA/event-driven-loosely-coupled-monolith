@@ -8,10 +8,7 @@ export class DatabaseSalesProductIdempotentRequestRepository {
       correlationId: string,
       transaction: EntityManager,
     ): Promise<SalesProductRequestEntity | null> {
-      return transaction.findOne(SalesProductRequestEntity, {
-        where: { correlationId },
-        relations: ['salesProduct'],
-      });
+      return transaction.findOne(SalesProductRequestEntity, { where: { correlationId } });
     }
     insertRequest(
       request: SalesProductRequestEntity,

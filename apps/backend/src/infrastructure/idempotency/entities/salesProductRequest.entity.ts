@@ -1,14 +1,14 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { SalesProductEntity } from '../../../sales/application/entities/salesProduct.entity';
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
 import { NoMethods } from '../../shared/types/noMethods';
+import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 
 @Entity({ name: 'sales_product_requests' })
 export class SalesProductRequestEntity {
   @PrimaryColumn({ name: 'correlation_id' })
   correlationId!: string;
 
-  @ManyToOne(() => SalesProductEntity)
-  salesProduct!: SalesProductEntity;
+  @Column({ type: 'jsonb' })
+  salesProduct!: SalesProductOutputDto;
 
   @CreateDateColumn({
     name: 'created_at',

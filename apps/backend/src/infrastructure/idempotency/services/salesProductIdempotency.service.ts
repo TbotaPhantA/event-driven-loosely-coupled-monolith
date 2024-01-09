@@ -10,6 +10,7 @@ import {
   DatabaseSalesProductIdempotentRequestRepository
 } from '../repositories/databaseSalesProductIdempotentRequestRepository';
 import { EntityManager } from 'typeorm';
+import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 
 @Injectable()
 export class SalesProductIdempotencyService implements ISalesProductIdempotencyService {
@@ -29,7 +30,10 @@ export class SalesProductIdempotencyService implements ISalesProductIdempotencyS
 
   async insert(salesProduct: SalesProduct, transaction: EntityManager): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
-    const request = SalesProductRequestEntity.from({ salesProduct, correlationId });
+    const request = SalesProductRequestEntity.from({
+      salesProduct: new SalesProductOutputDto(salesProduct),
+      correlationId,
+    });
     await this.repo.insertRequest(request, transaction);
   }
 }
