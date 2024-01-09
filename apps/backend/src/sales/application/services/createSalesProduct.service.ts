@@ -43,6 +43,7 @@ export class CreateSalesProductService {
 
   private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
     /**
+     * PERFORMANCE ENHANCEMENT:
      * No product fields are created by the database,
      * therefore outputDto can be created before the save.
      */
