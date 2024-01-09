@@ -1,4 +1,4 @@
-export interface IEvent {
+export interface IEvent<T extends object> {
   readonly eventName: string;
-  readonly data: object;
+  readonly data: T;
 }
