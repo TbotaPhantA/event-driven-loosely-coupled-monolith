@@ -29,6 +29,12 @@ export class Config {
     consumerGroup: process.env.KAFKA_CONSUMER_GROUP ?? isRequired('KAFKA_CONSUMER_GROUP'),
     kafkaSalesProductsTopic: process.env.KAFKA_SALES_PRODUCTS_TOPIC ?? isRequired('KAFKA_SALES_PRODUCTS_TOPIC'),
   }
+
+  debezium = {
+    protocol: process.env.DEBEZIUM_PROTOCOL ?? isRequired('DEBEZIUM_PROTOCOL'),
+    host: process.env.DEBEZIUM_HOST ?? isRequired('DEBEZIUM_HOST'),
+    port: process.env.DEBEZIUM_PORT ?? isRequired('DEBEZIUM_PORT'),
+  }
 }
 
 export const config = new Config();
