@@ -25,7 +25,9 @@
     "docker-compose:test:up": "docker-compose --env-file .env.test.local up -d",
     "docker-compose:test:down": "docker-compose --env-file .env.test.local down",
     "create:topics": "ts-node scripts/create-kafka-topics.ts",
-    "create:topics:windows": "call \"scripts\\create-kafka-topics.bat\""
+    "change:wal_level": "ts-node scripts/changeWalLevel.ts",
+    "setup:debezium": "ts-node scripts/setupDebezium.ts",
+    "delete:debezium:settings": "ts-node scripts/deleteDebeziumSettings.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -33,10 +35,12 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.16",
     "@nestjs/typeorm": "^10.0.1",
+    "axios": "^1.6.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.3.1",
     "kafkajs": "^2.2.4",
+    "lodash": "^4.17.21",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
@@ -52,7 +56,9 @@
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/lodash": "^4.14.202",
     "@types/node": "^18.18.0",
+    "@types/pg": "^8.10.9",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
