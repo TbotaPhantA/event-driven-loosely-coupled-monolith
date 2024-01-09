@@ -42,12 +42,16 @@ export class CreateSalesProductService {
   }
 
   private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
+    /**
+     * No product fields are created by the database,
+     * therefore outputDto can be created before the save.
+     */
     const outputDto = new SalesProductOutputDto(product);
-    const event = new SalesProductCreated(outputDto);
+
     return Promise.all([
       this.repo.save(product, transaction),
       this.idempotencyService.insertRequest(outputDto, transaction),
-      this.messagesService.insertEvent(event, SALES_CONTEXT_NAME, transaction),
+      this.messagesService.insertEvent(new SalesProductCreated(outputDto), SALES_CONTEXT_NAME, transaction),
     ]);
   }
 }
