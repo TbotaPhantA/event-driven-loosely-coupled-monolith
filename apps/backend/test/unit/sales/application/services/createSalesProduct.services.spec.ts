@@ -69,7 +69,7 @@ describe('CreateSalesProductService', () => {
 
       await createSalesProductService.runTransaction(command);
 
-      expect(stubIdempotencyService.insert).toHaveBeenCalledWith(product, transaction);
+      expect(stubIdempotencyService.insertRequest).toHaveBeenCalledWith(product, transaction);
     });
 
     test('event insert - should be called', async () => {

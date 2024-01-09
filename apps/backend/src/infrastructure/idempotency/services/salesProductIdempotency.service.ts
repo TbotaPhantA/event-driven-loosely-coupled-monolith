@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CorrelationService } from '../../correlation';
 import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
-import { SalesProduct } from '../../../sales/domain/salesProduct/salesProduct';
 import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 import {
   ISalesProductIdempotencyService
@@ -28,10 +27,10 @@ export class SalesProductIdempotencyService implements ISalesProductIdempotencyS
     }
   }
 
-  async insert(salesProduct: SalesProduct, transaction: EntityManager): Promise<void> {
+  async insertRequest(dto: SalesProductOutputDto, transaction: EntityManager): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
     const request = SalesProductRequestEntity.from({
-      salesProduct: new SalesProductOutputDto(salesProduct),
+      salesProduct: dto,
       correlationId,
     });
     await this.repo.insertRequest(request, transaction);

@@ -13,6 +13,7 @@ import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../infrastructure/idemp
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../infrastructure/messages/constants';
 import { SalesProductCreated } from '../../domain/salesProduct/events/salesProductCreated';
 import { ISalesProductIdempotencyService } from './interfaces/ISalesProductIdempotency.service';
+import { SalesProductOutputDto } from '../dto/output/salesProductOutputDto';
 
 @Injectable()
 export class CreateSalesProductService {
@@ -41,10 +42,11 @@ export class CreateSalesProductService {
   }
 
   private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
-    const event = new SalesProductCreated(product);
+    const outputDto = new SalesProductOutputDto(product);
+    const event = new SalesProductCreated(outputDto);
     return Promise.all([
       this.repo.save(product, transaction),
-      this.idempotencyService.insert(product, transaction),
+      this.idempotencyService.insertRequest(outputDto, transaction),
       this.messagesService.insertEvent(event, SALES_CONTEXT_NAME, transaction),
     ]);
   }

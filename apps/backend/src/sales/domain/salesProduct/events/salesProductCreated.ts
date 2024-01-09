@@ -1,11 +1,11 @@
-import { SalesProduct } from '../salesProduct';
 import { IEvent } from './IEvent';
+import { SalesProductOutputDto } from '../../../application/dto/output/salesProductOutputDto';
 
-export class SalesProductCreated implements IEvent<SalesProduct> {
+export class SalesProductCreated implements IEvent<SalesProductOutputDto> {
   readonly eventName: string = SalesProductCreated.name;
-  readonly data: SalesProduct;
+  readonly data: SalesProductOutputDto;
 
-  constructor(data: SalesProduct) {
+  constructor(data: SalesProductOutputDto) {
     this.data = data;
   }
 }

@@ -10,7 +10,6 @@ import { CorrelationService } from '../../correlation';
 import { EntityManager } from 'typeorm';
 import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 import { IEvent } from '../../../sales/domain/salesProduct/events/IEvent';
-import { SalesProduct } from '../../../sales/domain/salesProduct/salesProduct';
 
 @Injectable()
 export class SalesProductMessagesService implements ISalesProductMessagesService {
@@ -19,7 +18,11 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
     private readonly correlationService: CorrelationService,
   ) {}
 
-  async insertEvent(event: IEvent<SalesProduct>, producerName: string, transaction: EntityManager): Promise<void> {
+  async insertEvent(
+    event: IEvent<SalesProductOutputDto>,
+    producerName: string,
+    transaction: EntityManager,
+  ): Promise<void> {
     const message = SalesProductMessage.createByRaw({
       messageId: PLACEHOLDER_ID,
       messageName: event.eventName,
@@ -27,7 +30,7 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
       correlationId: this.correlationService.getCorrelationId(),
       producerName,
       aggregateId: event.data.productId,
-      data: new SalesProductOutputDto(event.data),
+      data: event.data,
     });
 
     await this.salesProductMessageRepository.insert(message, transaction);
