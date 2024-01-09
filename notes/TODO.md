@@ -14,7 +14,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [X] configure kafka in docker-compose
 - [ ] create single `beforeAll` and `afterAll` for multiple files (or try to launch app into docker-compose)
 ### kafka
-- [ ] implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
+- [X] implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
 - [ ] send PriceAdjusted event to kafka
 - [ ] send SalesProductInfoUpdated event to kafka
 - [ ] send SalesProductRemoved event to kafka
