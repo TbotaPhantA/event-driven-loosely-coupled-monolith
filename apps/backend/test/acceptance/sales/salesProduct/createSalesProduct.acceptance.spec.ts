@@ -11,6 +11,9 @@ import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPay
 import { extractMessage } from '../../../shared/utils/extractMessage';
 import { startConsumerFillingMessagePayloads } from '../../../shared/utils/startConsumerFillingMessagePayloads';
 import { createSalesProductResource, salesProductResource } from '../../../../src/sales/application/shared/resources';
+import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
+import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
+import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
 
 describe('SalesProduct', () => {
   let moduleRef: TestingModule;
@@ -33,7 +36,7 @@ describe('SalesProduct', () => {
         imports: [AppModule],
       })
     }
-  }, 30000)
+  }, 30000);
 
   describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
     const path = `/${salesProductResource}/${createSalesProductResource}`
@@ -136,8 +139,16 @@ describe('SalesProduct', () => {
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
 
-        const { value } = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
-        expect(value).toMatchObject(response.body.salesProduct);
+        const message = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
+
+        expect(message.key.payload).toStrictEqual(response.body.salesProduct.productId);
+        expect(JSON.parse(message.value.payload)).toMatchObject(response.body.salesProduct);
+        expect(message.headers).toMatchObject({
+          messageType: MessageTypeEnum.event,
+          messageName: SalesProductCreated.name,
+          correlationId,
+          producerName: SALES_CONTEXT_NAME,
+        });
       });
     });
   });
@@ -152,5 +163,5 @@ describe('SalesProduct', () => {
       consumer.disconnect(),
       app.close(),
     ])
-  })
+  }, 30000);
 });
