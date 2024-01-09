@@ -3,28 +3,34 @@ import { assertIsNotEmpty } from '../../../src/infrastructure/shared/utils/asser
 
 interface Message {
   headers: object;
-  key: object;
-  value: object;
+  key: {
+    schema: object,
+    payload: string,
+  };
+  value: {
+    schema: object,
+    payload: string,
+  };
 }
 
 export const extractMessage = (payload: EachMessagePayload): Message => {
   const valueBuffer = payload.message.value;
   const keyBuffer = payload.message.key;
-  const headersBuffer = payload.message.headers;
+  const headerBuffers = payload.message.headers;
   assertIsNotEmpty(valueBuffer);
   assertIsNotEmpty(keyBuffer);
-  assertIsNotEmpty(headersBuffer);
+  assertIsNotEmpty(headerBuffers);
   const value = JSON.parse(valueBuffer.toString())
   const key = JSON.parse(keyBuffer.toString())
-  const headers = Object.entries(headersBuffer).map(([key, headerValue]) => {
-    const headerValueStr = headerValue?.toString();
+  const headers: { [key: string]: string | unknown } = {};
 
-    try {
-      const newValue = headerValueStr ? JSON.parse(headerValueStr) : headerValue;
-      return { [key]: newValue };
-    } catch (error) {
-      return { [key]: headerValueStr };
+  for (const key in headerBuffers) {
+    if (Buffer.isBuffer(headerBuffers[key])) {
+      headers[key] = (headerBuffers[key] as Buffer).toString();
+    } else {
+      headers[key] = headerBuffers[key];
     }
-  });
+  }
+
   return { value, key, headers };
 }
