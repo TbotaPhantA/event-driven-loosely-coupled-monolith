@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { MessageTypeEnum } from '../../shared/enums/messageType.enum';
 import { NoMethods } from '../../shared/types/noMethods';
+import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 
 @Entity({ name: 'sales_product_outbox_messages' })
 export class SalesProductMessage {
@@ -19,8 +20,11 @@ export class SalesProductMessage {
   @Column({ name: 'producer_name' })
   producerName!: string;
 
+  @Column({ name: 'aggregate_id' })
+  aggregateId!: string;
+
   @Column({ type: 'jsonb' })
-  data!: string;
+  data!: SalesProductOutputDto;
 
   static createByRaw(raw: NoMethods<SalesProductMessage>): SalesProductMessage {
     const message = new SalesProductMessage();
@@ -30,9 +34,9 @@ export class SalesProductMessage {
     message.messageName = raw.messageName;
     message.correlationId = raw.correlationId;
     message.producerName = raw.producerName;
+    message.aggregateId = raw.aggregateId;
     message.data = raw.data;
 
     return message;
   }
 }
-
