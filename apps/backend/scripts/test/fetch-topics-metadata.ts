@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv';
-dotenv.config({ path: '.env.test.local' });
 import { Kafka } from 'kafkajs';
-import { config } from '../src/infrastructure/config/config';
+import { config } from '../../src/infrastructure/config/config';
+import { inspect } from 'util';
 
+dotenv.config({ path: '.env.test.local' });
 
 (async (): Promise<void> => {
   const kafka = createKafka();
@@ -10,19 +11,12 @@ import { config } from '../src/infrastructure/config/config';
 
   await admin.connect();
 
-  const toCreateTopics = [config.kafka.kafkaSalesProductsTopic];
+  const topics = await admin.listTopics();
+  console.log(inspect({ topics }, { depth: 15 }));
 
-  const areTopicsCreated = await admin.createTopics({
-    topics: toCreateTopics.map(topic => ({
-      topic,
-      numPartitions: 3,
-      replicationFactor: 3,
-    })),
-  });
-
-  if (areTopicsCreated) {
-    console.log(`topics ${toCreateTopics} are successfully created`);
-  }
+  const topic = config.kafka.kafkaSalesProductsTopic;
+  const metadata = await admin.fetchTopicMetadata({ topics: [topic] });
+  console.log(inspect({ metadata }, { depth: 15 }));
 
   await admin.disconnect();
 

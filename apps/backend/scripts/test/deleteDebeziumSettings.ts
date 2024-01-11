@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { config } from '../src/infrastructure/config/config';
+import { config } from '../../src/infrastructure/config/config';
 import axios from 'axios';
 import { inspect } from 'util';
 
