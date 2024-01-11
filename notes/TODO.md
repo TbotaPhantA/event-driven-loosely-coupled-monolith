@@ -12,7 +12,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [X] add tracing
 ### docker-compose
 - [X] configure kafka in docker-compose
-- [ ] create single `beforeAll` and `afterAll` for multiple files (or try to launch app into docker-compose)
+- [X] create single `beforeAll` and `afterAll` for multiple files (or try to launch app into docker-compose)
 ### kafka
 - [X] implement sending `SalesProductCreated` to kafka with acceptance service test + outbox + possibly debezium
 - [ ] send PriceAdjusted event to kafka
