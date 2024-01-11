@@ -26,6 +26,7 @@
     "docker-compose:test:down": "docker-compose --env-file .env.test.local down",
     "create:topics": "ts-node scripts/create-kafka-topics.ts",
     "change:wal_level": "ts-node scripts/changeWalLevel.ts",
+    "restart:db": "docker-compose restart db",
     "setup:debezium": "ts-node scripts/setupDebezium.ts",
     "delete:debezium:settings": "ts-node scripts/deleteDebeziumSettings.ts"
   },
