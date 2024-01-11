@@ -1,43 +1,17 @@
-import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { AppModule } from '../../../../src/app.module';
+import { HttpStatus } from '@nestjs/common';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
 import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
-import { TestApiController } from '../../testApi.controller';
-import { Consumer, EachMessagePayload } from 'kafkajs';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
-import { startConsumerFillingMessagePayloads } from '../../../shared/utils/startConsumerFillingMessagePayloads';
 import { createSalesProductResource, salesProductResource } from '../../../../src/sales/application/shared/resources';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
+import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
 
-describe('SalesProduct', () => {
-  let moduleRef: TestingModule;
-  let app: INestApplication;
-  let consumer: Consumer;
-  const messagePayloads = new Array<EachMessagePayload>;
-
-  beforeAll(async () => {
-    moduleRef = await createTestingModule().compile()
-    app = moduleRef.createNestApplication();
-    const [,startedConsumer] = await Promise.all([
-      app.init(),
-      startConsumerFillingMessagePayloads(messagePayloads),
-    ])
-    consumer = startedConsumer;
-
-    function createTestingModule(): TestingModuleBuilder {
-      return Test.createTestingModule({
-        controllers: [TestApiController],
-        imports: [AppModule],
-      })
-    }
-  }, 30000);
-
+describe('/sales/product', () => {
   describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
     const path = `/${salesProductResource}/${createSalesProductResource}`
     describe('successfulTestCases', () => {
@@ -152,16 +126,4 @@ describe('SalesProduct', () => {
       });
     });
   });
-
-  afterAll(async () => {
-    await request(app.getHttpServer()).post('/test-api/clean-db')
-    await Promise.all([
-      moduleRef.close(),
-      consumer.stop(),
-    ])
-    await Promise.all([
-      consumer.disconnect(),
-      app.close(),
-    ])
-  }, 30000);
 });
