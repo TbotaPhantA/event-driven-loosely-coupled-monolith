@@ -1,10 +1,10 @@
 version: '3.1'
 
 services:
-  nestjs-ddd-db:
+  db:
     image: postgres:16-alpine
-    hostname: nestjs-ddd-db
-    container_name: nestjs-ddd-db
+    hostname: db
+    container_name: db
     restart: no
     environment:
       POSTGRES_DB: ${DB_DATABASE}
@@ -87,7 +87,7 @@ services:
     container_name: debezium
     hostname: debezium
     depends_on:
-      - nestjs-ddd-db
+      - db
       - kafka1
       - kafka2
       - kafka3
