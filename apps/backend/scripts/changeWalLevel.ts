@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.test.local' });
 import { config } from '../src/infrastructure/config/config';
 import { Client } from 'pg';
 
-dotenv.config({ path: '.env.test.local' });
 
 (async (): Promise<void> => {
   const { database, username, password, host, port } = config.database;
