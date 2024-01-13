@@ -12,8 +12,9 @@ import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/con
 import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
 
 describe(`/${salesProductResource}`, () => {
-  describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
-    const path = `/${salesProductResource}/${createSalesProductResource}`
+  const createSalesProductPath = `/${salesProductResource}/${createSalesProductResource}`
+
+  describe(`POST ${createSalesProductPath}`, () => {
     describe('successfulTestCases', () => {
       const successfulTestCases = [
         {
@@ -30,7 +31,7 @@ describe(`/${salesProductResource}`, () => {
         const correlationId = 'correlationId999';
 
         const { body, status } = await request(app.getHttpServer())
-          .post(path)
+          .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
 
@@ -57,7 +58,7 @@ describe(`/${salesProductResource}`, () => {
       ]
 
       test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
-        const { status } = await request(app.getHttpServer()).post(path).send(requestBody);
+        const { status } = await request(app.getHttpServer()).post(createSalesProductPath).send(requestBody);
         expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
@@ -77,12 +78,12 @@ describe(`/${salesProductResource}`, () => {
 
       test.each(testCases)('%s', async ({ correlationId, requestBody }) => {
         const firstResponse = await request(app.getHttpServer())
-          .post(path)
+          .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
 
         const secondResponse = await request(app.getHttpServer())
-          .post(path)
+          .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
 
@@ -109,7 +110,7 @@ describe(`/${salesProductResource}`, () => {
 
       test.each(testCases)('%s', async ({ correlationId, requestBody}) => {
         const response = await request(app.getHttpServer())
-          .post(path)
+          .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
           .send(requestBody);
 
