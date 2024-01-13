@@ -1,15 +1,16 @@
 import { CreateSalesProductBuilder } from '../../../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import { SalesProductFactory } from '../../../../../../src/sales/domain/salesProduct/salesProduct.factory';
-import { createFakeRandomService } from '../../../../../__fixtures__/fakes/createFakeRandomService';
 import { SalesProduct } from '../../../../../../src/sales/domain/salesProduct/salesProduct';
 import { CreateSalesProduct } from '../../../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
-import { createFakeTimeService } from '../../../../../__fixtures__/fakes/createFakeTimeService';
+import { RandomService } from '../../../../../../src/infrastructure/random/random.service';
+import { TimeService } from '../../../../../../src/infrastructure/time/time.service';
+import { mock } from 'jest-mock-extended';
 
 const now = new Date(2022, 0, 3);
 
 describe('SalesProductFactory', () => {
-  const mockRandomService = createFakeRandomService();
-  const mockTimeService = createFakeTimeService();
+  const mockRandomService = mock<RandomService>();
+  const mockTimeService = mock<TimeService>();
 
   describe('create', () => {
     const testCases = [
