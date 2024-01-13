@@ -12,6 +12,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - ${DB_PORT}:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
 
   zoo1:
     image: confluentinc/cp-zookeeper:7.5.3
@@ -42,6 +47,11 @@ services:
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
     depends_on:
       - zoo1
+    healthcheck:
+      test: nc -z ${DOCKER_HOST_IP} ${KAFKA1_EXTERNAL_PORT} || exit -1
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   kafka2:
     image: confluentinc/cp-kafka:7.5.3
@@ -61,6 +71,11 @@ services:
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
     depends_on:
       - zoo1
+    healthcheck:
+      test: nc -z ${DOCKER_HOST_IP} ${KAFKA2_EXTERNAL_PORT} || exit -1
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
 
   kafka3:
@@ -81,16 +96,25 @@ services:
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
     depends_on:
       - zoo1
+    healthcheck:
+      test: nc -z ${DOCKER_HOST_IP} ${KAFKA3_EXTERNAL_PORT} || exit -1
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   debezium:
     image: debezium/connect:2.5
     container_name: debezium
     hostname: debezium
     depends_on:
-      - db
-      - kafka1
-      - kafka2
-      - kafka3
+      db:
+        condition: service_healthy
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
     ports:
       - ${DEBEZIUM_PORT}:8083
     environment:
