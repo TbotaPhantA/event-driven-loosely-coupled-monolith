@@ -11,7 +11,7 @@ import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/e
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
 import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
 
-describe('/sales/product', () => {
+describe(`/${salesProductResource}`, () => {
   describe(`POST /${salesProductResource}/${createSalesProductResource}`, () => {
     const path = `/${salesProductResource}/${createSalesProductResource}`
     describe('successfulTestCases', () => {
