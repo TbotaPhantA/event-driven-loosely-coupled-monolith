@@ -19,7 +19,7 @@ export class CreateSalesProductOutputDto {
 
   static from(product: SalesProduct): CreateSalesProductOutputDto {
     const salesProduct = new SalesProductOutputDto(product);
-    const links: Link[] = createSalesProductLinksFrom(product);
+    const links = createSalesProductLinksFrom(product);
 
     return new CreateSalesProductOutputDto({ salesProduct, links });
   }
