@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SalesProductController } from './sales.controller';
+import { SalesProductController } from './salesProduct.controller';
 import { CreateSalesProductService } from './services/createSalesProduct.service';
 import { SalesProductFactory } from '../domain/salesProduct/salesProduct.factory';
 import { RandomService } from '../../infrastructure/random/random.service';
