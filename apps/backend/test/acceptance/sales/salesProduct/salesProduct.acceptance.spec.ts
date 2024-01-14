@@ -5,16 +5,22 @@ import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlatio
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
-import { createSalesProductResource, salesProductResource } from '../../../../src/sales/application/shared/resources';
+import {
+  createSalesProductResource,
+  salesProductResource
+} from '../../../../src/sales/application/shared/resources';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
 import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
+import { AdjustPriceBuilder } from '../../../__fixtures__/builders/commands/adjustPrice.builder';
+import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
+import { AdjustPrice } from '../../../../src/sales/domain/salesProduct/commands/adjustPrice';
+import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
 
-describe(`/${salesProductResource}`, () => {
+describe(`SalesProductController`, () => {
   const createSalesProductPath = `/${salesProductResource}/${createSalesProductResource}`
-
-  describe(`POST ${createSalesProductPath}`, () => {
+  describe(`POST CreateSalesProduct`, () => {
     describe('successfulTestCases', () => {
       const successfulTestCases = [
         {
@@ -124,6 +130,58 @@ describe(`/${salesProductResource}`, () => {
           correlationId,
           producerName: SALES_CONTEXT_NAME,
         });
+      });
+    });
+  });
+
+  describe(`PUT AdjustPrice`, () => {
+    describe('successful test cases', () => {
+      const successfulTestCases = [
+        {
+          toString: (): string => '1 when given valid body - should successfully respond',
+          createRequestBody: CreateSalesProductBuilder.defaultAll.with({
+            name: 'Xiaomi',
+            price: 500,
+            description: 'An android phone',
+          }).result,
+          newPrice: 600,
+        },
+      ];
+
+      test.each(successfulTestCases)('%s', async ({ createRequestBody, newPrice  }) => {
+        const { body: createResponseBody } = await createProductRequest();
+        const adjustPricePath = findAdjustPricePathInResponse();
+
+        const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
+          productId: createResponseBody.salesProduct.productId,
+          newPrice,
+        }).result;
+
+        const { body, status } = await request(app.getHttpServer())
+          .put(adjustPricePath)
+          .send(adjustPriceRequestBody);
+
+        expect(status).toStrictEqual(HttpStatus.OK);
+        expect(body.salesProduct).toMatchObject({
+          productId: createResponseBody.salesProduct.productId,
+          name: createRequestBody.name,
+          price: adjustPriceRequestBody.newPrice,
+          description: createRequestBody.description,
+        });
+
+        function createProductRequest(): Promise<{ body: CreateSalesProductOutputDto }> {
+          const correlationId = '01HM2EY5TG5AHG14ZV5BQNYSCT';
+          return request(app.getHttpServer())
+            .post(createSalesProductPath)
+            .send(createRequestBody)
+            .set(CORRELATION_ID_HEADER, correlationId);
+        }
+
+        function findAdjustPricePathInResponse(): string {
+          const adjustPricePath = createResponseBody.links.find(link => link.name === AdjustPrice.name)?.path;
+          assertIsNotEmpty(adjustPricePath);
+          return adjustPricePath
+        }
       });
     });
   });
