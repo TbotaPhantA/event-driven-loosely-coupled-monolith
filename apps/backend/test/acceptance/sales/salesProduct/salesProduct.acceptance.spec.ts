@@ -5,10 +5,6 @@ import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlatio
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
-import {
-  createSalesProductResource,
-  salesProductResource
-} from '../../../../src/sales/application/shared/resources';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
@@ -17,9 +13,11 @@ import { AdjustPriceBuilder } from '../../../__fixtures__/builders/commands/adju
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { AdjustPrice } from '../../../../src/sales/domain/salesProduct/commands/adjustPrice';
 import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
+import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { GetEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getEntryLinksOutput.dto';
+import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
 
 describe(`SalesProductController`, () => {
-  const createSalesProductPath = `/${salesProductResource}/${createSalesProductResource}`
   describe(`POST CreateSalesProduct`, () => {
     describe('successfulTestCases', () => {
       const successfulTestCases = [
@@ -34,6 +32,8 @@ describe(`SalesProductController`, () => {
       ];
 
       test.each(successfulTestCases)('%s', async ({ requestBody }) => {
+        const entryLinksResponse = await getEntryLinksRequest();
+        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
         const correlationId = 'correlationId999';
 
         const { body, status } = await request(app.getHttpServer())
@@ -55,7 +55,7 @@ describe(`SalesProductController`, () => {
         {
           toString: (): string => '1 when invalid body - should respond with validation error',
           requestBody: CreateSalesProductBuilder.defaultAll.with({
-            // @ts-expect-error intentionally incorrect type
+            // @ts-expect-error INTENTIONALLY INCORRECT TYPE
             name: true,
             price: 500,
             description: 'An android phone',
@@ -64,6 +64,8 @@ describe(`SalesProductController`, () => {
       ]
 
       test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
+        const entryLinksResponse = await getEntryLinksRequest();
+        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
         const { status } = await request(app.getHttpServer()).post(createSalesProductPath).send(requestBody);
         expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       });
@@ -83,6 +85,9 @@ describe(`SalesProductController`, () => {
       ];
 
       test.each(testCases)('%s', async ({ correlationId, requestBody }) => {
+        const entryLinksResponse = await getEntryLinksRequest();
+        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
+
         const firstResponse = await request(app.getHttpServer())
           .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
@@ -115,6 +120,9 @@ describe(`SalesProductController`, () => {
       ];
 
       test.each(testCases)('%s', async ({ correlationId, requestBody}) => {
+        const entryLinksResponse = await getEntryLinksRequest();
+        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
+
         const response = await request(app.getHttpServer())
           .post(createSalesProductPath)
           .set(CORRELATION_ID_HEADER, correlationId)
@@ -169,7 +177,9 @@ describe(`SalesProductController`, () => {
           description: createRequestBody.description,
         });
 
-        function createProductRequest(): Promise<{ body: CreateSalesProductOutputDto }> {
+        async function createProductRequest(): Promise<{ body: CreateSalesProductOutputDto }> {
+          const entryLinksResponse = await getEntryLinksRequest();
+          const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
           const correlationId = '01HM2EY5TG5AHG14ZV5BQNYSCT';
           return request(app.getHttpServer())
             .post(createSalesProductPath)
@@ -186,3 +196,16 @@ describe(`SalesProductController`, () => {
     });
   });
 });
+
+function getEntryLinksRequest(): Promise<{ body: GetEntryLinksOutputDto }> {
+  return request(app.getHttpServer())
+    .get(entryLinksPaths)
+    .send();
+}
+
+function findCreateSalesProductPathInResponse(entryLinksResponse: { body: GetEntryLinksOutputDto }): string {
+  const createSalesProductPath = entryLinksResponse.body.links
+    .find(link => link.name = CreateSalesProduct.name)?.path;
+  assertIsNotEmpty(createSalesProductPath);
+  return createSalesProductPath;
+}
