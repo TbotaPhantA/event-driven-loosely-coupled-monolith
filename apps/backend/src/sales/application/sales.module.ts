@@ -17,10 +17,11 @@ import { TimeService } from '../../infrastructure/time/time.service';
 import { DeleteSalesProductService } from './services/deleteSalesProduct.service';
 import { IdempotencyModule } from '../../infrastructure/idempotency/idempotency.module';
 import { MessagesModule } from '../../infrastructure/messages/messages.module';
+import { SalesController } from './sales.controller';
 
 @Module({
   imports: [RandomModule, TransactionModule, TimeModule, IdempotencyModule, MessagesModule],
-  controllers: [SalesProductController],
+  controllers: [SalesProductController, SalesController],
   providers: [
     GetSalesProductByIdQuery,
     CreateSalesProductService,
