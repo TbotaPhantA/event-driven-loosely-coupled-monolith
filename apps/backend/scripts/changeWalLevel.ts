@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.test.local' });
-import { config } from '../../src/infrastructure/config/config';
+import { config } from '../src/infrastructure/config/config';
 import { Client } from 'pg';
 
 
