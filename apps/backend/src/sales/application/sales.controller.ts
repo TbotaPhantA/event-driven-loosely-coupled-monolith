@@ -1,23 +1,6 @@
-import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
-import { Link } from './dto/output/links/link';
-import { NoMethods } from '../../infrastructure/shared/types/noMethods';
-import { CreateSalesProductLink } from './dto/output/links/createSalesProduct.link';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
-
-export class GetEntryLinksOutputDto {
-  @ApiProperty({ type: [Link] })
-  links: Link[];
-
-  constructor(raw: NoMethods<GetEntryLinksOutputDto>) {
-    this.links = raw.links;
-  }
-
-  static create(): GetEntryLinksOutputDto {
-    return new GetEntryLinksOutputDto({
-      links: [CreateSalesProductLink.create()],
-    });
-  }
-}
+import { GetEntryLinksOutputDto } from './dto/output/getEntryLinksOutput.dto';
 
 @Controller('sales')
 export class SalesController {
