@@ -25,11 +25,11 @@
     "docker-compose:test:up": "docker-compose --env-file .env.test.local up -d",
     "docker-compose:test:down": "docker-compose --env-file .env.test.local down",
     "launch:test:infrastructure": "npm run docker-compose:test:up && npm run create:test:topics && npm run test:change:wal_level && npm run restart:db && npm run setup:test:debezium",
-    "create:test:topics": "ts-node scripts/create-kafka-topics.ts",
-    "test:change:wal_level": "ts-node scripts/changeWalLevel.ts",
+    "create:test:topics": "ts-node scripts/create-kafka-topics.ts --acceptance-tests",
+    "test:change:wal_level": "ts-node scripts/changeWalLevel.ts --acceptance-tests",
     "restart:db": "docker-compose restart db",
-    "setup:test:debezium": "ts-node scripts/setupDebezium.ts",
-    "delete:test:debezium:settings": "ts-node scripts/deleteDebeziumSettings.ts"
+    "setup:test:debezium": "ts-node scripts/setupDebezium.ts --acceptance-tests",
+    "delete:test:debezium:settings": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

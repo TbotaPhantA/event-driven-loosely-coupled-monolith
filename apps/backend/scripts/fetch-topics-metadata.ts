@@ -1,9 +1,8 @@
-import * as dotenv from 'dotenv';
+import { loadEnvironment } from './utils/loadEnvironment';
+loadEnvironment();
 import { Kafka } from 'kafkajs';
 import { config } from '../src/infrastructure/config/config';
 import { inspect } from 'util';
-
-dotenv.config({ path: '.env.test.local' });
 
 (async (): Promise<void> => {
   const kafka = createKafka();

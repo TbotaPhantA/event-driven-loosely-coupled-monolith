@@ -1,9 +1,8 @@
-import * as dotenv from 'dotenv';
+import { loadEnvironment } from './utils/loadEnvironment';
+loadEnvironment();
 import { config } from '../src/infrastructure/config/config';
 import axios from 'axios';
 import { inspect } from 'util';
-
-dotenv.config({ path: '.env.test.local' });
 
 (async (): Promise<void> => {
   try {

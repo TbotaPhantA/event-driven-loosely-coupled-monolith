@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config({ path: '.env.test.local' });
+import { loadEnvironment } from './utils/loadEnvironment';
+loadEnvironment();
 import { Kafka } from 'kafkajs';
 import { config } from '../src/infrastructure/config/config';
 
