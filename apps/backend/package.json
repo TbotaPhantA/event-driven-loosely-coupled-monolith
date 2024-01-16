@@ -22,14 +22,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker-compose:up": "docker-compose --env-file .env up -d",
     "docker-compose:down": "docker-compose --env-file .env down",
-    "docker-compose:test:up": "docker-compose --env-file .env.test.local up -d",
-    "docker-compose:test:down": "docker-compose --env-file .env.test.local down",
-    "launch:test:infrastructure": "npm run docker-compose:test:up && npm run create:test:topics && npm run test:change:wal_level && npm run restart:db && npm run setup:test:debezium",
-    "create:test:topics": "ts-node scripts/create-kafka-topics.ts --acceptance-tests",
-    "test:change:wal_level": "ts-node scripts/changeWalLevel.ts --acceptance-tests",
+    "launch:infrastructure:test": "npm run docker-compose:up:test && npm run create:topics:test && npm run change:wal_level:test && npm run restart:db && npm run setup:debezium:test",
+    "docker-compose:up:test": "docker-compose --env-file .env.test.local up -d",
+    "docker-compose:down:test": "docker-compose --env-file .env.test.local down",
+    "create:topics:test": "ts-node scripts/create-kafka-topics.ts --acceptance-tests",
+    "change:wal_level:test": "ts-node scripts/changeWalLevel.ts --acceptance-tests",
     "restart:db": "docker-compose restart db",
-    "setup:test:debezium": "ts-node scripts/setupDebezium.ts --acceptance-tests",
-    "delete:test:debezium:settings": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests"
+    "setup:debezium:test": "ts-node scripts/setupDebezium.ts --acceptance-tests",
+    "delete:debezium:settings:test": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
