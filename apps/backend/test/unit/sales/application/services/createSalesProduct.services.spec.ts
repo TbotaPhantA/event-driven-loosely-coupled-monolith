@@ -22,6 +22,7 @@ import {
 } from '../../../../../src/sales/application/services/interfaces/ISalesProductIdempotency.service';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
+import { SalesProductOutputDto } from '../../../../../src/sales/application/dto/output/salesProductOutputDto';
 
 describe('CreateSalesProductService', () => {
   let createSalesProductService: CreateSalesProductService;
@@ -65,11 +66,12 @@ describe('CreateSalesProductService', () => {
     test('idempotent request insert - should be called', async () => {
       const product = SalesProductBuilder.defaultAll.result;
       stubSalesProductFactory.create = jest.fn().mockReturnValue(product);
+      const outputDto = new SalesProductOutputDto(product.export());
       const command = CreateSalesProductBuilder.defaultAll.result;
 
       await createSalesProductService.runTransaction(command);
 
-      expect(stubIdempotencyService.insertRequest).toHaveBeenCalledWith(product, transaction);
+      expect(stubIdempotencyService.insertRequest).toHaveBeenCalledWith(outputDto, transaction);
     });
 
     test('event insert - should be called', async () => {

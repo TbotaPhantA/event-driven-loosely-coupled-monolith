@@ -18,8 +18,9 @@ export class AdjustPriceOutputDto {
   }
 
   static from(product: SalesProduct): AdjustPriceOutputDto {
-    const salesProduct = new SalesProductOutputDto(product);
-    const links: Link[] = createSalesProductLinksFrom(product);
+    const exported = product.export();
+    const salesProduct = new SalesProductOutputDto(exported);
+    const links: Link[] = createSalesProductLinksFrom(exported);
 
     return new AdjustPriceOutputDto({ salesProduct, links });
   }

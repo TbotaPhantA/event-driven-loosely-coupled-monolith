@@ -4,8 +4,9 @@ import { SalesProductBuilder } from '../salesProduct.builder';
 
 export class SalesProductCreatedEventBuilder {
   static get defaultAll(): InjectionBuilder<SalesProductCreated> {
+    const exported = SalesProductBuilder.defaultAll.result.export();
     return new InjectionBuilder<SalesProductCreated>(
-      new SalesProductCreated(SalesProductBuilder.defaultAll.result),
+      new SalesProductCreated(exported),
     );
   }
 }

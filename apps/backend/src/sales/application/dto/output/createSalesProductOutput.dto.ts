@@ -18,8 +18,9 @@ export class CreateSalesProductOutputDto {
   }
 
   static from(product: SalesProduct): CreateSalesProductOutputDto {
-    const salesProduct = new SalesProductOutputDto(product);
-    const links = createSalesProductLinksFrom(product);
+    const exported = product.export();
+    const salesProduct = new SalesProductOutputDto(exported);
+    const links = createSalesProductLinksFrom(exported);
 
     return new CreateSalesProductOutputDto({ salesProduct, links });
   }

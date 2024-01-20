@@ -3,14 +3,15 @@ import { SalesProduct } from '../../domain/salesProduct/salesProduct';
 
 export class SalesProductMapper {
   static toEntity(product: SalesProduct): SalesProductEntity {
+    const exported = product.export();
     return SalesProductEntity.createByRaw({
-      productId: product.productId,
-      name: product.name,
-      price: product.price,
-      description: product.description,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
-      removedAt: product.removedAt,
+      productId: exported.productId,
+      name: exported.name,
+      price: exported.price,
+      description: exported.description,
+      createdAt: exported.createdAt,
+      updatedAt: exported.updatedAt,
+      removedAt: exported.removedAt,
     });
   }
 
