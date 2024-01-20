@@ -1,8 +1,10 @@
 import { AdjustPrice } from './commands/adjustPrice';
 import { UpdateProductInfo } from './commands/updateProductInfo';
 import { TimeService } from '../../../infrastructure/time/time.service';
+import { Importable } from '../../../infrastructure/shared/types/importable';
+import { Exportable } from '../../../infrastructure/shared/types/exportable';
 
-export class SalesProduct {
+export class SalesProduct implements Importable<Data>, Exportable<Data> {
   private __data: Data;
   constructor(data: Data) { this.__data = data; }
 
