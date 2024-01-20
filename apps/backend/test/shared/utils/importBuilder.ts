@@ -1,4 +1,6 @@
-export class ImportBuilder<T extends { import(data: any): void, [key: string]: any }> {
+import { Importable } from '../../../src/infrastructure/shared/types/importable';
+
+export class ImportBuilder<T extends Importable> {
   private readonly __data: any;
   constructor(
     private readonly __result: T,
