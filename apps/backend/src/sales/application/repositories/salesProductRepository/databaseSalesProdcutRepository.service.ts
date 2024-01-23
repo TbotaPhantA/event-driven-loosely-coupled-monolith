@@ -9,7 +9,7 @@ import { SalesProductMapper } from '../../mappers/salesProduct.mapper';
 export class DatabaseSalesProductRepository implements ISalesProductRepository {
   async findOneById(productId: string, transaction: EntityManager): Promise<SalesProduct | null> {
     const entity = await transaction.findOne(SalesProductEntity, {
-      where: { productId },
+      where: { product_id: productId },
     });
 
     return entity ? SalesProductMapper.toDomain(entity) : null;
