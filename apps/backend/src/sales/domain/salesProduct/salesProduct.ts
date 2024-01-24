@@ -4,7 +4,10 @@ import { TimeService } from '../../../infrastructure/time/time.service';
 import { Importable } from '../../../infrastructure/shared/types/importable';
 import { Exportable } from '../../../infrastructure/shared/types/exportable';
 
-export class SalesProduct implements Importable<Data>, Exportable<Data> {
+/**
+ * TODO: think where to remove Sales prefix
+ */
+export class SalesProduct implements Importable, Exportable {
   private __data: Data;
   constructor(data: Data) { this.__data = data; }
 
