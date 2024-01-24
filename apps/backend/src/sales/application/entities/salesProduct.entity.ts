@@ -1,8 +1,10 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 
-@Entity({ name: 'sales_products' })
+@Entity({ name: SalesProductEntity.TABLE_NAME })
 export class SalesProductEntity {
+  static TABLE_NAME = 'sales_products';
+
   @PrimaryColumn()
   product_id!: string;
 
