@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 
-@Entity({ name: sales_products.name })
-export class sales_products {
+@Entity({ name: 'sales_products' })
+export class SalesProductEntity {
   @PrimaryColumn()
   product_id!: string;
 
@@ -24,8 +24,8 @@ export class sales_products {
   @Column({ type: 'timestamp with time zone', nullable: true })
   removed_at!: Date | null;
 
-  static createByRaw(raw: NoMethods<sales_products>): sales_products {
-    const entity = new sales_products();
+  static createByRaw(raw: NoMethods<SalesProductEntity>): SalesProductEntity {
+    const entity = new SalesProductEntity();
 
     entity.product_id = raw.product_id;
     entity.name = raw.name;
