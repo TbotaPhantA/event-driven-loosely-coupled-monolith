@@ -43,7 +43,10 @@ export class CreateSalesProductService {
 
   private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
     const outputDto = new SalesProductOutputDto(product.export());
-    const event = new SalesProductCreated({ product: outputDto });
+    const event = new SalesProductCreated({
+      data: { product: outputDto },
+      aggregateId: outputDto.productId,
+    });
 
     return Promise.all([
       this.repo.save(product, transaction),

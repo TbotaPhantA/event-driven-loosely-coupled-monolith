@@ -8,9 +8,7 @@ import { PLACEHOLDER_ID } from '../../shared/constants';
 import { MessageTypeEnum } from '../../shared/enums/messageType.enum';
 import { CorrelationService } from '../../correlation';
 import { EntityManager } from 'typeorm';
-import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 import { IEvent } from '../../../sales/domain/salesProduct/events/IEvent';
-import { SalesProductCreatedData } from '../../../sales/domain/salesProduct/events/salesProductCreated';
 
 @Injectable()
 export class SalesProductMessagesService implements ISalesProductMessagesService {
@@ -20,7 +18,7 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
   ) {}
 
   async insertEvent(
-    event: IEvent<SalesProductCreatedData>,
+    event: IEvent,
     producerName: string,
     transaction: EntityManager,
   ): Promise<void> {
@@ -30,7 +28,7 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
       messageType: MessageTypeEnum.event,
       correlationId: this.correlationService.getCorrelationId(),
       producerName,
-      aggregateId: event.data.product.productId,
+      aggregateId: event.aggregateId,
       data: event.data,
     });
 

@@ -1,15 +1,17 @@
 import { IEvent } from './IEvent';
 import { SalesProductOutputDto } from '../../../application/dto/output/salesProductOutputDto';
 
-export interface SalesProductCreatedData {
-  product: SalesProductOutputDto;
-}
+type SalesProductCreatedData = { product: SalesProductOutputDto }
 
 export class SalesProductCreated implements IEvent<SalesProductCreatedData> {
   readonly eventName: string = SalesProductCreated.name;
-  readonly data: SalesProductCreatedData;
+  readonly aggregateId: string;
+  readonly data: {
+    product: SalesProductOutputDto;
+  };
 
-  constructor(data: SalesProductCreatedData) {
-    this.data = data;
+  constructor(raw: Pick<SalesProductCreated, 'aggregateId' | 'data'>) {
+    this.aggregateId = raw.aggregateId;
+    this.data = raw.data;
   }
 }
