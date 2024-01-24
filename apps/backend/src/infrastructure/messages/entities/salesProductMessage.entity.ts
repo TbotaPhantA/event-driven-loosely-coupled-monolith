@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { MessageTypeEnum } from '../../shared/enums/messageType.enum';
 import { NoMethods } from '../../shared/types/noMethods';
-import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
+import { SalesProductCreatedData } from '../../../sales/domain/salesProduct/events/salesProductCreated';
 
 @Entity({ name: 'sales_product_outbox_messages' })
 export class SalesProductMessage {
@@ -24,7 +24,7 @@ export class SalesProductMessage {
   aggregateId!: string;
 
   @Column({ type: 'jsonb' })
-  data!: SalesProductOutputDto;
+  data!: SalesProductCreatedData;
 
   static createByRaw(raw: NoMethods<SalesProductMessage>): SalesProductMessage {
     const message = new SalesProductMessage();

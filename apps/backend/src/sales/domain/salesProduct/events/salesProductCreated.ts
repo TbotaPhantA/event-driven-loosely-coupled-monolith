@@ -1,11 +1,15 @@
 import { IEvent } from './IEvent';
 import { SalesProductOutputDto } from '../../../application/dto/output/salesProductOutputDto';
 
-export class SalesProductCreated implements IEvent<SalesProductOutputDto> {
-  readonly eventName: string = SalesProductCreated.name;
-  readonly data: SalesProductOutputDto;
+export interface SalesProductCreatedData {
+  product: SalesProductOutputDto;
+}
 
-  constructor(data: SalesProductOutputDto) {
+export class SalesProductCreated implements IEvent<SalesProductCreatedData> {
+  readonly eventName: string = SalesProductCreated.name;
+  readonly data: SalesProductCreatedData;
+
+  constructor(data: SalesProductCreatedData) {
     this.data = data;
   }
 }

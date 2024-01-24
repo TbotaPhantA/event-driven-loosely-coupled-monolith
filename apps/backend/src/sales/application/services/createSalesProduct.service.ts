@@ -43,11 +43,12 @@ export class CreateSalesProductService {
 
   private saveChanges(product: SalesProduct, transaction: ITransaction): Promise<[SalesProduct, ...unknown[]]> {
     const outputDto = new SalesProductOutputDto(product.export());
+    const event = new SalesProductCreated({ product: outputDto });
 
     return Promise.all([
       this.repo.save(product, transaction),
       this.idempotencyService.insertRequest(outputDto, transaction),
-      this.messagesService.insertEvent(new SalesProductCreated(outputDto), SALES_CONTEXT_NAME, transaction),
+      this.messagesService.insertEvent(event, SALES_CONTEXT_NAME, transaction),
     ]);
   }
 }

@@ -10,6 +10,7 @@ import { CorrelationService } from '../../correlation';
 import { EntityManager } from 'typeorm';
 import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
 import { IEvent } from '../../../sales/domain/salesProduct/events/IEvent';
+import { SalesProductCreatedData } from '../../../sales/domain/salesProduct/events/salesProductCreated';
 
 @Injectable()
 export class SalesProductMessagesService implements ISalesProductMessagesService {
@@ -19,7 +20,7 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
   ) {}
 
   async insertEvent(
-    event: IEvent<SalesProductOutputDto>,
+    event: IEvent<SalesProductCreatedData>,
     producerName: string,
     transaction: EntityManager,
   ): Promise<void> {
@@ -29,7 +30,7 @@ export class SalesProductMessagesService implements ISalesProductMessagesService
       messageType: MessageTypeEnum.event,
       correlationId: this.correlationService.getCorrelationId(),
       producerName,
-      aggregateId: event.data.productId,
+      aggregateId: event.data.product.productId,
       data: event.data,
     });
 

@@ -131,7 +131,7 @@ describe(`SalesProductController`, () => {
         const message = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
 
         expect(message.key.payload).toStrictEqual(response.body.salesProduct.productId);
-        expect(JSON.parse(message.value.payload)).toMatchObject(response.body.salesProduct);
+        expect(JSON.parse(message.value.payload).product).toMatchObject(response.body.salesProduct);
         expect(message.headers).toMatchObject({
           messageType: MessageTypeEnum.event,
           messageName: SalesProductCreated.name,
