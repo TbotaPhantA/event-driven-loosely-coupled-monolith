@@ -60,7 +60,7 @@ describe('CreateSalesProductService', () => {
 
       await createSalesProductService.runTransaction(command);
 
-      expect(stubIdempotencyService.assertCreateSalesProductIdempotent).toHaveBeenCalledWith(transaction);
+      expect(stubIdempotencyService.assertRequestIsIdempotent).toHaveBeenCalledWith(transaction);
     });
 
     test('idempotent request insert - should be called', async () => {

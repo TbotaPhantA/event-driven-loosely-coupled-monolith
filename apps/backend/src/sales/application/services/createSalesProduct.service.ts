@@ -35,7 +35,7 @@ export class CreateSalesProductService {
   }
 
   async create(command: CreateSalesProduct, transaction: ITransaction): Promise<CreateSalesProductOutputDto> {
-    await this.idempotencyService.assertCreateSalesProductIdempotent(transaction);
+    await this.idempotencyService.assertRequestIsIdempotent(transaction);
     const product = this.factory.create(command);
     const [savedProduct] = await this.saveChanges(product, transaction);
     return CreateSalesProductOutputDto.from(savedProduct);

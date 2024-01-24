@@ -18,7 +18,7 @@ export class SalesProductIdempotencyService implements ISalesProductIdempotencyS
     private readonly repo: DatabaseSalesProductIdempotentRequestRepository,
   ) {}
 
-  async assertCreateSalesProductIdempotent(transaction: EntityManager): Promise<void> {
+  async assertRequestIsIdempotent(transaction: EntityManager): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
     const existingRequest = await this.repo.findRequestByCorrelationId(correlationId, transaction);
 
