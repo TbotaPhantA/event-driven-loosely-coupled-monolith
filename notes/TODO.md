@@ -42,13 +42,15 @@ example:
   "value": {
     "schema": {},
     "payload": {
-        "productId": "01HJ4SDVVFQTKB7YA8HNS26P8Q",
-        "name": "OnePlus 9 Pro",
-        "description": "An android phone",
-        "price": "500",
-        "createdAt": "2023-12-20T23:39:37.778Z",
-        "updatedAt": "2023-12-20T23:39:37.778Z",
-        "removedAt": null 
+        "salesProduct": {
+          "productId": "01HJ4SDVVFQTKB7YA8HNS26P8Q",
+          "name": "OnePlus 9 Pro",
+          "description": "An android phone",
+          "price": "500",
+          "createdAt": "2023-12-20T23:39:37.778Z",
+          "updatedAt": "2023-12-20T23:39:37.778Z",
+          "removedAt": null
+        }
       }
   }
 }
