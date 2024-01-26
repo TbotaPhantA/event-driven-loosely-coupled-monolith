@@ -72,7 +72,7 @@ describe(`SalesProductController`, () => {
     });
 
     describe('idempotencyTestCases', () => {
-      const testCases = [
+      const idempotentRequestTestCases = [
         {
           toString: (): string => '2 requests same correlationId - should respond that product is already created',
           correlationId: '01HJBWJ82NM47AAG14RV17R2R4',
@@ -84,7 +84,7 @@ describe(`SalesProductController`, () => {
         },
       ];
 
-      test.each(testCases)('%s', async ({ correlationId, requestBody }) => {
+      test.each(idempotentRequestTestCases)('%s', async ({ correlationId, requestBody }) => {
         const entryLinksResponse = await getEntryLinksRequest();
         const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
 
