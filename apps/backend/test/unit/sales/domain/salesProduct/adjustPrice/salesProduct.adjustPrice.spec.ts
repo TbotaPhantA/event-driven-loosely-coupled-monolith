@@ -14,7 +14,7 @@ describe('SalesProduct', () => {
   describe('adjustPrice', () => {
     const testCases = [
       {
-        toString: (): string => '1',
+        toString: (): string => '1 - price should be properly changed',
         product: SalesProductBuilder.defaultAll.with({
           price: 500,
           updatedAt: new Date(2022, 0, 3),
