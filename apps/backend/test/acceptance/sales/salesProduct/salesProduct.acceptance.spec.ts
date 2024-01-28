@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
-import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
 import { extractMessage } from '../../../shared/utils/extractMessage';
@@ -14,46 +13,43 @@ import { CreateSalesProductOutputDto } from '../../../../src/sales/application/d
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
 import { findCreateProductLink } from '../utils/links/findCreateProductLink';
 import { findAdjustPriceLink } from '../utils/links/findAdjustPriceLink';
+import { requestCreateProduct } from '../utils/requests/requestCreateProduct';
 
 describe(`SalesProductController`, () => {
-  let createSalesProductPath: string;
+  let createProductPath: string;
   const correlationId = 'correlationId999';
   const createProductRequestBody = CreateSalesProductBuilder.defaultAll.with({
     name: 'Xiaomi',
     price: 500,
     description: 'An android phone',
   }).result;
-  let requestCreateProduct: () => Promise<{ body: CreateSalesProductOutputDto, status: HttpStatus }>;
   let createProductResponse: CreateSalesProductOutputDto;
 
   beforeAll(() => {
-    createSalesProductPath = findCreateProductLink(salesEntryLinks);
-    requestCreateProduct = (): Promise<{ body: CreateSalesProductOutputDto, status: HttpStatus }> => {
-      return request(app.getHttpServer())
-        .post(createSalesProductPath)
-        .set(CORRELATION_ID_HEADER, correlationId)
-        .send(createProductRequestBody)
-    }
+    createProductPath = findCreateProductLink(salesEntryLinks);
   })
 
   describe(`POST CreateSalesProduct`, () => {
-    describe('successfulTestCases', () => {
-      test('when given valid body - should successfully respond', async () => {
-        const { body, status } = await requestCreateProduct();
+    test('when given valid body - should successfully respond', async () => {
+      const { body, status } = await requestCreateProduct(
+        app,
+        createProductPath,
+        correlationId,
+        createProductRequestBody
+      );
 
-        expect(status).toStrictEqual(HttpStatus.CREATED);
-        expect(body.salesProduct.productId).toBeTruthy();
-        expect(body.salesProduct.createdAt).toBeTruthy();
-        expect(body.salesProduct.updatedAt).toBeTruthy();
-        expect(body.salesProduct.removedAt).toStrictEqual(null);
-        expect(body.salesProduct).toMatchObject({
-          name: createProductRequestBody.name,
-          price: createProductRequestBody.price,
-          description: createProductRequestBody.description,
-        });
-
-        createProductResponse = body;
+      expect(status).toStrictEqual(HttpStatus.CREATED);
+      expect(body.salesProduct.productId).toBeTruthy();
+      expect(body.salesProduct.createdAt).toBeTruthy();
+      expect(body.salesProduct.updatedAt).toBeTruthy();
+      expect(body.salesProduct.removedAt).toStrictEqual(null);
+      expect(body.salesProduct).toMatchObject({
+        name: createProductRequestBody.name,
+        price: createProductRequestBody.price,
+        description: createProductRequestBody.description,
       });
+
+      createProductResponse = body;
     });
 
     describe('unprocessableTestCases', () => {
@@ -71,7 +67,7 @@ describe(`SalesProductController`, () => {
 
       test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
         const { status } = await request(app.getHttpServer())
-          .post(createSalesProductPath)
+          .post(createProductPath)
           .send(requestBody);
 
         expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -79,7 +75,12 @@ describe(`SalesProductController`, () => {
     });
 
     test('requests same correlationId - should respond that product is already created', async () => {
-      const secondResponse = await requestCreateProduct();
+      const secondResponse = await requestCreateProduct(
+        app,
+        createProductPath,
+        correlationId,
+        createProductRequestBody,
+      );
 
       expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
       expect(secondResponse.body).toMatchObject({
