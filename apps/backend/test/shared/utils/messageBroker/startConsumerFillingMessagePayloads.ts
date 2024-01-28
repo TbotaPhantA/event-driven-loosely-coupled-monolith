@@ -1,4 +1,4 @@
-import { config } from '../../../src/infrastructure/config/config';
+import { config } from '../../../../src/infrastructure/config/config';
 import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
 
 export const startConsumerFillingMessagePayloads = async (messagePayloads: EachMessagePayload[]): Promise<Consumer> => {

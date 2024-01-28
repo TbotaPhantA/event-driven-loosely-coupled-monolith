@@ -1,5 +1,5 @@
 import { EachMessagePayload } from 'kafkajs';
-import { assertIsNotEmpty } from '../../../src/infrastructure/shared/utils/assertIsNotEmpty';
+import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
 
 interface Message {
   headers: object;

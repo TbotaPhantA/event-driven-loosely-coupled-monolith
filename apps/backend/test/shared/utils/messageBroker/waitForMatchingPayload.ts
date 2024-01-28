@@ -1,5 +1,5 @@
 import { EachMessagePayload } from 'kafkajs';
-import { sleep } from '../../../src/infrastructure/shared/utils/sleep';
+import { sleep } from '../../../../src/infrastructure/shared/utils/sleep';
 import { findMatchingPayload } from './findMatchingPayload';
 
 export const waitForMatchingPayload = async (

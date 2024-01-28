@@ -1,7 +1,7 @@
 import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Consumer, EachMessagePayload } from 'kafkajs';
-import { startConsumerFillingMessagePayloads } from '../shared/utils/startConsumerFillingMessagePayloads';
+import { startConsumerFillingMessagePayloads } from '../shared/utils/messageBroker/startConsumerFillingMessagePayloads';
 import { TestApiController } from './testApi.controller';
 import { AppModule } from '../../src/app.module';
 import { GetEntryLinksOutputDto } from '../../src/sales/application/dto/output/getEntryLinksOutput.dto';
