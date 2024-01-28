@@ -21,7 +21,7 @@ beforeAll(async () => {
     app.init(),
     startConsumerFillingMessagePayloads(messagePayloads),
   ])
-  salesEntryLinks = await getEntryLinks();
+  salesEntryLinks = await getSalesEntryLinks();
   consumer = startedConsumer;
 
   function createTestingModule(): TestingModuleBuilder {
@@ -31,7 +31,7 @@ beforeAll(async () => {
     })
   }
 
-  async function getEntryLinks(): Promise<GetEntryLinksOutputDto> {
+  async function getSalesEntryLinks(): Promise<GetEntryLinksOutputDto> {
     const response = await request(app.getHttpServer())
       .get(entryLinksPaths)
       .send();
