@@ -2,7 +2,6 @@
 
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
-- [ ] figure out how to refactor acceptance test to make them much more readable, fast and reliable
 - [ ] add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] send kafka message as `avro` scheme instead of `JSON` for performance reasons
 - [ ] think how to remove excess `Sales` prefix in the `Sales` bounded context.
