@@ -10,10 +10,10 @@ import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/con
 import { app, messagePayloads, salesEntryLinks } from '../../globalBeforeAndAfterAll';
 import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
-import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
 import { findCreateProductPath } from '../../../shared/utils/links/findCreateProductPath';
 import { findAdjustPricePath } from '../../../shared/utils/links/findAdjustPricePath';
 import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
+import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjustPrice';
 
 describe(`SalesProductController`, () => {
   let createProductPath: string;
@@ -109,7 +109,12 @@ describe(`SalesProductController`, () => {
         newPrice,
       }).result;
 
-      const { body, status } = await requestAdjustPrice();
+      const adjustPricePath = findAdjustPricePath(createProductResponse.links);
+      const { body, status } = await requestAdjustPrice(
+        app,
+        adjustPricePath,
+        adjustPriceRequestBody,
+      );
 
       expect(status).toStrictEqual(HttpStatus.OK);
       expect(body.salesProduct).toMatchObject({
@@ -118,13 +123,6 @@ describe(`SalesProductController`, () => {
         price: adjustPriceRequestBody.newPrice,
         description: createProductResponse.salesProduct.description,
       });
-
-      function requestAdjustPrice(): Promise<{ body: AdjustPriceOutputDto, status: HttpStatus }> {
-        const adjustPricePath = findAdjustPricePath(createProductResponse.links);
-        return request(app.getHttpServer())
-          .put(adjustPricePath)
-          .send(adjustPriceRequestBody);
-      }
     })
   });
 });
