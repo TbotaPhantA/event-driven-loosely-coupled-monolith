@@ -1,4 +1,6 @@
-import { CreateSalesProductBuilder } from '../../../../../__fixtures__/builders/commands/createSalesProduct.builder';
+import {
+  CreateSalesProductBuilder,
+} from '../../../../../shared/__fixtures__/builders/commands/createSalesProduct.builder';
 import { SalesProductFactory } from '../../../../../../src/sales/domain/salesProduct/salesProduct.factory';
 import { SalesProduct } from '../../../../../../src/sales/domain/salesProduct/salesProduct';
 import { CreateSalesProduct } from '../../../../../../src/sales/domain/salesProduct/commands/createSalesProduct';

@@ -1,4 +1,6 @@
-import { CreateSalesProductBuilder } from '../../../../__fixtures__/builders/commands/createSalesProduct.builder';
+import {
+  CreateSalesProductBuilder,
+} from '../../../../shared/__fixtures__/builders/commands/createSalesProduct.builder';
 import { TestBed } from '@automock/jest';
 import { CreateSalesProductService } from '../../../../../src/sales/application/services/createSalesProduct.service';
 import { ITransactionService } from '../../../../../src/infrastructure/transaction/ITransaction.service';
@@ -6,7 +8,7 @@ import {
   ISalesProductRepository
 } from '../../../../../src/sales/application/repositories/salesProductRepository/ISalesProduct.repository';
 import { SalesProductFactory } from '../../../../../src/sales/domain/salesProduct/salesProduct.factory';
-import { SalesProductBuilder } from '../../../../__fixtures__/builders/salesProduct.builder';
+import { SalesProductBuilder } from '../../../../shared/__fixtures__/builders/salesProduct.builder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';
 import { SALES_CONTEXT_NAME, SALES_PRODUCT_REPOSITORY } from '../../../../../src/sales/application/shared/constants';
 import { ITransaction } from '../../../../../src/infrastructure/transaction/shared/types/ITransaction';
@@ -16,7 +18,7 @@ import {
 } from '../../../../../src/sales/application/services/interfaces/ISalesProductMessagesService';
 import {
   SalesProductCreatedEventBuilder
-} from '../../../../__fixtures__/builders/events/salesProductCreated.event.builder';
+} from '../../../../shared/__fixtures__/builders/events/salesProductCreated.event.builder';
 import {
   ISalesProductIdempotencyService
 } from '../../../../../src/sales/application/services/interfaces/ISalesProductIdempotency.service';

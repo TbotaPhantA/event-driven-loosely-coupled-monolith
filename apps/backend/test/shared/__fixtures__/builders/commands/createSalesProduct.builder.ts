@@ -1,4 +1,4 @@
-import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { CreateSalesProduct } from '../../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
 import { InjectionBuilder } from 'ts-fixture-builder';
 
 export class CreateSalesProductBuilder {

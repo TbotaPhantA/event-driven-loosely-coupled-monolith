@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { CreateSalesProductBuilder } from '../../../__fixtures__/builders/commands/createSalesProduct.builder';
+import { CreateSalesProductBuilder } from '../../../shared/__fixtures__/builders/commands/createSalesProduct.builder';
 import * as request from 'supertest';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { waitForMatchingPayload } from '../../../shared/utils/waitForMatchingPayload';
@@ -8,7 +8,7 @@ import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/mes
 import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
 import { app, messagePayloads, salesEntryLinks } from '../../globalBeforeAndAfterAll';
-import { AdjustPriceBuilder } from '../../../__fixtures__/builders/commands/adjustPrice.builder';
+import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
 import { findCreateProductLink } from '../utils/links/findCreateProductLink';

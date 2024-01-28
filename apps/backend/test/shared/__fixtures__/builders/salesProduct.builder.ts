@@ -1,5 +1,5 @@
-import { SalesProduct } from '../../../src/sales/domain/salesProduct/salesProduct';
-import { ImportBuilder } from '../../shared/utils/importBuilder';
+import { SalesProduct } from '../../../../src/sales/domain/salesProduct/salesProduct';
+import { ImportBuilder } from '../../utils/importBuilder';
 
 export class SalesProductBuilder {
   static get defaultAll(): ImportBuilder<SalesProduct> {

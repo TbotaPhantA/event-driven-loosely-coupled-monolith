@@ -1,7 +1,7 @@
-import { SalesProductBuilder } from '../../../../../__fixtures__/builders/salesProduct.builder';
+import { SalesProductBuilder } from '../../../../../shared/__fixtures__/builders/salesProduct.builder';
 import { TimeService } from '../../../../../../src/infrastructure/time/time.service';
 import { mock } from 'jest-mock-extended';
-import { AdjustPriceBuilder } from '../../../../../__fixtures__/builders/commands/adjustPrice.builder';
+import { AdjustPriceBuilder } from '../../../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 
 describe('SalesProduct', () => {
   const now = new Date(2022, 0, 4);

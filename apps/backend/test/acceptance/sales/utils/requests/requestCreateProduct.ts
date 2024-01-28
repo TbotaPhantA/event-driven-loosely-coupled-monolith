@@ -1,5 +1,5 @@
 import {
-  CreateSalesProductOutputDto
+  CreateSalesProductOutputDto,
 } from '../../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
