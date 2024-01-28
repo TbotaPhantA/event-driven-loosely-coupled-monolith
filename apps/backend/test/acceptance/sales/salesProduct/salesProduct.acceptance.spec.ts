@@ -17,7 +17,7 @@ import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjust
 
 describe(`SalesProductController`, () => {
   let createProductPath: string;
-  const correlationId = 'correlationId999';
+  const createProductCorrelationId = 'correlationId999';
   const createProductRequestBody = CreateSalesProductBuilder.defaultAll.with({
     name: 'Xiaomi',
     price: 500,
@@ -34,7 +34,7 @@ describe(`SalesProductController`, () => {
       const { body, status } = await requestCreateProduct(
         app,
         createProductPath,
-        correlationId,
+        createProductCorrelationId,
         createProductRequestBody
       );
 
@@ -76,7 +76,7 @@ describe(`SalesProductController`, () => {
       const secondResponse = await requestCreateProduct(
         app,
         createProductPath,
-        correlationId,
+        createProductCorrelationId,
         createProductRequestBody,
       );
 
@@ -88,14 +88,14 @@ describe(`SalesProductController`, () => {
     })
 
     test('product created event - should be sent to broker', async () => {
-      const message = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
+      const message = extractMessage(await waitForMatchingPayload(messagePayloads, createProductCorrelationId));
 
       expect(message.key.payload).toStrictEqual(createProductResponse.salesProduct.productId);
       expect(JSON.parse(message.value.payload).product).toMatchObject(createProductResponse.salesProduct);
       expect(message.headers).toMatchObject({
         messageType: MessageTypeEnum.event,
         messageName: SalesProductCreated.name,
-        correlationId,
+        correlationId: createProductCorrelationId,
         producerName: SALES_CONTEXT_NAME,
       });
     });
