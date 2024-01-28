@@ -2,9 +2,9 @@
 
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
-- [ ] add `HOST` to `config` and rename `path` to `href` for api hypermedia
-- [ ] send kafka message as `avro` scheme instead of `JSON` for performance reasons
-- [ ] think how to remove excess `Sales` prefix in the `Sales` bounded context.
+- [ ] Remove excess `Sales` prefix in the `Sales` bounded context.
+- [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
+- [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
 ### infrastructure
 - [ ] add request logging
 ### docker-compose
