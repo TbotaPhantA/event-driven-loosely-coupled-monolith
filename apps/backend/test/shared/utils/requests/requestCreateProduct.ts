@@ -1,10 +1,10 @@
 import {
   CreateSalesProductOutputDto,
-} from '../../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
+} from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { CORRELATION_ID_HEADER } from '../../../../../src/infrastructure/correlation';
-import { CreateSalesProduct } from '../../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';
+import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
 
 export function requestCreateProduct(
   app: INestApplication,

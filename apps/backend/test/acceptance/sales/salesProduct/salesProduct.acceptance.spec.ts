@@ -11,9 +11,9 @@ import { app, messagePayloads, salesEntryLinks } from '../../globalBeforeAndAfte
 import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
-import { findCreateProductLink } from '../utils/links/findCreateProductLink';
-import { findAdjustPriceLink } from '../utils/links/findAdjustPriceLink';
-import { requestCreateProduct } from '../utils/requests/requestCreateProduct';
+import { findCreateProductLink } from '../../../shared/utils/links/findCreateProductLink';
+import { findAdjustPriceLink } from '../../../shared/utils/links/findAdjustPriceLink';
+import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
 
 describe(`SalesProductController`, () => {
   let createProductPath: string;
