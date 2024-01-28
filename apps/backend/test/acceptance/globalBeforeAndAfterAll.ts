@@ -15,7 +15,7 @@ export const messagePayloads = new Array<EachMessagePayload>;
 export let salesEntryLinks: GetEntryLinksOutputDto;
 
 beforeAll(async () => {
-  moduleRef = await createTestingModule().compile()
+  moduleRef = await createTestingModule().compile();
   app = moduleRef.createNestApplication();
   const [,startedConsumer] = await Promise.all([
     app.init(),
