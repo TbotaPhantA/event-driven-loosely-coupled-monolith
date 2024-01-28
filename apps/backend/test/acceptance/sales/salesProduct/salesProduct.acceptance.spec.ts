@@ -52,26 +52,24 @@ describe(`SalesProductController`, () => {
       createProductResponse = body;
     });
 
-    describe('unprocessableTestCases', () => {
-      const unprocessableTestCases = [
-        {
-          toString: (): string => '1 when invalid body - should respond with validation error',
-          requestBody: CreateSalesProductBuilder.defaultAll.with({
-            // @ts-expect-error INTENTIONALLY INCORRECT TYPE
-            name: true,
-            price: 500,
-            description: 'An android phone',
-          }).result,
-        },
-      ]
+    const unprocessableTestCases = [
+      {
+        toString: (): string => '1 when invalid body - should respond with validation error',
+        requestBody: CreateSalesProductBuilder.defaultAll.with({
+          // @ts-expect-error INTENTIONALLY INCORRECT TYPE
+          name: true,
+          price: 500,
+          description: 'An android phone',
+        }).result,
+      },
+    ]
 
-      test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
-        const { status } = await request(app.getHttpServer())
-          .post(createProductPath)
-          .send(requestBody);
+    test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
+      const { status } = await request(app.getHttpServer())
+        .post(createProductPath)
+        .send(requestBody);
 
-        expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
-      });
+      expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
     });
 
     test('requests same correlationId - should respond that product is already created', async () => {
