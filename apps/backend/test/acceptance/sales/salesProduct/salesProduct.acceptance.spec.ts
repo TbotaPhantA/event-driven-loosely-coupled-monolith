@@ -11,8 +11,8 @@ import { app, messagePayloads, salesEntryLinks } from '../../globalBeforeAndAfte
 import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
-import { findCreateProductLink } from '../../../shared/utils/links/findCreateProductLink';
-import { findAdjustPriceLink } from '../../../shared/utils/links/findAdjustPriceLink';
+import { findCreateProductPath } from '../../../shared/utils/links/findCreateProductPath';
+import { findAdjustPricePath } from '../../../shared/utils/links/findAdjustPricePath';
 import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
 
 describe(`SalesProductController`, () => {
@@ -26,7 +26,7 @@ describe(`SalesProductController`, () => {
   let createProductResponse: CreateSalesProductOutputDto;
 
   beforeAll(() => {
-    createProductPath = findCreateProductLink(salesEntryLinks);
+    createProductPath = findCreateProductPath(salesEntryLinks);
   })
 
   describe(`POST CreateSalesProduct`, () => {
@@ -120,7 +120,7 @@ describe(`SalesProductController`, () => {
       });
 
       function requestAdjustPrice(): Promise<{ body: AdjustPriceOutputDto, status: HttpStatus }> {
-        const adjustPricePath = findAdjustPriceLink(createProductResponse.links);
+        const adjustPricePath = findAdjustPricePath(createProductResponse.links);
         return request(app.getHttpServer())
           .put(adjustPricePath)
           .send(adjustPriceRequestBody);
