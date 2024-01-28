@@ -43,3 +43,6 @@ yarn-error.log*
 
 # debezium
 /apps/backend/debezium.json
+
+# playground
+/**/playground.spec.ts
