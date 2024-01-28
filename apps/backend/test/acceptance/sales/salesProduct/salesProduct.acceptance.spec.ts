@@ -8,45 +8,51 @@ import { extractMessage } from '../../../shared/utils/extractMessage';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { SalesProductCreated } from '../../../../src/sales/domain/salesProduct/events/salesProductCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
-import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
+import { app, messagePayloads, salesEntryLinks } from '../../globalBeforeAndAfterAll';
 import { AdjustPriceBuilder } from '../../../__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateSalesProductOutputDto } from '../../../../src/sales/application/dto/output/createSalesProductOutput.dto';
-import { AdjustPrice } from '../../../../src/sales/domain/salesProduct/commands/adjustPrice';
-import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
-import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
-import { GetEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getEntryLinksOutput.dto';
-import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
+import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
+import { findCreateProductLink } from '../utils/links/findCreateProductLink';
+import { findAdjustPriceLink } from '../utils/links/findAdjustPriceLink';
 
 describe(`SalesProductController`, () => {
+  let createSalesProductPath: string;
+  const correlationId = 'correlationId999';
+  const createProductRequestBody = CreateSalesProductBuilder.defaultAll.with({
+    name: 'Xiaomi',
+    price: 500,
+    description: 'An android phone',
+  }).result;
+  let requestCreateProduct: () => Promise<{ body: CreateSalesProductOutputDto, status: HttpStatus }>;
+  let createProductResponse: CreateSalesProductOutputDto;
+
+  beforeAll(() => {
+    createSalesProductPath = findCreateProductLink(salesEntryLinks);
+    requestCreateProduct = (): Promise<{ body: CreateSalesProductOutputDto, status: HttpStatus }> => {
+      return request(app.getHttpServer())
+        .post(createSalesProductPath)
+        .set(CORRELATION_ID_HEADER, correlationId)
+        .send(createProductRequestBody)
+    }
+  })
+
   describe(`POST CreateSalesProduct`, () => {
     describe('successfulTestCases', () => {
-      const successfulTestCases = [
-        {
-          toString: (): string => '1 when given valid body - should successfully respond',
-          requestBody: CreateSalesProductBuilder.defaultAll.with({
-            name: 'Xiaomi',
-            price: 500,
-            description: 'An android phone',
-          }).result,
-        },
-      ];
-
-      test.each(successfulTestCases)('%s', async ({ requestBody }) => {
-        const entryLinksResponse = await getEntryLinksRequest();
-        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
-        const correlationId = 'correlationId999';
-
-        const { body, status } = await request(app.getHttpServer())
-          .post(createSalesProductPath)
-          .set(CORRELATION_ID_HEADER, correlationId)
-          .send(requestBody);
+      test('when given valid body - should successfully respond', async () => {
+        const { body, status } = await requestCreateProduct();
 
         expect(status).toStrictEqual(HttpStatus.CREATED);
+        expect(body.salesProduct.productId).toBeTruthy();
+        expect(body.salesProduct.createdAt).toBeTruthy();
+        expect(body.salesProduct.updatedAt).toBeTruthy();
+        expect(body.salesProduct.removedAt).toStrictEqual(null);
         expect(body.salesProduct).toMatchObject({
-          name: requestBody.name,
-          price: requestBody.price,
-          description: requestBody.description,
+          name: createProductRequestBody.name,
+          price: createProductRequestBody.price,
+          description: createProductRequestBody.description,
         });
+
+        createProductResponse = body;
       });
     });
 
@@ -64,148 +70,62 @@ describe(`SalesProductController`, () => {
       ]
 
       test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
-        const entryLinksResponse = await getEntryLinksRequest();
-        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
-        const { status } = await request(app.getHttpServer()).post(createSalesProductPath).send(requestBody);
+        const { status } = await request(app.getHttpServer())
+          .post(createSalesProductPath)
+          .send(requestBody);
+
         expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
 
-    describe('idempotencyTestCases', () => {
-      const idempotentRequestTestCases = [
-        {
-          toString: (): string => '2 requests same correlationId - should respond that product is already created',
-          correlationId: '01HJBWJ82NM47AAG14RV17R2R4',
-          requestBody: CreateSalesProductBuilder.defaultAll.with({
-            name: 'Xiaomi',
-            price: 500,
-            description: 'An android phone',
-          }).result,
-        },
-      ];
+    test('requests same correlationId - should respond that product is already created', async () => {
+      const secondResponse = await requestCreateProduct();
 
-      test.each(idempotentRequestTestCases)('%s', async ({ correlationId, requestBody }) => {
-        const entryLinksResponse = await getEntryLinksRequest();
-        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
+      expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
+      expect(secondResponse.body).toMatchObject({
+        message: PRODUCT_ALREADY_CREATED,
+        salesProduct: createProductResponse.salesProduct,
+      })
+    })
 
-        const firstResponse = await request(app.getHttpServer())
-          .post(createSalesProductPath)
-          .set(CORRELATION_ID_HEADER, correlationId)
-          .send(requestBody);
+    test('product created event - should be sent to broker', async () => {
+      const message = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
 
-        const secondResponse = await request(app.getHttpServer())
-          .post(createSalesProductPath)
-          .set(CORRELATION_ID_HEADER, correlationId)
-          .send(requestBody);
-
-        expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
-        expect(secondResponse.body).toMatchObject({
-          message: PRODUCT_ALREADY_CREATED,
-          salesProduct: firstResponse.body.salesProduct,
-        })
-      });
-    });
-
-    describe('SalesProductCreatedEvent', () => {
-      const testCases = [
-        {
-          toString: (): string => '1 - should be sent to broker',
-          correlationId: '01HJBWJ82NM47AAG14RV17R2R4',
-          requestBody: CreateSalesProductBuilder.defaultAll.with({
-            name: 'Xiaomi',
-            price: 500,
-            description: 'An android phone',
-          }).result,
-        },
-      ];
-
-      test.each(testCases)('%s', async ({ correlationId, requestBody}) => {
-        const entryLinksResponse = await getEntryLinksRequest();
-        const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
-
-        const response = await request(app.getHttpServer())
-          .post(createSalesProductPath)
-          .set(CORRELATION_ID_HEADER, correlationId)
-          .send(requestBody);
-
-        const message = extractMessage(await waitForMatchingPayload(messagePayloads, correlationId));
-
-        expect(message.key.payload).toStrictEqual(response.body.salesProduct.productId);
-        expect(JSON.parse(message.value.payload).product).toMatchObject(response.body.salesProduct);
-        expect(message.headers).toMatchObject({
-          messageType: MessageTypeEnum.event,
-          messageName: SalesProductCreated.name,
-          correlationId,
-          producerName: SALES_CONTEXT_NAME,
-        });
+      expect(message.key.payload).toStrictEqual(createProductResponse.salesProduct.productId);
+      expect(JSON.parse(message.value.payload).product).toMatchObject(createProductResponse.salesProduct);
+      expect(message.headers).toMatchObject({
+        messageType: MessageTypeEnum.event,
+        messageName: SalesProductCreated.name,
+        correlationId,
+        producerName: SALES_CONTEXT_NAME,
       });
     });
   });
 
   describe(`PUT AdjustPrice`, () => {
-    describe('successful test cases', () => {
-      const successfulTestCases = [
-        {
-          toString: (): string => '1 when given valid body - should successfully respond',
-          createRequestBody: CreateSalesProductBuilder.defaultAll.with({
-            name: 'Xiaomi',
-            price: 500,
-            description: 'An android phone',
-          }).result,
-          newPrice: 600,
-        },
-      ];
+    test('successful test cases', async () => {
+      const newPrice = createProductResponse.salesProduct.price + 100;
+      const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
+        productId: createProductResponse.salesProduct.productId,
+        newPrice,
+      }).result;
 
-      test.each(successfulTestCases)('%s', async ({ createRequestBody, newPrice  }) => {
-        const { body: createResponseBody } = await createProductRequest();
-        const adjustPricePath = findAdjustPricePathInResponse();
+      const { body, status } = await requestAdjustPrice();
 
-        const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
-          productId: createResponseBody.salesProduct.productId,
-          newPrice,
-        }).result;
+      expect(status).toStrictEqual(HttpStatus.OK);
+      expect(body.salesProduct).toMatchObject({
+        productId: createProductResponse.salesProduct.productId,
+        name: createProductResponse.salesProduct.name,
+        price: adjustPriceRequestBody.newPrice,
+        description: createProductResponse.salesProduct.description,
+      });
 
-        const { body, status } = await request(app.getHttpServer())
+      function requestAdjustPrice(): Promise<{ body: AdjustPriceOutputDto, status: HttpStatus }> {
+        const adjustPricePath = findAdjustPriceLink(createProductResponse.links);
+        return request(app.getHttpServer())
           .put(adjustPricePath)
           .send(adjustPriceRequestBody);
-
-        expect(status).toStrictEqual(HttpStatus.OK);
-        expect(body.salesProduct).toMatchObject({
-          productId: createResponseBody.salesProduct.productId,
-          name: createRequestBody.name,
-          price: adjustPriceRequestBody.newPrice,
-          description: createRequestBody.description,
-        });
-
-        async function createProductRequest(): Promise<{ body: CreateSalesProductOutputDto }> {
-          const entryLinksResponse = await getEntryLinksRequest();
-          const createSalesProductPath = findCreateSalesProductPathInResponse(entryLinksResponse);
-          const correlationId = '01HM2EY5TG5AHG14ZV5BQNYSCT';
-          return request(app.getHttpServer())
-            .post(createSalesProductPath)
-            .send(createRequestBody)
-            .set(CORRELATION_ID_HEADER, correlationId);
-        }
-
-        function findAdjustPricePathInResponse(): string {
-          const adjustPricePath = createResponseBody.links.find(link => link.name === AdjustPrice.name)?.path;
-          assertIsNotEmpty(adjustPricePath);
-          return adjustPricePath
-        }
-      });
-    });
+      }
+    })
   });
 });
-
-function getEntryLinksRequest(): Promise<{ body: GetEntryLinksOutputDto }> {
-  return request(app.getHttpServer())
-    .get(entryLinksPaths)
-    .send();
-}
-
-function findCreateSalesProductPathInResponse(entryLinksResponse: { body: GetEntryLinksOutputDto }): string {
-  const createSalesProductPath = entryLinksResponse.body.links
-    .find(link => link.name = CreateSalesProduct.name)?.path;
-  assertIsNotEmpty(createSalesProductPath);
-  return createSalesProductPath;
-}
