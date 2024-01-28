@@ -72,7 +72,7 @@ describe(`SalesProductController`, () => {
       expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
     });
 
-    test('requests same correlationId - should respond that product is already created', async () => {
+    test('idempotent request with same correlationId - should respond that product is already created', async () => {
       const secondResponse = await requestCreateProduct(
         app,
         createProductPath,
