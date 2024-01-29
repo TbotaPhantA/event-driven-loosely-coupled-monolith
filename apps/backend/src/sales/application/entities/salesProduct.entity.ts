@@ -5,8 +5,8 @@ import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 export class SalesProductEntity {
   static TABLE_NAME = 'sales_products';
 
-  @PrimaryColumn()
-  product_id!: string;
+  @PrimaryColumn({ name: 'product_id' })
+  productId!: string;
 
   @Column()
   name!: string;
@@ -17,25 +17,25 @@ export class SalesProductEntity {
   @Column()
   price!: number;
 
-  @Column({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
-  created_at!: Date;
+  @Column({ name: 'created_at', type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt!: Date;
 
-  @Column({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
-  updated_at!: Date;
+  @Column({ name: 'updated_at', type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt!: Date;
 
-  @Column({ type: 'timestamp with time zone', nullable: true })
-  removed_at!: Date | null;
+  @Column({ name: 'removed_at', type: 'timestamp with time zone', nullable: true })
+  removedAt!: Date | null;
 
   static createByRaw(raw: NoMethods<SalesProductEntity>): SalesProductEntity {
     const entity = new SalesProductEntity();
 
-    entity.product_id = raw.product_id;
+    entity.productId = raw.productId;
     entity.name = raw.name;
     entity.description = raw.description;
     entity.price = raw.price;
-    entity.created_at = raw.created_at;
-    entity.updated_at = raw.updated_at;
-    entity.removed_at = raw.removed_at;
+    entity.createdAt = raw.createdAt;
+    entity.updatedAt = raw.updatedAt;
+    entity.removedAt = raw.removedAt;
 
     return entity;
   }
