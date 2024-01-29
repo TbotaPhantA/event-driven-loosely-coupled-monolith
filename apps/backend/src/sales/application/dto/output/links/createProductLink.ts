@@ -1,12 +1,12 @@
 import { Link } from './link';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
-import { CreateSalesProduct } from '../../../../domain/salesProduct/commands/createSalesProduct';
+import { CreateProduct } from '../../../../domain/product/commands/createProduct';
 import { createSalesProductResource, salesProductResource } from '../../../shared/resources';
 
-export class CreateSalesProductLink extends Link {
-  static create(): CreateSalesProductLink {
+export class CreateProductLink extends Link {
+  static create(): CreateProductLink {
     return {
-      name: CreateSalesProduct.name,
+      name: CreateProduct.name,
       path: `/${salesProductResource}/${createSalesProductResource}`,
       method: HttpMethodEnum.POST,
     }

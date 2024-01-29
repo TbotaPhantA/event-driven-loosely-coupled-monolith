@@ -8,7 +8,7 @@ import {
 } from '../../../../infrastructure/shared/constants';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateSalesProduct {
+export class CreateProduct {
   @IsString()
   @Length(MIN_PRODUCT_NAME_LENGTH, MAX_PRODUCT_NAME_LENGTH)
   @ApiProperty({ example: 'Phone' })
@@ -25,8 +25,8 @@ export class CreateSalesProduct {
   @ApiProperty({ example: 500 })
   price!: number;
 
-  static createByRaw(raw: NoMethods<CreateSalesProduct>): CreateSalesProduct {
-    const dto = new CreateSalesProduct();
+  static createByRaw(raw: NoMethods<CreateProduct>): CreateProduct {
+    const dto = new CreateProduct();
 
     dto.name = raw.name;
     dto.price = raw.price;

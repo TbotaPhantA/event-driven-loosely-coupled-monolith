@@ -1,4 +1,4 @@
-import { AdjustPrice } from '../../../../src/sales/domain/salesProduct/commands/adjustPrice';
+import { AdjustPrice } from '../../../../src/sales/domain/product/commands/adjustPrice';
 import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
 import { Link } from '../../../../src/sales/application/dto/output/links/link';
 

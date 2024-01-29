@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/config';
-import { SalesProductEntity } from '../../sales/application/entities/salesProduct.entity';
+import { ProductEntity } from '../../sales/application/entities/product.entity';
 import { SalesProductRequestEntity } from '../idempotency/entities/salesProductRequest.entity';
 import { SalesProductMessage } from '../messages/entities/salesProductMessage.entity';
 
@@ -14,7 +14,7 @@ import { SalesProductMessage } from '../messages/entities/salesProductMessage.en
       username: config.database.username,
       password: config.database.password,
       database: config.database.database,
-      entities: [SalesProductEntity, SalesProductRequestEntity, SalesProductMessage],
+      entities: [ProductEntity, SalesProductRequestEntity, SalesProductMessage],
       synchronize: config.database.synchronize,
     }),
   ],

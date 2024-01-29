@@ -6,7 +6,7 @@ export const startConsumerFillingMessagePayloads = async (messagePayloads: EachM
   const consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
   await consumer.connect();
   await consumer.subscribe({
-    topic: config.kafka.kafkaSalesProductsTopic,
+    topic: config.kafka.kafkaProductsTopic,
     fromBeginning: false,
   });
   await consumer.run({

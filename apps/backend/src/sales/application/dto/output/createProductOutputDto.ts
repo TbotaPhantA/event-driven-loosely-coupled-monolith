@@ -1,27 +1,27 @@
 import { Product } from '../../../domain/product/product';
 import { ProductOutputDto } from './productOutputDto';
-import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import { ApiProperty } from '@nestjs/swagger';
+import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import { Link } from './links/link';
 import { createProductLinksFrom } from './links/utils/createProductLinksFrom';
 
-export class AdjustPriceOutputDto {
+export class CreateProductOutputDto {
   @ApiProperty({ type: ProductOutputDto })
   product: ProductOutputDto;
 
   @ApiProperty({ type: [Link] })
   links: Link[];
 
-  constructor(raw: NoMethods<AdjustPriceOutputDto>) {
+  constructor(raw: NoMethods<CreateProductOutputDto>) {
     this.product = raw.product;
     this.links = raw.links;
   }
 
-  static from(product: Product): AdjustPriceOutputDto {
+  static from(product: Product): CreateProductOutputDto {
     const exported = product.export();
     const output = new ProductOutputDto(exported);
-    const links: Link[] = createProductLinksFrom(exported);
+    const links = createProductLinksFrom(exported);
 
-    return new AdjustPriceOutputDto({ product: output, links });
+    return new CreateProductOutputDto({ product: output, links });
   }
 }

@@ -13,7 +13,7 @@ import { inspect } from 'util';
   const topics = await admin.listTopics();
   console.log(inspect({ topics }, { depth: 15 }));
 
-  const topic = config.kafka.kafkaSalesProductsTopic;
+  const topic = config.kafka.kafkaProductsTopic;
   const metadata = await admin.fetchTopicMetadata({ topics: [topic] });
   console.log(inspect({ metadata }, { depth: 15 }));
 

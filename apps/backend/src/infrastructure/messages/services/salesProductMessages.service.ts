@@ -1,6 +1,6 @@
 import {
-  ISalesProductMessagesService
-} from '../../../sales/application/services/interfaces/ISalesProductMessagesService';
+  IProductMessagesService
+} from '../../../sales/application/services/interfaces/IProductMessagesService';
 import { Injectable } from '@nestjs/common';
 import { SalesProductMessageRepository } from '../repositories/salesProductMessage.repository';
 import { SalesProductMessage } from '../entities/salesProductMessage.entity';
@@ -8,10 +8,10 @@ import { PLACEHOLDER_ID } from '../../shared/constants';
 import { MessageTypeEnum } from '../../shared/enums/messageType.enum';
 import { CorrelationService } from '../../correlation';
 import { EntityManager } from 'typeorm';
-import { IEvent } from '../../../sales/domain/salesProduct/events/IEvent';
+import { IEvent } from '../../../sales/domain/product/events/IEvent';
 
 @Injectable()
-export class SalesProductMessagesService implements ISalesProductMessagesService {
+export class SalesProductMessagesService implements IProductMessagesService {
   constructor(
     private readonly salesProductMessageRepository: SalesProductMessageRepository,
     private readonly correlationService: CorrelationService,

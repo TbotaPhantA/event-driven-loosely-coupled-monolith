@@ -1,9 +1,9 @@
-import { SalesProduct } from '../../../../../../src/sales/domain/salesProduct/salesProduct';
+import { Product } from '../../../../../../src/sales/domain/product/product';
 
 describe('SalesProduct', () => {
   test('constructor', () => {
     const now = new Date(2022, 0, 3);
-    const [data]: ConstructorParameters<typeof SalesProduct> = [
+    const [data]: ConstructorParameters<typeof Product> = [
       {
         productId: '01HGNJHGSPJS3QM3ZGMY181ZX4',
         name: 'Phone',
@@ -15,7 +15,7 @@ describe('SalesProduct', () => {
       },
     ];
 
-    const product = new SalesProduct(data);
+    const product = new Product(data);
     expect(product.export()).toStrictEqual(data);
   })
 });

@@ -1,6 +1,6 @@
-import { IEvent } from '../../../domain/salesProduct/events/IEvent';
+import { IEvent } from '../../../domain/product/events/IEvent';
 import { ITransaction } from '../../../../infrastructure/transaction/shared/types/ITransaction';
 
-export interface ISalesProductMessagesService {
+export interface IProductMessagesService {
   insertEvent(event: IEvent, producerName: string, transaction: ITransaction): Promise<void>;
 }

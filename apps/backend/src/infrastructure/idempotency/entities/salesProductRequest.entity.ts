@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
 import { NoMethods } from '../../shared/types/noMethods';
-import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
+import { ProductOutputDto } from '../../../sales/application/dto/output/productOutputDto';
 
 @Entity({ name: 'sales_product_requests' })
 export class SalesProductRequestEntity {
@@ -8,7 +8,7 @@ export class SalesProductRequestEntity {
   correlationId!: string;
 
   @Column({ type: 'jsonb' })
-  salesProduct!: SalesProductOutputDto;
+  data!: ProductOutputDto;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -20,7 +20,7 @@ export class SalesProductRequestEntity {
   static from(raw: NoMethods<Omit<SalesProductRequestEntity, 'createdAt'>>): SalesProductRequestEntity {
     const salesProductRequestEntity = new SalesProductRequestEntity();
     salesProductRequestEntity.correlationId = raw.correlationId;
-    salesProductRequestEntity.salesProduct = raw.salesProduct;
+    salesProductRequestEntity.data = raw.data;
     return salesProductRequestEntity;
   }
 }

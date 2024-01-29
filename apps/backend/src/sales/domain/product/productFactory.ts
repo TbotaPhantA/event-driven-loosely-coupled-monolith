@@ -1,21 +1,21 @@
 import { RandomService } from '../../../infrastructure/random/random.service';
-import { SalesProduct } from './salesProduct';
-import { CreateSalesProduct } from './commands/createSalesProduct';
+import { Product } from './product';
+import { CreateProduct } from './commands/createProduct';
 import { TimeService } from '../../../infrastructure/time/time.service';
 
-interface SalesProductFactoryDeps {
+interface ProductFactoryDeps {
   random: RandomService;
   time: TimeService;
 }
 
-export class SalesProductFactory {
-  constructor(private readonly deps: SalesProductFactoryDeps) {}
+export class ProductFactory {
+  constructor(private readonly deps: ProductFactoryDeps) {}
 
-  create(command: CreateSalesProduct): SalesProduct {
+  create(command: CreateProduct): Product {
     const productId = this.deps.random.generateULID();
     const now = this.deps.time.now();
 
-    return new SalesProduct({
+    return new Product({
       productId,
       name: command.name,
       description: command.description,

@@ -1,6 +1,6 @@
 import { Link } from './link';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
-import { UpdateProductInfo } from '../../../../domain/salesProduct/commands/updateProductInfo';
+import { UpdateProductInfo } from '../../../../domain/product/commands/updateProductInfo';
 import { salesProductResource, updateProductInfoResource } from '../../../shared/resources';
 
 export class UpdateProductInfoLink extends Link {

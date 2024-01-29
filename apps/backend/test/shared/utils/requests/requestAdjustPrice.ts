@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { AdjustPrice } from '../../../../src/sales/domain/salesProduct/commands/adjustPrice';
+import { AdjustPrice } from '../../../../src/sales/domain/product/commands/adjustPrice';
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/dto/output/adjustPriceOutput.dto';
 
 export function requestAdjustPrice(

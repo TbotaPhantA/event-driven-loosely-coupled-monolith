@@ -1,5 +1,5 @@
 import { Link } from './link';
-import { AdjustPrice } from '../../../../domain/salesProduct/commands/adjustPrice';
+import { AdjustPrice } from '../../../../domain/product/commands/adjustPrice';
 import { HttpMethodEnum } from '../../../../../infrastructure/shared/enums/httpMethod.enum';
 import { adjustPriceResource, salesProductResource } from '../../../shared/resources';
 

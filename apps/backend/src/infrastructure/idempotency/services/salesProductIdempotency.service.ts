@@ -3,16 +3,16 @@ import { CorrelationService } from '../../correlation';
 import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
 import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 import {
-  ISalesProductIdempotencyService
-} from '../../../sales/application/services/interfaces/ISalesProductIdempotency.service';
+  IProductIdempotencyService
+} from '../../../sales/application/services/interfaces/IProductIdempotencyService';
 import {
   DatabaseSalesProductIdempotentRequestRepository
 } from '../repositories/databaseSalesProductIdempotentRequestRepository';
 import { EntityManager } from 'typeorm';
-import { SalesProductOutputDto } from '../../../sales/application/dto/output/salesProductOutputDto';
+import { ProductOutputDto } from '../../../sales/application/dto/output/productOutputDto';
 
 @Injectable()
-export class SalesProductIdempotencyService implements ISalesProductIdempotencyService {
+export class SalesProductIdempotencyService implements IProductIdempotencyService {
   constructor(
     private readonly correlationService: CorrelationService,
     private readonly repo: DatabaseSalesProductIdempotentRequestRepository,
@@ -23,14 +23,14 @@ export class SalesProductIdempotencyService implements ISalesProductIdempotencyS
     const existingRequest = await this.repo.findRequestByCorrelationId(correlationId, transaction);
 
     if (existingRequest) {
-      throw new ProductAlreadyCreatedException(existingRequest.salesProduct);
+      throw new ProductAlreadyCreatedException(existingRequest.data);
     }
   }
 
-  async insertRequest(dto: SalesProductOutputDto, transaction: EntityManager): Promise<void> {
+  async insertRequest(dto: ProductOutputDto, transaction: EntityManager): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
     const request = SalesProductRequestEntity.from({
-      salesProduct: dto,
+      data: dto,
       correlationId,
     });
     await this.repo.insertRequest(request, transaction);

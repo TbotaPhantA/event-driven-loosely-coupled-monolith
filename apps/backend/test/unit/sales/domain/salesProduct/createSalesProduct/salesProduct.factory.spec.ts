@@ -1,9 +1,9 @@
 import {
-  CreateSalesProductBuilder,
-} from '../../../../../shared/__fixtures__/builders/commands/createSalesProduct.builder';
-import { SalesProductFactory } from '../../../../../../src/sales/domain/salesProduct/salesProduct.factory';
-import { SalesProduct } from '../../../../../../src/sales/domain/salesProduct/salesProduct';
-import { CreateSalesProduct } from '../../../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+  CreateProductBuilder,
+} from '../../../../../shared/__fixtures__/builders/commands/createProduct.builder';
+import { ProductFactory } from '../../../../../../src/sales/domain/product/productFactory';
+import { Product } from '../../../../../../src/sales/domain/product/product';
+import { CreateProduct } from '../../../../../../src/sales/domain/product/commands/createProduct';
 import { RandomService } from '../../../../../../src/infrastructure/random/random.service';
 import { TimeService } from '../../../../../../src/infrastructure/time/time.service';
 import { mock } from 'jest-mock-extended';
@@ -50,8 +50,8 @@ describe('SalesProductFactory', () => {
 
       expect(product).toStrictEqual(expectedSalesProduct);
 
-      function createCommand(): CreateSalesProduct {
-        return CreateSalesProductBuilder.defaultAll.with({
+      function createCommand(): CreateProduct {
+        return CreateProductBuilder.defaultAll.with({
           name,
           description,
           price,
@@ -66,15 +66,15 @@ describe('SalesProductFactory', () => {
         mockTimeService.now.mockReturnValue(now);
       }
 
-      function createFactory(): SalesProductFactory {
-        return new SalesProductFactory({
+      function createFactory(): ProductFactory {
+        return new ProductFactory({
           random: mockRandomService,
           time: mockTimeService,
         });
       }
 
-      function createExpectedProduct(): SalesProduct {
-        return new SalesProduct({
+      function createExpectedProduct(): Product {
+        return new Product({
           productId,
           name,
           description,

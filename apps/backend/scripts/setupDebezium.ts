@@ -50,7 +50,7 @@ import { inspect } from 'util';
         "tombstones.on.delete" : "false",
         "transforms" : "outbox",
         "transforms.outbox.type" : "io.debezium.transforms.outbox.EventRouter",
-        "transforms.outbox.route.topic.replacement" : config.kafka.kafkaSalesProductsTopic,
+        "transforms.outbox.route.topic.replacement" : config.kafka.kafkaProductsTopic,
         "transforms.outbox.table.field.event.key": "aggregate_id",
         "transforms.outbox.table.field.event.type": "message_name",
         "transforms.outbox.table.field.event.id": "message_id",

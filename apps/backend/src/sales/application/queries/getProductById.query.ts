@@ -1,18 +1,18 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ISalesProductRepository } from '../repositories/salesProductRepository/ISalesProduct.repository';
+import { IProductRepository } from '../repositories/productRepository/IProductRepository';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
-import { SalesProduct } from '../../domain/salesProduct/salesProduct';
+import { Product } from '../../domain/product/product';
 import { PRODUCT_NOT_FOUND } from '../../../infrastructure/shared/errorMessages';
 import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 
 @Injectable()
-export class GetSalesProductByIdQuery {
+export class GetProductByIdQuery {
   constructor(
     @Inject(SALES_PRODUCT_REPOSITORY)
-    private readonly repo: ISalesProductRepository,
+    private readonly repo: IProductRepository,
   ) {}
 
-  async run({ productId }: { productId: string }, transaction: ITransaction): Promise<SalesProduct> {
+  async run({ productId }: { productId: string }, transaction: ITransaction): Promise<Product> {
     const product = await this.repo.findOneById(productId, transaction);
 
     if (!product) {

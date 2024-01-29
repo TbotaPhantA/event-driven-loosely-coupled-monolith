@@ -1,10 +1,10 @@
-import { SalesProductEntity } from '../entities/salesProduct.entity';
-import { SalesProduct } from '../../domain/salesProduct/salesProduct';
+import { ProductEntity } from '../entities/product.entity';
+import { Product } from '../../domain/product/product';
 
-export class SalesProductMapper {
-  static toEntity(product: SalesProduct): SalesProductEntity {
+export class ProductMapper {
+  static toEntity(product: Product): ProductEntity {
     const exported = product.export();
-    return SalesProductEntity.createByRaw({
+    return ProductEntity.createByRaw({
       productId: exported.productId,
       name: exported.name,
       price: exported.price,
@@ -15,8 +15,8 @@ export class SalesProductMapper {
     });
   }
 
-  static toDomain(entity: SalesProductEntity): SalesProduct {
-    return new SalesProduct({
+  static toDomain(entity: ProductEntity): Product {
+    return new Product({
       productId: entity.productId,
       name: entity.name,
       price: entity.price,

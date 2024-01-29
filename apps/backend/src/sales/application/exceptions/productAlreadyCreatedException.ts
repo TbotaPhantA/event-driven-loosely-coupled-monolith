@@ -1,11 +1,11 @@
 import { ConflictException } from '@nestjs/common';
 import { PRODUCT_ALREADY_CREATED } from '../../../infrastructure/shared/errorMessages';
-import { SalesProductOutputDto } from '../dto/output/salesProductOutputDto';
+import { ProductOutputDto } from '../dto/output/productOutputDto';
 
 export class ProductAlreadyCreatedException extends ConflictException {
-  public readonly salesProduct: SalesProductOutputDto;
-  constructor(salesProduct: SalesProductOutputDto) {
+  public readonly product: ProductOutputDto;
+  constructor(product: ProductOutputDto) {
     super(PRODUCT_ALREADY_CREATED);
-    this.salesProduct = new SalesProductOutputDto(salesProduct);
+    this.product = new ProductOutputDto(product);
   }
 }

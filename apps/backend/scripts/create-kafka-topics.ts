@@ -10,7 +10,7 @@ import { config } from '../src/infrastructure/config/config';
 
   await admin.connect();
 
-  const toCreateTopics = [config.kafka.kafkaSalesProductsTopic];
+  const toCreateTopics = [config.kafka.kafkaProductsTopic];
 
   const areTopicsCreated = await admin.createTopics({
     topics: toCreateTopics.map(topic => ({

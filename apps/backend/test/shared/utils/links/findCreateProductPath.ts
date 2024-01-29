@@ -1,10 +1,10 @@
-import { GetEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getEntryLinksOutput.dto';
-import { CreateSalesProduct } from '../../../../src/sales/domain/salesProduct/commands/createSalesProduct';
+import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getSalesEntryLinksOutputDto';
+import { CreateProduct } from '../../../../src/sales/domain/product/commands/createProduct';
 import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
 
-export function findCreateProductPath(entryLinks: GetEntryLinksOutputDto): string {
-  const createSalesProductPath = entryLinks.links
-    .find(link => link.name = CreateSalesProduct.name)?.path;
-  assertIsNotEmpty(createSalesProductPath);
-  return createSalesProductPath;
+export function findCreateProductPath(entryLinks: GetSalesEntryLinksOutputDto): string {
+  const createProductPath = entryLinks.links
+    .find(link => link.name = CreateProduct.name)?.path;
+  assertIsNotEmpty(createProductPath);
+  return createProductPath;
 }
