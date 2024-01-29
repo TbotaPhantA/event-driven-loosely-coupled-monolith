@@ -5,6 +5,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] Remove excess `Sales` prefix in the `Sales` bounded context.
 - [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
+- [ ] integrate allure with acceptance tests
 ### infrastructure
 - [ ] add request logging
 ### docker-compose
