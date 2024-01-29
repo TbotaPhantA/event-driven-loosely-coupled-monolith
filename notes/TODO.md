@@ -26,7 +26,7 @@ example:
   "header": {
     "messageId": 1,
     "messageType": "event",
-    "messageName": "SalesProductCreated",
+    "messageName": "ProductCreated",
     "correlationId": "01HJ4SD9SKBHA2HZEG9RM7E2WH",
     "producerName": "Sales"
   },
