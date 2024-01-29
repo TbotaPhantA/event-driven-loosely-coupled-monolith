@@ -4,7 +4,7 @@ import { ProductAlreadyCreatedException } from '../../../sales/application/excep
 import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 import {
   IProductIdempotencyService
-} from '../../../sales/application/services/interfaces/IProductIdempotencyService';
+} from '../../../sales/application/services/interfaces/IProductIdempotency.service';
 import {
   DatabaseSalesProductIdempotentRequestRepository
 } from '../repositories/databaseSalesProductIdempotentRequestRepository';

@@ -6,7 +6,7 @@ import { CreateProductService } from '../../../../../src/sales/application/servi
 import { ITransactionService } from '../../../../../src/infrastructure/transaction/ITransaction.service';
 import {
   IProductRepository
-} from '../../../../../src/sales/application/repositories/productRepository/IProductRepository';
+} from '../../../../../src/sales/application/repositories/productRepository/IProduct.repository';
 import { ProductFactory } from '../../../../../src/sales/domain/product/productFactory';
 import { ProductBuilder } from '../../../../shared/__fixtures__/builders/productBuilder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';
@@ -15,13 +15,13 @@ import { ITransaction } from '../../../../../src/infrastructure/transaction/shar
 import { IsolationLevelUnion } from '../../../../../src/infrastructure/transaction/isolationLevelUnion';
 import {
   IProductMessagesService
-} from '../../../../../src/sales/application/services/interfaces/IProductMessagesService';
+} from '../../../../../src/sales/application/services/interfaces/IProductMessages.service';
 import {
   ProductCreatedEventBuilder
 } from '../../../../shared/__fixtures__/builders/events/productCreatedEvent.builder';
 import {
   IProductIdempotencyService
-} from '../../../../../src/sales/application/services/interfaces/IProductIdempotencyService';
+} from '../../../../../src/sales/application/services/interfaces/IProductIdempotency.service';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 import { ProductOutputDto } from '../../../../../src/sales/application/dto/output/productOutputDto';

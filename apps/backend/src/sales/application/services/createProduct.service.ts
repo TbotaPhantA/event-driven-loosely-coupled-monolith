@@ -4,15 +4,15 @@ import { CreateProduct } from '../../domain/product/commands/createProduct';
 import { ITransactionService } from '../../../infrastructure/transaction/ITransaction.service';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { ProductFactory } from '../../domain/product/productFactory';
-import { IProductRepository } from '../repositories/productRepository/IProductRepository';
+import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
 import { Product } from '../../domain/product/product';
-import { IProductMessagesService } from './interfaces/IProductMessagesService';
+import { IProductMessagesService } from './interfaces/IProductMessages.service';
 import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/constants';
 import { SALES_CONTEXT_NAME, SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../infrastructure/idempotency/constants';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../infrastructure/messages/constants';
 import { ProductCreated } from '../../domain/product/events/productCreated';
-import { IProductIdempotencyService } from './interfaces/IProductIdempotencyService';
+import { IProductIdempotencyService } from './interfaces/IProductIdempotency.service';
 import { ProductOutputDto } from '../dto/output/productOutputDto';
 
 @Injectable()

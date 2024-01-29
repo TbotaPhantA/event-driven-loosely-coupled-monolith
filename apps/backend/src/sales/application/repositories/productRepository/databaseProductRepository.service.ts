@@ -1,4 +1,4 @@
-import { IProductRepository } from './IProductRepository';
+import { IProductRepository } from './IProduct.repository';
 import { Product } from '../../../domain/product/product';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';

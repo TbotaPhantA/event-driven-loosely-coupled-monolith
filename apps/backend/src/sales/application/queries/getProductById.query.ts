@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { IProductRepository } from '../repositories/productRepository/IProductRepository';
+import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { Product } from '../../domain/product/product';
 import { PRODUCT_NOT_FOUND } from '../../../infrastructure/shared/errorMessages';

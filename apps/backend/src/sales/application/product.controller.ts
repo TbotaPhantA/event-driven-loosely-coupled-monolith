@@ -17,8 +17,8 @@ import { HttpExceptionFilter } from '../../infrastructure/shared/exceptionFilter
 import { CORRELATION_ID_HEADER } from '../../infrastructure/correlation';
 import {
   adjustPriceResource,
-  createSalesProductResource,
-  deleteSalesProductResource,
+  createProductResource,
+  deleteProductResource,
   salesProductResource,
   updateProductInfoResource
 } from './shared/resources';
@@ -29,18 +29,18 @@ import {
 @UseFilters(HttpExceptionFilter)
 export class ProductController {
   constructor(
-    private readonly createSalesProductService: CreateProductService,
+    private readonly createProductService: CreateProductService,
     private readonly adjustPriceService: AdjustPriceService,
     private readonly updateProductInfoService: UpdateProductInfoService,
-    private readonly deleteSalesProductService: DeleteProductService,
+    private readonly deleteProductService: DeleteProductService,
   ) {}
 
-  @Post(createSalesProductResource)
+  @Post(createProductResource)
   @ApiOperation({ summary: 'Create sales product' })
   @ApiResponse({ type: CreateProductOutputDto })
   @ApiHeader({ name: CORRELATION_ID_HEADER })
-  async createSalesProduct(@Body() command: CreateProduct): Promise<CreateProductOutputDto> {
-    return this.createSalesProductService.runTransaction(command);
+  async createProduct(@Body() command: CreateProduct): Promise<CreateProductOutputDto> {
+    return this.createProductService.runTransaction(command);
   }
 
   @Put(adjustPriceResource)
@@ -61,12 +61,12 @@ export class ProductController {
     return this.updateProductInfoService.runTransaction(command);
   }
 
-  @Delete(`:productId/${deleteSalesProductResource}`)
+  @Delete(`:productId/${deleteProductResource}`)
   @ApiOperation({ summary: 'Delete the sales product' })
   @ApiResponse({ type: DeleteProductOutputDto })
-  async deleteSalesProduct(
+  async deleteProduct(
     @Param() dto: DeleteProductParamsDto,
   ): Promise<DeleteProductOutputDto> {
-    return this.deleteSalesProductService.runTransaction(dto);
+    return this.deleteProductService.runTransaction(dto);
   }
 }
