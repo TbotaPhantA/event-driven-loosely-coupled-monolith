@@ -3,6 +3,7 @@ import { UpdateProductInfo } from './commands/updateProductInfo';
 import { TimeService } from '../../../infrastructure/time/time.service';
 import { Importable } from '../../../infrastructure/shared/types/importable';
 import { Exportable } from '../../../infrastructure/shared/types/exportable';
+import { DeepReadonly } from '../../../infrastructure/shared/types/deepReadonly';
 
 export class Product implements Importable, Exportable {
   private __data: Data;
@@ -26,7 +27,7 @@ export class Product implements Importable, Exportable {
   }
 
   import(data: Data): void { this.__data = data; }
-  export(): Data { return this.__data; }
+  export(): DeepReadonly<Data> { return this.__data; }
 }
 
 interface Data {
