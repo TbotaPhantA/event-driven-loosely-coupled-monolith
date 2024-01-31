@@ -2,7 +2,7 @@
 
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
-- [ ] manage uncommitted events inside product object
+- [ ] insert full response to idempotencyService
 - [ ] extract Data Access Layer to dal folder
 - [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
