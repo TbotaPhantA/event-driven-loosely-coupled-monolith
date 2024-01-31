@@ -26,23 +26,23 @@ import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructur
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 import { ProductOutputDto } from '../../../../../src/sales/application/dto/output/productOutputDto';
 
-describe('CreateSalesProductService', () => {
-  let createSalesProductService: CreateProductService;
+describe('CreateProductService', () => {
+  let createProductService: CreateProductService;
   let stubTransactionService: jest.Mocked<ITransactionService>;
-  let stubSalesProductRepository: jest.Mocked<IProductRepository>;
-  let stubSalesProductFactory: jest.Mocked<ProductFactory>;
+  let stubProductRepository: jest.Mocked<IProductRepository>;
+  let stubProductFactory: jest.Mocked<ProductFactory>;
   let stubIdempotencyService: jest.Mocked<IProductIdempotencyService>;
-  let stubSalesProductMessageService: jest.Mocked<IProductMessagesService>;
+  let stubProductMessageService: jest.Mocked<IProductMessagesService>;
   const transaction = {}
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(CreateProductService).compile()
 
-    createSalesProductService = unit;
+    createProductService = unit;
     stubTransactionService = unitRef.get(TRANSACTION_SERVICE);
-    stubSalesProductRepository = unitRef.get(SALES_PRODUCT_REPOSITORY)
-    stubSalesProductMessageService = unitRef.get(SALES_PRODUCT_MESSAGES_SERVICE);
-    stubSalesProductFactory = unitRef.get(ProductFactory);
+    stubProductRepository = unitRef.get(SALES_PRODUCT_REPOSITORY)
+    stubProductMessageService = unitRef.get(SALES_PRODUCT_MESSAGES_SERVICE);
+    stubProductFactory = unitRef.get(ProductFactory);
     stubIdempotencyService = unitRef.get(SALES_PRODUCT_IDEMPOTENCY_SERVICE);
 
     stubTransactionService.withTransaction = jest.fn().mockImplementation(<T>(
@@ -51,52 +51,52 @@ describe('CreateSalesProductService', () => {
     ) => {
       fn(transaction);
     })
-    const salesProduct = ProductBuilder.defaultAll.result;
-    stubSalesProductFactory.create = jest.fn().mockReturnValue(salesProduct);
-    stubSalesProductRepository.save = jest.fn().mockResolvedValue(salesProduct);
+    const product = ProductBuilder.defaultAll.result;
+    stubProductFactory.create = jest.fn().mockReturnValue(product);
+    stubProductRepository.save = jest.fn().mockResolvedValue(product);
   })
 
   describe('runTransaction', () => {
     test('idempotent request assert - should be called', async () => {
       const command = CreateProductBuilder.defaultAll.result;
 
-      await createSalesProductService.runTransaction(command);
+      await createProductService.runTransaction(command);
 
       expect(stubIdempotencyService.assertRequestIsIdempotent).toHaveBeenCalledWith(transaction);
     });
 
     test('idempotent request insert - should be called', async () => {
       const product = ProductBuilder.defaultAll.result;
-      stubSalesProductFactory.create = jest.fn().mockReturnValue(product);
+      stubProductFactory.create = jest.fn().mockReturnValue(product);
       const outputDto = new ProductOutputDto(product.export());
       const command = CreateProductBuilder.defaultAll.result;
 
-      await createSalesProductService.runTransaction(command);
+      await createProductService.runTransaction(command);
 
       expect(stubIdempotencyService.insertRequest).toHaveBeenCalledWith(outputDto, transaction);
     });
 
     test('event insert - should be called', async () => {
       const product = ProductBuilder.defaultAll.result;
-      stubSalesProductFactory.create = jest.fn().mockReturnValue(product);
+      stubProductFactory.create = jest.fn().mockReturnValue(product);
       const command = CreateProductBuilder.defaultAll.result;
       const event = ProductCreatedEventBuilder.defaultAll.result;
 
-      await createSalesProductService.runTransaction(command);
+      await createProductService.runTransaction(command);
 
-      expect(stubSalesProductMessageService.insertEvent).toHaveBeenCalledWith(event, SALES_CONTEXT_NAME, transaction);
+      expect(stubProductMessageService.insertEvent).toHaveBeenCalledWith(event, SALES_CONTEXT_NAME, transaction);
     })
 
-    describe('save SalesProduct', () => {
-      const saveSalesProductTestCases = [
+    describe('save product', () => {
+      const saveProductTestCases = [
         {
           toString: (): string => '1 should be called',
-          givenSalesProduct: ProductBuilder.defaultAll.result,
+          givenProduct: ProductBuilder.defaultAll.result,
           command: CreateProductBuilder.defaultAll.result,
         },
         {
           toString: (): string => '2 should be called',
-          givenSalesProduct: ProductBuilder.defaultAll.with({
+          givenProduct: ProductBuilder.defaultAll.with({
             productId: '01HGNJHGSPJS3QM3ZGMY181ZX6',
             name: 'Phone2',
             price: 102,
@@ -113,10 +113,10 @@ describe('CreateSalesProductService', () => {
         },
       ];
 
-      test.each(saveSalesProductTestCases)('%s', async ({ givenSalesProduct, command }) => {
-        stubSalesProductFactory.create = jest.fn().mockReturnValue(givenSalesProduct);
-        await createSalesProductService.runTransaction(command);
-        expect(stubSalesProductRepository.save).toHaveBeenCalledWith(givenSalesProduct, transaction);
+      test.each(saveProductTestCases)('%s', async ({ givenProduct, command }) => {
+        stubProductFactory.create = jest.fn().mockReturnValue(givenProduct);
+        await createProductService.runTransaction(command);
+        expect(stubProductRepository.save).toHaveBeenCalledWith(givenProduct, transaction);
       });
     });
   });

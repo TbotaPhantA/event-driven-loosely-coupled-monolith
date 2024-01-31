@@ -3,7 +3,7 @@ import { TimeService } from '../../../../../../src/infrastructure/time/time.serv
 import { mock } from 'jest-mock-extended';
 import { AdjustPriceBuilder } from '../../../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 
-describe('SalesProduct', () => {
+describe('Product', () => {
   const now = new Date(2022, 0, 4);
   const mockTimeService = mock<TimeService>();
 

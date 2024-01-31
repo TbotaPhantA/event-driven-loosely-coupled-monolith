@@ -10,7 +10,7 @@ import { mock } from 'jest-mock-extended';
 
 const now = new Date(2022, 0, 3);
 
-describe('SalesProductFactory', () => {
+describe('ProductFactory', () => {
   const mockRandomService = mock<RandomService>();
   const mockTimeService = mock<TimeService>();
 
@@ -44,11 +44,11 @@ describe('SalesProductFactory', () => {
       mockProductIdForRandomService();
       mockNowForTimeService();
       const factory = createFactory();
-      const expectedSalesProduct = createExpectedProduct();
+      const expectedProduct = createExpectedProduct();
 
       const product = factory.create(command);
 
-      expect(product).toStrictEqual(expectedSalesProduct);
+      expect(product).toStrictEqual(expectedProduct);
 
       function createCommand(): CreateProduct {
         return CreateProductBuilder.defaultAll.with({
