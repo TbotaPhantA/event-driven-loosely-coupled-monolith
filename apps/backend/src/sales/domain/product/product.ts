@@ -10,11 +10,12 @@ import { IEvent } from './events/IEvent';
 import { ProductCreated } from './events/productCreated';
 
 export class Product implements Importable, Exportable {
+  private readonly __meta: Meta;
   private __data: Data;
-  private readonly __uncommittedEvents: IEvent[];
+
   constructor(data: Data) {
     this.__data = data;
-    this.__uncommittedEvents = [];
+    this.__meta = { uncommittedEvents: [] };
   }
 
   static create(command: CreateProduct, deps: Deps): Product {
@@ -22,16 +23,14 @@ export class Product implements Importable, Exportable {
     const now = deps.time.now();
 
     const product = new Product({
+      ...command,
       productId,
-      name: command.name,
-      description: command.description,
-      price: command.price,
       createdAt: now,
       updatedAt: now,
       removedAt: null,
     });
 
-    product.__uncommittedEvents.push(new ProductCreated({ data: { product: product.export() }}));
+    product.__meta.uncommittedEvents.push(new ProductCreated({ data: { product: product.export() }}));
     return product;
   }
 
@@ -55,7 +54,7 @@ export class Product implements Importable, Exportable {
   import(data: Data): void { this.__data = data; }
   export(): DeepReadonly<Data> { return this.__data; }
   exportUncommittedEvents(): IEvent[] {
-    return this.__uncommittedEvents;
+    return this.__meta.uncommittedEvents;
   }
 }
 
@@ -67,6 +66,10 @@ interface Data {
   createdAt: Date;
   updatedAt: Date;
   removedAt: Date | null;
+}
+
+interface Meta {
+  uncommittedEvents: IEvent[];
 }
 
 interface Deps {
