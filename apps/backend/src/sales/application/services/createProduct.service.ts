@@ -5,7 +5,6 @@ import { ITransactionService } from '../../../infrastructure/transaction/ITransa
 import { ITransaction } from '../../../infrastructure/transaction/shared/types/ITransaction';
 import { ProductFactory } from '../../domain/product/productFactory';
 import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
-import { Product } from '../../domain/product/product';
 import { IProductMessagesService } from './interfaces/IProductMessages.service';
 import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/constants';
 import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
@@ -35,19 +34,14 @@ export class CreateProductService {
 
   async create(command: CreateProduct, transaction: ITransaction): Promise<CreateProductOutputDto> {
     await this.idempotencyService.assertRequestIsIdempotent(transaction);
+
     const product = this.factory.create(command);
-    const [savedProduct] = await this.saveChanges(product, transaction);
-    return CreateProductOutputDto.from(savedProduct);
-  }
 
-  private saveChanges(product: Product, transaction: ITransaction): Promise<[Product, ...unknown[]]> {
-    const outputDto = new ProductOutputDto(product.export());
-    const events = product.exportUncommittedEvents();
-
-    return Promise.all([
+    await Promise.all([
       this.repo.save(product, transaction),
-      this.idempotencyService.insertRequest(outputDto, transaction),
-      this.messagesService.insertEvents(events, transaction),
+      this.idempotencyService.insertRequest(new ProductOutputDto(product.export()), transaction),
+      this.messagesService.insertEvents(product.exportUncommittedEvents(), transaction),
     ]);
+    return CreateProductOutputDto.from(product);
   }
 }
