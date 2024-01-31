@@ -16,6 +16,7 @@ import { requestCreateProduct } from '../../../shared/utils/requests/requestCrea
 import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjustPrice';
 import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getSalesEntryLinksOutputDto';
 import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
+import { Product } from '../../../../src/sales/domain/product/product';
 
 describe(`SalesProductController`, () => {
   let salesEntryLinks: GetSalesEntryLinksOutputDto;
@@ -107,7 +108,8 @@ describe(`SalesProductController`, () => {
         messageType: MessageTypeEnum.event,
         messageName: ProductCreated.name,
         correlationId: createProductCorrelationId,
-        producerName: SALES_CONTEXT_NAME,
+        aggregateName: Product.name,
+        contextName: SALES_CONTEXT_NAME,
       });
     });
   });

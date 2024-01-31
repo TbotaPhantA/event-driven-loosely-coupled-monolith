@@ -10,7 +10,7 @@ import {
 import { ProductFactory } from '../../../../../src/sales/domain/product/productFactory';
 import { ProductBuilder } from '../../../../shared/__fixtures__/builders/productBuilder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';
-import { SALES_CONTEXT_NAME, SALES_PRODUCT_REPOSITORY } from '../../../../../src/sales/application/shared/constants';
+import { SALES_PRODUCT_REPOSITORY } from '../../../../../src/sales/application/shared/constants';
 import { ITransaction } from '../../../../../src/infrastructure/transaction/shared/types/ITransaction';
 import { IsolationLevelUnion } from '../../../../../src/infrastructure/transaction/isolationLevelUnion';
 import {
@@ -84,7 +84,7 @@ describe('CreateProductService', () => {
 
       await createProductService.runTransaction(command);
 
-      expect(stubProductMessageService.insertEvent).toHaveBeenCalledWith(event, SALES_CONTEXT_NAME, transaction);
+      expect(stubProductMessageService.insertEvent).toHaveBeenCalledWith(event, transaction);
     })
 
     describe('save product', () => {

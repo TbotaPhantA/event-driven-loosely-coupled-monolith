@@ -16,11 +16,14 @@ export class SalesProductMessage {
   @Column({ name: 'correlation_id' })
   correlationId!: string;
 
-  @Column({ name: 'producer_name' })
-  producerName!: string;
-
   @Column({ name: 'aggregate_id' })
   aggregateId!: string;
+
+  @Column({ name: 'aggregate_name' })
+  aggregateName!: string;
+
+  @Column({ name: 'context_name' })
+  contextName!: string;
 
   @Column({ type: 'jsonb' })
   data!: Record<string, unknown>;
@@ -32,8 +35,9 @@ export class SalesProductMessage {
     message.messageType = raw.messageType;
     message.messageName = raw.messageName;
     message.correlationId = raw.correlationId;
-    message.producerName = raw.producerName;
     message.aggregateId = raw.aggregateId;
+    message.aggregateName = raw.aggregateName;
+    message.contextName = raw.contextName;
     message.data = raw.data;
 
     return message;

@@ -1,15 +1,21 @@
 import { IEvent } from './IEvent';
-import { ProductOutputDto } from '../../../application/dto/output/productOutputDto';
+import { SALES_CONTEXT_NAME } from '../../../application/shared/constants';
+import { Product } from '../product';
 
-type ProductCreatedData = { product: ProductOutputDto }
+type ProductCreatedData = { product: ReturnType<Product['export']> }
 
 export class ProductCreated implements IEvent<ProductCreatedData> {
-  readonly eventName: string = ProductCreated.name;
+  readonly eventName: string;
   readonly aggregateId: string;
-  readonly data: { product: ProductOutputDto };
+  readonly aggregateName: string;
+  readonly contextName: string;
+  readonly data: ProductCreatedData;
 
-  constructor(raw: Pick<ProductCreated, 'aggregateId' | 'data'>) {
-    this.aggregateId = raw.aggregateId;
+  constructor(raw: Pick<ProductCreated, 'data'>) {
+    this.eventName = ProductCreated.name;
+    this.aggregateId = raw.data.product.productId;
+    this.aggregateName = Product.name;
+    this.contextName = SALES_CONTEXT_NAME;
     this.data = raw.data;
   }
 }

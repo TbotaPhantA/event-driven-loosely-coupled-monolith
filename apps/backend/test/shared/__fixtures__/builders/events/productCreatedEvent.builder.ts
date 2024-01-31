@@ -7,10 +7,7 @@ export class ProductCreatedEventBuilder {
     const exported = ProductBuilder.defaultAll.result.export();
 
     return new InjectionBuilder<ProductCreated>(
-      new ProductCreated({
-        aggregateId: exported.productId,
-        data: { product: exported },
-      }),
+      new ProductCreated({ data: { product: exported } }),
     );
   }
 }

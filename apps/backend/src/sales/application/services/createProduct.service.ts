@@ -8,7 +8,7 @@ import { IProductRepository } from '../repositories/productRepository/IProduct.r
 import { Product } from '../../domain/product/product';
 import { IProductMessagesService } from './interfaces/IProductMessages.service';
 import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/constants';
-import { SALES_CONTEXT_NAME, SALES_PRODUCT_REPOSITORY } from '../shared/constants';
+import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../infrastructure/idempotency/constants';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../infrastructure/messages/constants';
 import { ProductCreated } from '../../domain/product/events/productCreated';
@@ -43,15 +43,12 @@ export class CreateProductService {
 
   private saveChanges(product: Product, transaction: ITransaction): Promise<[Product, ...unknown[]]> {
     const outputDto = new ProductOutputDto(product.export());
-    const event = new ProductCreated({
-      data: { product: outputDto },
-      aggregateId: outputDto.productId,
-    });
+    const event = new ProductCreated({ data: { product: outputDto } });
 
     return Promise.all([
       this.repo.save(product, transaction),
       this.idempotencyService.insertRequest(outputDto, transaction),
-      this.messagesService.insertEvent(event, SALES_CONTEXT_NAME, transaction),
+      this.messagesService.insertEvent(event, transaction),
     ]);
   }
 }

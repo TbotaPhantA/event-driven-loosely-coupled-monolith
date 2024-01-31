@@ -1,5 +1,5 @@
 import {
-  IProductMessagesService
+  IProductMessagesService,
 } from '../../../sales/application/services/interfaces/IProductMessages.service';
 import { Injectable } from '@nestjs/common';
 import { SalesProductMessageRepository } from '../repositories/salesProductMessage.repository';
@@ -19,7 +19,6 @@ export class SalesProductMessagesService implements IProductMessagesService {
 
   async insertEvent(
     event: IEvent,
-    producerName: string,
     transaction: EntityManager,
   ): Promise<void> {
     const message = SalesProductMessage.createByRaw({
@@ -27,8 +26,9 @@ export class SalesProductMessagesService implements IProductMessagesService {
       messageName: event.eventName,
       messageType: MessageTypeEnum.event,
       correlationId: this.correlationService.getCorrelationId(),
-      producerName,
       aggregateId: event.aggregateId,
+      aggregateName: event.aggregateName,
+      contextName: event.contextName,
       data: event.data,
     });
 

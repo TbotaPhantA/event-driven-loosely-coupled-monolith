@@ -30,7 +30,8 @@ import { inspect } from 'util';
       'message_type:header:messageType',
       'message_name:header:messageName',
       'correlation_id:header:correlationId',
-      'producer_name:header:producerName',
+      'aggregate_name:header:aggregateName',
+      'context_name:header:contextName',
     ].join(',');
 
     return {
@@ -55,7 +56,7 @@ import { inspect } from 'util';
         "transforms.outbox.table.field.event.type": "message_name",
         "transforms.outbox.table.field.event.id": "message_id",
         "transforms.outbox.table.field.event.payload": "data",
-        "transforms.outbox.route.by.field": "producer_name",
+        "transforms.outbox.route.by.field": "context_name",
         "transforms.outbox.table.fields.additional.placement" : headerMappings,
       },
     };
