@@ -17,14 +17,17 @@ import {
   IProductMessagesService
 } from '../../../../../src/sales/application/services/interfaces/IProductMessages.service';
 import {
-  ProductCreatedEventBuilder
-} from '../../../../shared/__fixtures__/builders/events/productCreatedEvent.builder';
-import {
   IProductIdempotencyService
 } from '../../../../../src/sales/application/services/interfaces/IProductIdempotency.service';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 import { ProductOutputDto } from '../../../../../src/sales/application/dto/output/productOutputDto';
+import { Product } from '../../../../../src/sales/domain/product/product';
+import { mock } from 'jest-mock-extended';
+import { TimeService } from '../../../../../src/infrastructure/time/time.service';
+import { RandomService } from '../../../../../src/infrastructure/random/random.service';
+import { ProductCreated } from '../../../../../src/sales/domain/product/events/productCreated';
+import { _MockProxy } from 'jest-mock-extended/lib/Mock';
 
 describe(CreateProductService.name, () => {
   let createProductService: CreateProductService;
@@ -77,14 +80,26 @@ describe(CreateProductService.name, () => {
     });
 
     test('event insert - should be called', async () => {
-      const product = ProductBuilder.defaultAll.result;
-      stubProductFactory.create = jest.fn().mockReturnValue(product);
       const command = CreateProductBuilder.defaultAll.result;
-      const event = ProductCreatedEventBuilder.defaultAll.result;
+      const product = Product.create(command, { time: getStubTime(), random: getStubRandom() });
+      stubProductFactory.create = jest.fn().mockReturnValue(product);
+      const events = [new ProductCreated({ data: { product: product.export() }})];
 
       await createProductService.runTransaction(command);
 
-      expect(stubProductMessageService.insertEvent).toHaveBeenCalledWith(event, transaction);
+      expect(stubProductMessageService.insertEvents).toHaveBeenCalledWith(events, transaction);
+
+      function getStubTime(): _MockProxy<TimeService> {
+        const stubTime = mock<TimeService>();
+        stubTime.now.mockReturnValue(new Date(2022, 0, 3));
+        return stubTime;
+      }
+
+      function getStubRandom(): _MockProxy<RandomService> {
+        const stubRandom = mock<RandomService>();
+        stubRandom.generateULID.mockReturnValue('01HNGH0MYN74N7T47GBZD158V5');
+        return stubRandom;
+      }
     })
 
     describe('save product', () => {

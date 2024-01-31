@@ -17,11 +17,11 @@ export class SalesProductMessagesService implements IProductMessagesService {
     private readonly correlationService: CorrelationService,
   ) {}
 
-  async insertEvent(
-    event: IEvent,
+  async insertEvents(
+    events: IEvent[],
     transaction: EntityManager,
   ): Promise<void> {
-    const message = SalesProductMessage.createByRaw({
+    const messages = events.map(event => SalesProductMessage.createByRaw({
       messageId: PLACEHOLDER_ID,
       messageName: event.eventName,
       messageType: MessageTypeEnum.event,
@@ -30,8 +30,8 @@ export class SalesProductMessagesService implements IProductMessagesService {
       aggregateName: event.aggregateName,
       contextName: event.contextName,
       data: event.data,
-    });
+    }))
 
-    await this.salesProductMessageRepository.insert(message, transaction);
+    await this.salesProductMessageRepository.insertMany(messages, transaction);
   }
 }

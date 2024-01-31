@@ -11,7 +11,6 @@ import { TRANSACTION_SERVICE } from '../../../infrastructure/transaction/shared/
 import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../infrastructure/idempotency/constants';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../infrastructure/messages/constants';
-import { ProductCreated } from '../../domain/product/events/productCreated';
 import { IProductIdempotencyService } from './interfaces/IProductIdempotency.service';
 import { ProductOutputDto } from '../dto/output/productOutputDto';
 
@@ -43,12 +42,12 @@ export class CreateProductService {
 
   private saveChanges(product: Product, transaction: ITransaction): Promise<[Product, ...unknown[]]> {
     const outputDto = new ProductOutputDto(product.export());
-    const event = new ProductCreated({ data: { product: outputDto } });
+    const events = product.exportUncommittedEvents();
 
     return Promise.all([
       this.repo.save(product, transaction),
       this.idempotencyService.insertRequest(outputDto, transaction),
-      this.messagesService.insertEvent(event, transaction),
+      this.messagesService.insertEvents(events, transaction),
     ]);
   }
 }

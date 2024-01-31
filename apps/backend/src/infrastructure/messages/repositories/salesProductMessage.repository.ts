@@ -4,7 +4,7 @@ import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class SalesProductMessageRepository {
-  async insert(message: SalesProductMessage, transaction: EntityManager): Promise<SalesProductMessage> {
+  async insertMany(message: SalesProductMessage[], transaction: EntityManager): Promise<SalesProductMessage[]> {
     return transaction.save(message);
   };
 }
