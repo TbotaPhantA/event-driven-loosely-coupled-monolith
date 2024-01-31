@@ -6,7 +6,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
 - [ ] integrate allure with acceptance tests
-- [ ] think about services names (interactors, commands, ...)
+- [ ] think about services names (interactors, commands, ...) + study ports and adapters
 ### infrastructure
 - [ ] add request logging
 ### docker-compose
