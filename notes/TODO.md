@@ -3,6 +3,7 @@
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
 - [ ] manage uncommitted events inside product object
+- [ ] replace `productName` with `aggregateName` and `contextName`
 - [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
 - [ ] integrate allure with acceptance tests
@@ -29,7 +30,8 @@ example:
     "messageType": "event",
     "messageName": "ProductCreated",
     "correlationId": "01HJ4SD9SKBHA2HZEG9RM7E2WH",
-    "producerName": "Sales"
+    "aggregateName": "Product",
+    "contextName": "Sales"
   },
   "key": {
     "schema": {},
