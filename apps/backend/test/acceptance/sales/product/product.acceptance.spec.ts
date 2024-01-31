@@ -17,8 +17,9 @@ import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjust
 import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getSalesEntryLinksOutputDto';
 import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
 import { Product } from '../../../../src/sales/domain/product/product';
+import { ProductController } from '../../../../src/sales/application/product.controller';
 
-describe(`SalesProductController`, () => {
+describe(ProductController.name, () => {
   let salesEntryLinks: GetSalesEntryLinksOutputDto;
   let createProductPath: string;
   const createProductCorrelationId = 'correlationId999';
@@ -41,7 +42,7 @@ describe(`SalesProductController`, () => {
     }
   })
 
-  describe(`POST CreateProduct`, () => {
+  describe(ProductController.prototype.createProduct.name, () => {
     test('when given valid body - should successfully respond', async () => {
       const { body, status } = await requestCreateProduct(
         app,
@@ -99,7 +100,7 @@ describe(`SalesProductController`, () => {
       })
     })
 
-    test('product created event - should be sent to broker', async () => {
+    test(`${ProductCreated.name} event - should be sent to broker`, async () => {
       const message = extractMessage(await waitForMatchingPayload(messagePayloads, createProductCorrelationId));
 
       expect(message.key.payload).toStrictEqual(createProductResponse.product.productId);
@@ -114,7 +115,7 @@ describe(`SalesProductController`, () => {
     });
   });
 
-  describe(`PUT AdjustPrice`, () => {
+  describe(ProductController.prototype.adjustPrice.name, () => {
     test('successful test cases', async () => {
       const newPrice = createProductResponse.product.price + 100;
       const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({

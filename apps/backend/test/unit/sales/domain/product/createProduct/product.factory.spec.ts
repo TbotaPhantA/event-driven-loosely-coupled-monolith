@@ -10,11 +10,11 @@ import { mock } from 'jest-mock-extended';
 
 const now = new Date(2022, 0, 3);
 
-describe('ProductFactory', () => {
+describe(ProductFactory.name, () => {
   const mockRandomService = mock<RandomService>();
   const mockTimeService = mock<TimeService>();
 
-  describe('create', () => {
+  describe(ProductFactory.prototype.create.name, () => {
     const testCases = [
       {
         toString: (): string => '1 when phone - should create a phone',

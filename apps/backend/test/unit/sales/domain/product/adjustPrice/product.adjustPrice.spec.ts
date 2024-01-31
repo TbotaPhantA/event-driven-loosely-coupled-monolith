@@ -2,8 +2,9 @@ import { ProductBuilder } from '../../../../../shared/__fixtures__/builders/prod
 import { TimeService } from '../../../../../../src/infrastructure/time/time.service';
 import { mock } from 'jest-mock-extended';
 import { AdjustPriceBuilder } from '../../../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
+import { Product } from '../../../../../../src/sales/domain/product/product';
 
-describe('Product', () => {
+describe(Product.name, () => {
   const now = new Date(2022, 0, 4);
   const mockTimeService = mock<TimeService>();
 
@@ -11,7 +12,7 @@ describe('Product', () => {
     mockTimeService.now.mockReturnValue(now);
   })
 
-  describe('adjustPrice', () => {
+  describe(Product.prototype.adjustPrice.name, () => {
     const testCases = [
       {
         toString: (): string => '1 - price should be properly changed',

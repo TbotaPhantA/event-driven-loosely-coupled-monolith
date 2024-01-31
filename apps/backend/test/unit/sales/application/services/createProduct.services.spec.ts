@@ -26,7 +26,7 @@ import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructur
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 import { ProductOutputDto } from '../../../../../src/sales/application/dto/output/productOutputDto';
 
-describe('CreateProductService', () => {
+describe(CreateProductService.name, () => {
   let createProductService: CreateProductService;
   let stubTransactionService: jest.Mocked<ITransactionService>;
   let stubProductRepository: jest.Mocked<IProductRepository>;
@@ -56,7 +56,7 @@ describe('CreateProductService', () => {
     stubProductRepository.save = jest.fn().mockResolvedValue(product);
   })
 
-  describe('runTransaction', () => {
+  describe(CreateProductService.prototype.runTransaction.name, () => {
     test('idempotent request assert - should be called', async () => {
       const command = CreateProductBuilder.defaultAll.result;
 

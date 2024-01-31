@@ -1,6 +1,6 @@
 import { Product } from '../../../../../../src/sales/domain/product/product';
 
-describe('Product', () => {
+describe(Product.name, () => {
   test('constructor', () => {
     const now = new Date(2022, 0, 3);
     const [data]: ConstructorParameters<typeof Product> = [

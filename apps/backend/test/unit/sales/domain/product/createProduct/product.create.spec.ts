@@ -9,7 +9,7 @@ describe(Product.name, () => {
   const stubTime = mock<TimeService>();
   const stubRandom = mock<RandomService>();
 
-  describe('create', () => {
+  describe(Product['create'].name, () => {
     const successfulTestCases = [
       {
         toString: (): string => '1',
