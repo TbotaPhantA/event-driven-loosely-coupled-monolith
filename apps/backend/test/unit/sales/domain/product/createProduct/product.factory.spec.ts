@@ -48,7 +48,7 @@ describe(ProductFactory.name, () => {
 
       const product = factory.create(command);
 
-      expect(product).toStrictEqual(expectedProduct);
+      expect(product.export()).toStrictEqual(expectedProduct.export());
 
       function createCommand(): CreateProduct {
         return CreateProductBuilder.defaultAll.with({

@@ -6,16 +6,22 @@ import { Exportable } from '../../../infrastructure/shared/types/exportable';
 import { DeepReadonly } from '../../../infrastructure/shared/types/deepReadonly';
 import { CreateProduct } from './commands/createProduct';
 import { RandomService } from '../../../infrastructure/random/random.service';
+import { IEvent } from './events/IEvent';
+import { ProductCreated } from './events/productCreated';
 
 export class Product implements Importable, Exportable {
   private __data: Data;
-  constructor(data: Data) { this.__data = data; }
+  private readonly __uncommittedEvents: IEvent[];
+  constructor(data: Data) {
+    this.__data = data;
+    this.__uncommittedEvents = [];
+  }
 
   static create(command: CreateProduct, deps: Deps): Product {
     const productId = deps.random.generateULID();
     const now = deps.time.now();
 
-    return new Product({
+    const product = new Product({
       productId,
       name: command.name,
       description: command.description,
@@ -24,6 +30,9 @@ export class Product implements Importable, Exportable {
       updatedAt: now,
       removedAt: null,
     });
+
+    product.__uncommittedEvents.push(new ProductCreated({ data: { product: product.export() }}));
+    return product;
   }
 
   adjustPrice(command: AdjustPrice, deps: Pick<Deps, 'time'>): void {
@@ -45,6 +54,9 @@ export class Product implements Importable, Exportable {
 
   import(data: Data): void { this.__data = data; }
   export(): DeepReadonly<Data> { return this.__data; }
+  exportUncommittedEvents(): IEvent[] {
+    return this.__uncommittedEvents;
+  }
 }
 
 interface Data {

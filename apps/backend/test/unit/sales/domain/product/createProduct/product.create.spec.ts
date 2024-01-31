@@ -4,6 +4,7 @@ import { ProductBuilder } from '../../../../../shared/__fixtures__/builders/prod
 import { TimeService } from '../../../../../../src/infrastructure/time/time.service';
 import { RandomService } from '../../../../../../src/infrastructure/random/random.service';
 import { mock } from 'jest-mock-extended';
+import { ProductCreated } from '../../../../../../src/sales/domain/product/events/productCreated';
 
 describe(Product.name, () => {
   const stubTime = mock<TimeService>();
@@ -42,7 +43,44 @@ describe(Product.name, () => {
 
       const resultProduct = Product.create(command, deps);
 
-      expect(resultProduct).toStrictEqual(expectedProduct);
+      expect(resultProduct.export()).toStrictEqual(expectedProduct.export());
+    });
+
+    const uncommittedEventsTestCases = [
+      {
+        toString: (): string =>
+          `1 uncommittedEventsTestCases after creation - should export ${ProductCreated.name} event`,
+        productId: '01HNGH0MYN74N7T47GBZD158V5',
+        now: new Date(2022, 0, 3),
+        command: CreateProductBuilder.defaultAll.with({
+          name: 'Xiaomi',
+          price: 500,
+          description: 'An android phone',
+        }).result,
+      }
+    ]
+
+    test.each(uncommittedEventsTestCases)('%s', ({ productId, now, command }) => {
+      const expectedProduct = ProductBuilder.defaultAll.with({
+        productId: productId,
+        name: command.name,
+        price: command.price,
+        description: command.description,
+        createdAt: now,
+        updatedAt: now,
+        removedAt: null,
+      }).result;
+      const deps = {
+        time: stubTime,
+        random: stubRandom
+      } satisfies Parameters<typeof Product['create']>[1];
+      stubTime.now.mockReturnValue(now);
+      stubRandom.generateULID.mockReturnValue(productId);
+      const expectedEvents = [new ProductCreated({ data: { product: expectedProduct.export() } })];
+
+      const resultProduct = Product.create(command, deps);
+
+      expect(resultProduct.exportUncommittedEvents()).toStrictEqual(expectedEvents);
     });
   });
 });
