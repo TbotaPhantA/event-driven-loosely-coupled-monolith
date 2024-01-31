@@ -3,15 +3,19 @@
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
 - [ ] manage uncommitted events inside product object
+- [ ] replace all class names in tests with Class.name
+- [ ] extract Data Access Layer to dal folder
 - [ ] replace `productName` with `aggregateName` and `contextName`
 - [ ] Add `HOST` to `config` and rename `path` to `href` for api hypermedia
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
 - [ ] integrate allure with acceptance tests
+- [ ] think about services names (interactors, commands, ...)
 ### infrastructure
 - [ ] add request logging
 ### docker-compose
 - [ ] configure schema registry for `avro` in docker-compose
 ### kafka
+- [ ] add ui for kafka in docker-compose
 - [ ] send PriceAdjusted event to kafka
 - [ ] send SalesProductInfoUpdated event to kafka
 - [ ] send SalesProductRemoved event to kafka
