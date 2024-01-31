@@ -4,23 +4,40 @@ import { TimeService } from '../../../infrastructure/time/time.service';
 import { Importable } from '../../../infrastructure/shared/types/importable';
 import { Exportable } from '../../../infrastructure/shared/types/exportable';
 import { DeepReadonly } from '../../../infrastructure/shared/types/deepReadonly';
+import { CreateProduct } from './commands/createProduct';
+import { RandomService } from '../../../infrastructure/random/random.service';
 
 export class Product implements Importable, Exportable {
   private __data: Data;
   constructor(data: Data) { this.__data = data; }
 
-  adjustPrice(command: AdjustPrice, deps: Deps): void {
+  static create(command: CreateProduct, deps: Deps): Product {
+    const productId = deps.random.generateULID();
+    const now = deps.time.now();
+
+    return new Product({
+      productId,
+      name: command.name,
+      description: command.description,
+      price: command.price,
+      createdAt: now,
+      updatedAt: now,
+      removedAt: null,
+    });
+  }
+
+  adjustPrice(command: AdjustPrice, deps: Pick<Deps, 'time'>): void {
     this.__data.price = command.newPrice;
     this.__data.updatedAt = deps.time.now();
   }
 
-  updateProductInfo(command: UpdateProductInfo, deps: Deps): void {
+  updateProductInfo(command: UpdateProductInfo, deps: Pick<Deps, 'time'>): void {
     this.__data.name = command.name;
     this.__data.description = command.description;
     this.__data.updatedAt = deps.time.now();
   }
 
-  markAsRemoved(deps: Deps): void {
+  markAsRemoved(deps: Pick<Deps, 'time'>): void {
     const now = deps.time.now();
     this.__data.updatedAt = now;
     this.__data.removedAt = now;
@@ -41,5 +58,6 @@ interface Data {
 }
 
 interface Deps {
+  random: RandomService;
   time: TimeService;
 }

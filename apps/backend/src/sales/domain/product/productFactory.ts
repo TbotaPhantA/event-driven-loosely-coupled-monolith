@@ -12,17 +12,6 @@ export class ProductFactory {
   constructor(private readonly deps: ProductFactoryDeps) {}
 
   create(command: CreateProduct): Product {
-    const productId = this.deps.random.generateULID();
-    const now = this.deps.time.now();
-
-    return new Product({
-      productId,
-      name: command.name,
-      description: command.description,
-      price: command.price,
-      createdAt: now,
-      updatedAt: now,
-      removedAt: null,
-    });
+    return Product.create(command, this.deps);
   }
 }
