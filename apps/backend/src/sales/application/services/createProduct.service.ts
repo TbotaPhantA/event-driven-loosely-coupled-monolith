@@ -11,7 +11,6 @@ import { SALES_PRODUCT_REPOSITORY } from '../shared/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../infrastructure/idempotency/constants';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../infrastructure/messages/constants';
 import { IProductIdempotencyService } from './interfaces/IProductIdempotency.service';
-import { ProductOutputDto } from '../dto/output/productOutputDto';
 
 @Injectable()
 export class CreateProductService {
@@ -33,15 +32,16 @@ export class CreateProductService {
   }
 
   async create(command: CreateProduct, transaction: ITransaction): Promise<CreateProductOutputDto> {
-    await this.idempotencyService.assertRequestIsIdempotent(transaction);
+    await this.idempotencyService.assertCreateProductRequestIsIdempotent(transaction);
 
     const product = this.factory.create(command);
 
+    const response = CreateProductOutputDto.from(product);
     await Promise.all([
       this.repo.save(product, transaction),
-      this.idempotencyService.insertRequest(new ProductOutputDto(product.export()), transaction),
+      this.idempotencyService.insertRequest(response, transaction),
       this.messagesService.insertEvents(product.exportUncommittedEvents(), transaction),
     ]);
-    return CreateProductOutputDto.from(product);
+    return response;
   }
 }

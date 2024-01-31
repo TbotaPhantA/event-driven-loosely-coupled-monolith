@@ -1,9 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
-import {
-  createProductLinksFrom
-} from '../../../sales/application/dto/output/links/utils/createProductLinksFrom';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -22,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           timestamp: new Date().toISOString(),
           path: request.url,
           product: exception.product,
-          links: createProductLinksFrom(exception.product),
+          links: exception.links,
         });
     } else {
       response

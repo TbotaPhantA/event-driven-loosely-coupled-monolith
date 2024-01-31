@@ -1,7 +1,9 @@
 import { ITransaction } from '../../../../infrastructure/transaction/shared/types/ITransaction';
-import { ProductOutputDto } from '../../dto/output/productOutputDto';
+import { CreateProductOutputDto } from '../../dto/output/createProductOutputDto';
+
+export type IdempotentResponses = CreateProductOutputDto;
 
 export interface IProductIdempotencyService {
-  assertRequestIsIdempotent(transaction: ITransaction): Promise<void>;
-  insertRequest(dto: ProductOutputDto, transaction: ITransaction): Promise<void>;
+  assertCreateProductRequestIsIdempotent(transaction: ITransaction): Promise<void>;
+  insertRequest(dto: IdempotentResponses, transaction: ITransaction): Promise<void>;
 }

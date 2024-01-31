@@ -3,13 +3,13 @@ import { CorrelationService } from '../../correlation';
 import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
 import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 import {
-  IProductIdempotencyService
+  IProductIdempotencyService,
+  IdempotentResponses,
 } from '../../../sales/application/services/interfaces/IProductIdempotency.service';
 import {
   DatabaseSalesProductIdempotentRequestRepository
 } from '../repositories/databaseSalesProductIdempotentRequestRepository';
 import { EntityManager } from 'typeorm';
-import { ProductOutputDto } from '../../../sales/application/dto/output/productOutputDto';
 
 @Injectable()
 export class SalesProductIdempotencyService implements IProductIdempotencyService {
@@ -18,19 +18,21 @@ export class SalesProductIdempotencyService implements IProductIdempotencyServic
     private readonly repo: DatabaseSalesProductIdempotentRequestRepository,
   ) {}
 
-  async assertRequestIsIdempotent(transaction: EntityManager): Promise<void> {
-    const correlationId = this.correlationService.getCorrelationId();
-    const existingRequest = await this.repo.findRequestByCorrelationId(correlationId, transaction);
+  async assertCreateProductRequestIsIdempotent(transaction: EntityManager): Promise<void> {
+    const existingRequest = await this.repo.findRequestByCorrelationId(
+      this.correlationService.getCorrelationId(),
+      transaction
+    );
 
     if (existingRequest) {
-      throw new ProductAlreadyCreatedException(existingRequest.data);
+      throw new ProductAlreadyCreatedException(existingRequest.response);
     }
   }
 
-  async insertRequest(dto: ProductOutputDto, transaction: EntityManager): Promise<void> {
+  async insertRequest(response: IdempotentResponses, transaction: EntityManager): Promise<void> {
     const correlationId = this.correlationService.getCorrelationId();
     const request = SalesProductRequestEntity.from({
-      data: dto,
+      response,
       correlationId,
     });
     await this.repo.insertRequest(request, transaction);

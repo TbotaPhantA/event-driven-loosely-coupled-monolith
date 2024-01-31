@@ -97,6 +97,7 @@ describe(ProductController.name, () => {
       expect(secondResponse.body).toMatchObject({
         message: PRODUCT_ALREADY_CREATED,
         product: createProductResponse.product,
+        links: createProductResponse.links,
       })
     })
 

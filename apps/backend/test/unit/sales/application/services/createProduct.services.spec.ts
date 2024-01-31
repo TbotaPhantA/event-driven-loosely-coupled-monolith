@@ -21,13 +21,13 @@ import {
 } from '../../../../../src/sales/application/services/interfaces/IProductIdempotency.service';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
-import { ProductOutputDto } from '../../../../../src/sales/application/dto/output/productOutputDto';
 import { Product } from '../../../../../src/sales/domain/product/product';
 import { mock } from 'jest-mock-extended';
 import { TimeService } from '../../../../../src/infrastructure/time/time.service';
 import { RandomService } from '../../../../../src/infrastructure/random/random.service';
 import { ProductCreated } from '../../../../../src/sales/domain/product/events/productCreated';
 import { _MockProxy } from 'jest-mock-extended/lib/Mock';
+import { CreateProductOutputDto } from '../../../../../src/sales/application/dto/output/createProductOutputDto';
 
 describe(CreateProductService.name, () => {
   let createProductService: CreateProductService;
@@ -65,13 +65,13 @@ describe(CreateProductService.name, () => {
 
       await createProductService.runTransaction(command);
 
-      expect(stubIdempotencyService.assertRequestIsIdempotent).toHaveBeenCalledWith(transaction);
+      expect(stubIdempotencyService.assertCreateProductRequestIsIdempotent).toHaveBeenCalledWith(transaction);
     });
 
     test('idempotent request insert - should be called', async () => {
       const product = ProductBuilder.defaultAll.result;
       stubProductFactory.create = jest.fn().mockReturnValue(product);
-      const outputDto = new ProductOutputDto(product.export());
+      const outputDto = CreateProductOutputDto.from(product);
       const command = CreateProductBuilder.defaultAll.result;
 
       await createProductService.runTransaction(command);
