@@ -117,14 +117,17 @@ describe(ProductController.name, () => {
   });
 
   describe(ProductController.prototype.adjustPrice.name, () => {
+    let adjustPricePath: string;
+    beforeAll(() => {
+      adjustPricePath = findAdjustPricePath(createProductResponse.links);
+    })
+
     test('successful test cases', async () => {
-      const newPrice = createProductResponse.product.price + 100;
       const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
         productId: createProductResponse.product.productId,
-        newPrice,
+        newPrice: createProductResponse.product.price + 100,
       }).result;
 
-      const adjustPricePath = findAdjustPricePath(createProductResponse.links);
       const { body, status } = await requestAdjustPrice(
         app,
         adjustPricePath,
@@ -139,5 +142,23 @@ describe(ProductController.name, () => {
         description: createProductResponse.product.description,
       });
     })
+
+    const unprocessableTestCases = [
+      {
+        toString: (): string => '1 when invalid body - should respond with validation error',
+        requestBody: AdjustPriceBuilder.defaultAll.with({
+          productId: 'productId',
+          newPrice: -100,
+        }).result,
+      },
+    ]
+
+    test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
+      const { status } = await request(app.getHttpServer())
+        .put(adjustPricePath)
+        .send(requestBody);
+
+      expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
+    });
   });
 });
