@@ -8,6 +8,8 @@ import { GetProductByIdQuery } from '../queries/getProductById.query';
 import { TimeService } from '../../../../infrastructure/time/time.service';
 import { SALES_PRODUCT_REPOSITORY } from '../../shared/constants';
 import { TRANSACTION_SERVICE } from '../../../../infrastructure/transaction/shared/constants';
+import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../infrastructure/messages/constants';
+import { IProductMessagesService } from './interfaces/IProductMessages.service';
 
 @Injectable()
 export class AdjustPriceService {
@@ -16,6 +18,8 @@ export class AdjustPriceService {
     private readonly transactionService: ITransactionService,
     @Inject(SALES_PRODUCT_REPOSITORY)
     private readonly repo: IProductRepository,
+    @Inject(SALES_PRODUCT_MESSAGES_SERVICE)
+    private readonly messagesService: IProductMessagesService,
     private readonly getProductByIdQuery: GetProductByIdQuery,
     private readonly time: TimeService,
   ) {}
@@ -28,7 +32,10 @@ export class AdjustPriceService {
   async adjustPrice(command: AdjustPrice, transaction: ITransaction): Promise<AdjustPriceOutputDto> {
     const product = await this.getProductByIdQuery.run(command, transaction);
     product.adjustPrice(command, { time: this.time });
-    const savedProduct = await this.repo.save(product, transaction);
+    const [savedProduct] = await Promise.all([
+      this.repo.save(product, transaction),
+      this.messagesService.insertEvents(product.exportUncommittedEvents(), transaction),
+    ]);
     return AdjustPriceOutputDto.from(savedProduct);
   }
 }

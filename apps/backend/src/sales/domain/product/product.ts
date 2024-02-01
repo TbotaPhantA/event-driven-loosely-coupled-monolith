@@ -45,7 +45,7 @@ export class Product implements Importable, Exportable {
   private applyPriceAdjusted(event: PriceAdjusted): void {
     this.__data.price = event.data.product.newPrice;
     this.__data.updatedAt = event.data.product.updatedAt;
-    this.__meta.uncommittedEvents.push(event );
+    this.__meta.uncommittedEvents.push(event);
   }
 
   updateProductInfo(command: UpdateProductInfo, deps: Pick<Deps, 'time'>): void {

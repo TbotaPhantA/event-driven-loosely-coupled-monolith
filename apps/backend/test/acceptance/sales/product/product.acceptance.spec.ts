@@ -18,6 +18,9 @@ import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/s
 import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
 import { Product } from '../../../../src/sales/domain/product/product';
 import { ProductController } from '../../../../src/sales/application/product/product.controller';
+import { AdjustPriceOutputDto } from '../../../../src/sales/application/product/dto/output/adjustPriceOutput.dto';
+import { PriceAdjusted } from '../../../../src/sales/domain/product/events/priceAdjusted';
+import { AdjustPrice } from '../../../../src/sales/domain/product/commands/adjustPrice';
 
 let salesEntryLinks: GetSalesEntryLinksOutputDto;
 let createProductPath: string;
@@ -118,19 +121,22 @@ describe(ProductController.name, () => {
 
   describe(ProductController.prototype.adjustPrice.name, () => {
     let adjustPricePath: string;
+    const adjustPriceCorrelationId: string = 'someAdjustPriceCorrelationId';
+    let adjustPriceRequestBody: AdjustPrice;
     beforeAll(() => {
       adjustPricePath = findAdjustPricePath(createProductResponse.links);
-    })
-
-    test('successful test cases', async () => {
-      const adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
+      adjustPriceRequestBody = AdjustPriceBuilder.defaultAll.with({
         productId: createProductResponse.product.productId,
         newPrice: createProductResponse.product.price + 100,
       }).result;
+    })
+    let adjustPriceResponse: AdjustPriceOutputDto;
 
+    test('successful test cases', async () => {
       const { body, status } = await requestAdjustPrice(
         app,
         adjustPricePath,
+        adjustPriceCorrelationId,
         adjustPriceRequestBody,
       );
 
@@ -141,6 +147,7 @@ describe(ProductController.name, () => {
         price: adjustPriceRequestBody.newPrice,
         description: createProductResponse.product.description,
       });
+      adjustPriceResponse = body;
     })
 
     const unprocessableTestCases = [
@@ -154,11 +161,33 @@ describe(ProductController.name, () => {
     ]
 
     test.each(unprocessableTestCases)('%s', async ({ requestBody }) => {
-      const { status } = await request(app.getHttpServer())
-        .put(adjustPricePath)
-        .send(requestBody);
+      const { status } = await requestAdjustPrice(
+        app,
+        adjustPricePath,
+        adjustPriceCorrelationId,
+        requestBody,
+      );
 
       expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
     });
+
+    test('event should be sent to broker', async () => {
+      const message = extractMessage(await waitForMatchingPayload(messagePayloads, adjustPriceCorrelationId));
+      const payload = JSON.parse(message.value.payload)
+
+      expect(message.headers).toMatchObject({
+        messageType: MessageTypeEnum.event,
+        messageName: PriceAdjusted.name,
+        correlationId: adjustPriceCorrelationId,
+        aggregateName: Product.name,
+        contextName: SALES_CONTEXT_NAME,
+      });
+      expect(message.key.payload).toStrictEqual(adjustPriceResponse.product.productId);
+      expect(payload.product).toMatchObject({
+        productId: adjustPriceResponse.product.productId,
+        newPrice: adjustPriceResponse.product.price,
+        updatedAt: adjustPriceResponse.product.updatedAt,
+      });
+    })
   });
 });
