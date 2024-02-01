@@ -1,6 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
+import {
+  ProductAlreadyCreatedException,
+} from '../../../sales/application/product/exceptions/productAlreadyCreatedException';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {

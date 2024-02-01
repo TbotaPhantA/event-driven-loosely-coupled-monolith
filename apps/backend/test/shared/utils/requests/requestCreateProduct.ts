@@ -1,6 +1,6 @@
 import {
   CreateProductOutputDto,
-} from '../../../../src/sales/application/dto/output/createProductOutputDto';
+} from '../../../../src/sales/application/product/dto/output/createProductOutputDto';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { CORRELATION_ID_HEADER } from '../../../../src/infrastructure/correlation';

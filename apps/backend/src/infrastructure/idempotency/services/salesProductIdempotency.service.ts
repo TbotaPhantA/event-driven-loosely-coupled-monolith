@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CorrelationService } from '../../correlation';
-import { ProductAlreadyCreatedException } from '../../../sales/application/exceptions/productAlreadyCreatedException';
+import {
+  ProductAlreadyCreatedException,
+} from '../../../sales/application/product/exceptions/productAlreadyCreatedException';
 import { SalesProductRequestEntity } from '../entities/salesProductRequest.entity';
 import {
   IProductIdempotencyService,
   IdempotentResponses,
-} from '../../../sales/application/services/interfaces/IProductIdempotency.service';
+} from '../../../sales/application/product/services/interfaces/IProductIdempotency.service';
 import {
   DatabaseSalesProductIdempotentRequestRepository
 } from '../repositories/databaseSalesProductIdempotentRequestRepository';

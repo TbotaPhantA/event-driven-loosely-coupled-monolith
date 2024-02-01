@@ -9,15 +9,15 @@ import { ProductCreated } from '../../../../src/sales/domain/product/events/prod
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
 import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
 import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
-import { CreateProductOutputDto } from '../../../../src/sales/application/dto/output/createProductOutputDto';
+import { CreateProductOutputDto } from '../../../../src/sales/application/product/dto/output/createProductOutputDto';
 import { findCreateProductPath } from '../../../shared/utils/links/findCreateProductPath';
 import { findAdjustPricePath } from '../../../shared/utils/links/findAdjustPricePath';
 import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
 import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjustPrice';
-import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/dto/output/getSalesEntryLinksOutputDto';
+import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/shared/dto/getSalesEntryLinksOutputDto';
 import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
 import { Product } from '../../../../src/sales/domain/product/product';
-import { ProductController } from '../../../../src/sales/application/product.controller';
+import { ProductController } from '../../../../src/sales/application/product/product.controller';
 
 describe(ProductController.name, () => {
   let salesEntryLinks: GetSalesEntryLinksOutputDto;

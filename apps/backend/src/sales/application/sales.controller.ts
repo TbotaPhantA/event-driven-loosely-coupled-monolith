@@ -1,6 +1,6 @@
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
-import { GetSalesEntryLinksOutputDto } from './dto/output/getSalesEntryLinksOutputDto';
+import { GetSalesEntryLinksOutputDto } from './shared/dto/getSalesEntryLinksOutputDto';
 
 @Controller('sales')
 export class SalesController {

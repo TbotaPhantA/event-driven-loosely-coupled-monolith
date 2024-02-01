@@ -2,11 +2,11 @@ import {
   CreateProductBuilder,
 } from '../../../../shared/__fixtures__/builders/commands/createProduct.builder';
 import { TestBed } from '@automock/jest';
-import { CreateProductService } from '../../../../../src/sales/application/services/createProduct.service';
+import { CreateProductService } from '../../../../../src/sales/application/product/services/createProduct.service';
 import { ITransactionService } from '../../../../../src/infrastructure/transaction/ITransaction.service';
 import {
   IProductRepository
-} from '../../../../../src/sales/application/repositories/productRepository/IProduct.repository';
+} from '../../../../../src/sales/application/product/repositories/productRepository/IProduct.repository';
 import { ProductFactory } from '../../../../../src/sales/domain/product/productFactory';
 import { ProductBuilder } from '../../../../shared/__fixtures__/builders/productBuilder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';
@@ -15,10 +15,10 @@ import { ITransaction } from '../../../../../src/infrastructure/transaction/shar
 import { IsolationLevelUnion } from '../../../../../src/infrastructure/transaction/isolationLevelUnion';
 import {
   IProductMessagesService
-} from '../../../../../src/sales/application/services/interfaces/IProductMessages.service';
+} from '../../../../../src/sales/application/product/services/interfaces/IProductMessages.service';
 import {
   IProductIdempotencyService
-} from '../../../../../src/sales/application/services/interfaces/IProductIdempotency.service';
+} from '../../../../../src/sales/application/product/services/interfaces/IProductIdempotency.service';
 import { SALES_PRODUCT_MESSAGES_SERVICE } from '../../../../../src/infrastructure/messages/constants';
 import { SALES_PRODUCT_IDEMPOTENCY_SERVICE } from '../../../../../src/infrastructure/idempotency/constants';
 import { Product } from '../../../../../src/sales/domain/product/product';
@@ -27,7 +27,7 @@ import { TimeService } from '../../../../../src/infrastructure/time/time.service
 import { RandomService } from '../../../../../src/infrastructure/random/random.service';
 import { ProductCreated } from '../../../../../src/sales/domain/product/events/productCreated';
 import { _MockProxy } from 'jest-mock-extended/lib/Mock';
-import { CreateProductOutputDto } from '../../../../../src/sales/application/dto/output/createProductOutputDto';
+import { CreateProductOutputDto } from '../../../../../src/sales/application/product/dto/output/createProductOutputDto';
 
 describe(CreateProductService.name, () => {
   let createProductService: CreateProductService;

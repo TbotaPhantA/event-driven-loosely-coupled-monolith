@@ -1,6 +1,6 @@
 import {
   IProductMessagesService,
-} from '../../../sales/application/services/interfaces/IProductMessages.service';
+} from '../../../sales/application/product/services/interfaces/IProductMessages.service';
 import { Injectable } from '@nestjs/common';
 import { SalesProductMessageRepository } from '../repositories/salesProductMessage.repository';
 import { SalesProductMessage } from '../entities/salesProductMessage.entity';

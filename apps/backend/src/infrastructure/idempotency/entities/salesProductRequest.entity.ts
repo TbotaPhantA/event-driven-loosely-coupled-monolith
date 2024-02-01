@@ -1,6 +1,8 @@
 import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
 import { NoMethods } from '../../shared/types/noMethods';
-import { IdempotentResponses } from '../../../sales/application/services/interfaces/IProductIdempotency.service';
+import {
+  IdempotentResponses,
+} from '../../../sales/application/product/services/interfaces/IProductIdempotency.service';
 
 @Entity({ name: 'sales_product_requests' })
 export class SalesProductRequestEntity {
