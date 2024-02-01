@@ -1,11 +1,12 @@
 import { Importable } from '../../../src/infrastructure/shared/types/importable';
+import { Exportable } from '../../../src/infrastructure/shared/types/exportable';
 
-export class ImportBuilder<T extends Importable> {
+export class ImportBuilder<T extends Importable & Exportable> {
   private readonly __data: any;
   constructor(
     private readonly __result: T,
   ) {
-    this.__data = {};
+    this.__data = __result.export();
   }
 
   get result(): T {
