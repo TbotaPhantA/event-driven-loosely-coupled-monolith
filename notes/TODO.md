@@ -12,7 +12,6 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] configure schema registry for `avro` in docker-compose
 ### kafka
 - [ ] add ui for kafka in docker-compose
-- [ ] send PriceAdjusted event to kafka
 - [ ] send SalesProductInfoUpdated event to kafka
 - [ ] send SalesProductRemoved event to kafka
 
