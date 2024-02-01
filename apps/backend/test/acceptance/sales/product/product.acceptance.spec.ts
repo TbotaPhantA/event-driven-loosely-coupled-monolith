@@ -19,29 +19,29 @@ import { entryLinksPaths } from '../../../../src/sales/application/shared/paths'
 import { Product } from '../../../../src/sales/domain/product/product';
 import { ProductController } from '../../../../src/sales/application/product/product.controller';
 
+let salesEntryLinks: GetSalesEntryLinksOutputDto;
+let createProductPath: string;
+const createProductCorrelationId = 'correlationId999';
+const createProductRequestBody = CreateProductBuilder.defaultAll.with({
+  name: 'Xiaomi',
+  price: 500,
+  description: 'An android phone',
+}).result;
+let createProductResponse: CreateProductOutputDto;
+
+beforeAll(async () => {
+  salesEntryLinks = await getSalesEntryLinks();
+  createProductPath = findCreateProductPath(salesEntryLinks);
+
+  async function getSalesEntryLinks(): Promise<GetSalesEntryLinksOutputDto> {
+    const response = await request(app.getHttpServer())
+      .get(entryLinksPaths)
+      .send();
+    return response.body;
+  }
+})
+
 describe(ProductController.name, () => {
-  let salesEntryLinks: GetSalesEntryLinksOutputDto;
-  let createProductPath: string;
-  const createProductCorrelationId = 'correlationId999';
-  const createProductRequestBody = CreateProductBuilder.defaultAll.with({
-    name: 'Xiaomi',
-    price: 500,
-    description: 'An android phone',
-  }).result;
-  let createProductResponse: CreateProductOutputDto;
-
-  beforeAll(async () => {
-    salesEntryLinks = await getSalesEntryLinks();
-    createProductPath = findCreateProductPath(salesEntryLinks);
-
-    async function getSalesEntryLinks(): Promise<GetSalesEntryLinksOutputDto> {
-      const response = await request(app.getHttpServer())
-        .get(entryLinksPaths)
-        .send();
-      return response.body;
-    }
-  })
-
   describe(ProductController.prototype.createProduct.name, () => {
     test('when given valid body - should successfully respond', async () => {
       const { body, status } = await requestCreateProduct(
