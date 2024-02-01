@@ -13,7 +13,7 @@ describe(Product.name, () => {
   describe(Product['create'].name, () => {
     const successfulTestCases = [
       {
-        toString: (): string => '1',
+        toString: (): string => '1 when proper data is given - should successfully create a product',
         productId: '01HNGH0MYN74N7T47GBZD158V5',
         now: new Date(2022, 0, 3),
         command: CreateProductBuilder.defaultAll.with({

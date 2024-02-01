@@ -3,17 +3,18 @@ import { TimeService } from '../../../../../../src/infrastructure/time/time.serv
 import { mock } from 'jest-mock-extended';
 import { AdjustPriceBuilder } from '../../../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { Product } from '../../../../../../src/sales/domain/product/product';
+import { PriceAdjusted } from '../../../../../../src/sales/domain/product/events/priceAdjusted';
 
 describe(Product.name, () => {
   const now = new Date(2022, 0, 4);
-  const mockTimeService = mock<TimeService>();
+  const stubTime = mock<TimeService>();
 
   beforeEach(() => {
-    mockTimeService.now.mockReturnValue(now);
+    stubTime.now.mockReturnValue(now);
   })
 
   describe(Product.prototype.adjustPrice.name, () => {
-    const testCases = [
+    const successfulTestCases = [
       {
         toString: (): string => '1 - price should be properly changed',
         product: ProductBuilder.defaultAll.with({
@@ -30,10 +31,34 @@ describe(Product.name, () => {
       },
     ];
 
-    test.each(testCases)('%s', ({ product, command, expectedProduct }) => {
-      product.adjustPrice(command, { time: mockTimeService });
+    test.each(successfulTestCases)('%s', ({ product, command, expectedProduct }) => {
+      product.adjustPrice(command, { time: stubTime });
 
       expect(product.export()).toStrictEqual(expectedProduct.export());
     });
+
+    const uncommittedEventsTestCases = [
+      {
+        toString: (): string => `1 after call - should export uncommitted ${PriceAdjusted.name} event`,
+        product: ProductBuilder.defaultAll.with({
+          productId: 'productId',
+          price: 500,
+        }).result,
+        now: new Date(2022, 0, 4),
+        command: AdjustPriceBuilder.defaultAll.with({
+          productId: 'productId',
+          newPrice: 800,
+        }).result,
+      }
+    ]
+
+    test.each(uncommittedEventsTestCases)('%s', ({ product, now, command}) => {
+      stubTime.now.mockReturnValue(now);
+      const expectedEvent = PriceAdjusted.from({ ...command, updatedAt: now });
+
+      product.adjustPrice(command, { time: stubTime });
+
+      expect(product.exportUncommittedEvents()).toStrictEqual([expectedEvent]);
+    })
   });
 });

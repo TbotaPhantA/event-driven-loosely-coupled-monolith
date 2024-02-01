@@ -8,6 +8,7 @@ import { CreateProduct } from './commands/createProduct';
 import { RandomService } from '../../../infrastructure/random/random.service';
 import { IEvent } from './events/IEvent';
 import { ProductCreated } from './events/productCreated';
+import { PriceAdjusted } from './events/priceAdjusted';
 
 export class Product implements Importable, Exportable {
   private readonly __meta: Meta;
@@ -35,8 +36,16 @@ export class Product implements Importable, Exportable {
   }
 
   adjustPrice(command: AdjustPrice, deps: Pick<Deps, 'time'>): void {
-    this.__data.price = command.newPrice;
-    this.__data.updatedAt = deps.time.now();
+    this.applyPriceAdjusted(PriceAdjusted.from({
+      ...command,
+      updatedAt: deps.time.now(),
+    }));
+  }
+
+  private applyPriceAdjusted(event: PriceAdjusted): void {
+    this.__data.price = event.data.product.newPrice;
+    this.__data.updatedAt = event.data.product.updatedAt;
+    this.__meta.uncommittedEvents.push(event );
   }
 
   updateProductInfo(command: UpdateProductInfo, deps: Pick<Deps, 'time'>): void {
