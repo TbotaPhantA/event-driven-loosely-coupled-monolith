@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/config';
-import { ProductEntity } from '../../sales/application/product/entities/product.entity';
+import { ProductEntity } from '../../sales/dal/product/product.entity';
 import { SalesProductRequestEntity } from '../idempotency/entities/salesProductRequest.entity';
 import { SalesProductMessage } from '../messages/entities/salesProductMessage.entity';
 

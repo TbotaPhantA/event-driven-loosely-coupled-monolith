@@ -4,7 +4,7 @@ import { CreateProduct } from '../../../domain/product/commands/createProduct';
 import { ITransactionService } from '../../../../infrastructure/transaction/ITransaction.service';
 import { ITransaction } from '../../../../infrastructure/transaction/shared/types/ITransaction';
 import { ProductFactory } from '../../../domain/product/productFactory';
-import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
+import { IProductRepository } from '../../../dal/product/repositories/productRepository/IProduct.repository';
 import { IProductMessagesService } from './interfaces/IProductMessages.service';
 import { TRANSACTION_SERVICE } from '../../../../infrastructure/transaction/shared/constants';
 import { SALES_PRODUCT_REPOSITORY } from '../../shared/constants';

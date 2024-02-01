@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
+import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 
 @Entity({ name: ProductEntity.TABLE_NAME })
 export class ProductEntity {

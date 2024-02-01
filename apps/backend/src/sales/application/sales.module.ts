@@ -8,7 +8,7 @@ import { TransactionModule } from '../../infrastructure/transaction/transaction.
 import { SALES_PRODUCT_REPOSITORY } from './shared/constants';
 import {
   DatabaseProductRepository,
-} from './product/repositories/productRepository/databaseProductRepository.service';
+} from '../dal/product/repositories/productRepository/databaseProductRepository.service';
 import { AdjustPriceService } from './product/services/adjustPrice.service';
 import { GetProductByIdQuery } from './product/queries/getProductById.query';
 import { UpdateProductInfoService } from './product/services/updateProductInfo.service';

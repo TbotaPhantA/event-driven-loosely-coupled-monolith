@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ITransactionService } from '../../../../infrastructure/transaction/ITransaction.service';
-import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
+import { IProductRepository } from '../../../dal/product/repositories/productRepository/IProduct.repository';
 import { AdjustPriceOutputDto } from '../dto/output/adjustPriceOutput.dto';
 import { AdjustPrice } from '../../../domain/product/commands/adjustPrice';
 import { ITransaction } from '../../../../infrastructure/transaction/shared/types/ITransaction';

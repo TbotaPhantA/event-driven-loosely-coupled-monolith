@@ -6,7 +6,7 @@ import { CreateProductService } from '../../../../../src/sales/application/produ
 import { ITransactionService } from '../../../../../src/infrastructure/transaction/ITransaction.service';
 import {
   IProductRepository
-} from '../../../../../src/sales/application/product/repositories/productRepository/IProduct.repository';
+} from '../../../../../src/sales/dal/product/repositories/productRepository/IProduct.repository';
 import { ProductFactory } from '../../../../../src/sales/domain/product/productFactory';
 import { ProductBuilder } from '../../../../shared/__fixtures__/builders/productBuilder';
 import { TRANSACTION_SERVICE } from '../../../../../src/infrastructure/transaction/shared/constants';

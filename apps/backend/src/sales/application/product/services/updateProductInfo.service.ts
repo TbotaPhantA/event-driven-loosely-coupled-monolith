@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ITransactionService } from '../../../../infrastructure/transaction/ITransaction.service';
-import { IProductRepository } from '../repositories/productRepository/IProduct.repository';
+import { IProductRepository } from '../../../dal/product/repositories/productRepository/IProduct.repository';
 import { UpdateProductInfoOutputDto } from '../dto/output/updateProductInfoOutput.dto';
 import { UpdateProductInfo } from '../../../domain/product/commands/updateProductInfo';
 import { ITransaction } from '../../../../infrastructure/transaction/shared/types/ITransaction';

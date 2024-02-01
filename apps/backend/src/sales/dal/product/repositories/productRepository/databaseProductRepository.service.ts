@@ -2,8 +2,8 @@ import { IProductRepository } from './IProduct.repository';
 import { Product } from '../../../../domain/product/product';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
-import { ProductEntity } from '../../entities/product.entity';
-import { ProductMapper } from '../../mappers/product.mapper';
+import { ProductEntity } from '../../product.entity';
+import { ProductMapper } from '../../product.mapper';
 
 @Injectable()
 export class DatabaseProductRepository implements IProductRepository {

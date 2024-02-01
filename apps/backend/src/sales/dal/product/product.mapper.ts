@@ -1,5 +1,5 @@
-import { ProductEntity } from '../entities/product.entity';
-import { Product } from '../../../domain/product/product';
+import { ProductEntity } from './product.entity';
+import { Product } from '../../domain/product/product';
 
 export class ProductMapper {
   static toEntity(product: Product): ProductEntity {
