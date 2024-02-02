@@ -13,9 +13,9 @@ import * as _ from 'lodash';
 
 export class Product implements Importable, Exportable {
   private readonly __meta: Meta;
-  private __data: Data;
+  private __data: ProductData;
 
-  constructor(data: Data) {
+  constructor(data: ProductData) {
     this.__data = data;
     this.__meta = { uncommittedEvents: [] };
   }
@@ -68,14 +68,14 @@ export class Product implements Importable, Exportable {
     this.__data.removedAt = now;
   }
 
-  import(data: Data): void { this.__data = data; }
-  export(): DeepReadonly<Data> { return _.cloneDeep(this.__data); }
+  import(data: ProductData): void { this.__data = data; }
+  export(): DeepReadonly<ProductData> { return _.cloneDeep(this.__data); }
   exportUncommittedEvents(): IEvent[] {
     return this.__meta.uncommittedEvents;
   }
 }
 
-interface Data {
+export interface ProductData {
   productId: string;
   name: string;
   description: string;

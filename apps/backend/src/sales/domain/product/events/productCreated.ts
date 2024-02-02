@@ -1,8 +1,8 @@
 import { IEvent } from './IEvent';
 import { SALES_CONTEXT_NAME } from '../../../application/shared/constants';
-import { Product } from '../product';
+import { Product, ProductData } from '../product';
 
-type ProductCreatedData = { product: ReturnType<Product['export']> }
+type ProductCreatedData = { product: ProductData }
 
 export class ProductCreated implements IEvent<ProductCreatedData> {
   readonly eventName: string;

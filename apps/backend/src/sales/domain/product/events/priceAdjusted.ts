@@ -1,8 +1,6 @@
 import { IEvent } from './IEvent';
-import { Product } from '../product';
+import { Product, ProductData } from '../product';
 import { SALES_CONTEXT_NAME } from '../../../application/shared/constants';
-
-type ProductData = ReturnType<Product['export']>;
 
 interface PriceAdjustedEventData {
   productId: string;
