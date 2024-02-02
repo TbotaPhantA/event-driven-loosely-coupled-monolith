@@ -2,7 +2,6 @@
 
 Before you implement the feature, you should write a failing acceptance test.
 ## sales context
-- [ ] Add `origin` to the config and put `origin` to links
 - [ ] Send kafka message as `avro` scheme instead of `JSON` for performance reasons
 - [ ] integrate allure with acceptance tests
 - [ ] think about services names (interactors, commands, ...) + study ports and adapters
