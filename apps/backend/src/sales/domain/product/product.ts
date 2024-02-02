@@ -36,16 +36,23 @@ export class Product implements Importable, Exportable {
   }
 
   adjustPrice(command: AdjustPrice, deps: Pick<Deps, 'time'>): void {
-    this.applyPriceAdjusted(PriceAdjusted.from({
-      ...command,
-      updatedAt: deps.time.now(),
-    }));
+    const priceAdjusted = new PriceAdjusted({
+      productId: command.productId,
+      changes: {
+        price: command.newPrice,
+        updatedAt: deps.time.now(),
+      },
+      before: this.export(),
+    });
+
+    this.applyPriceAdjusted(priceAdjusted);
+    priceAdjusted.addAfter(this.export());
+    this.__meta.uncommittedEvents.push(priceAdjusted);
   }
 
   private applyPriceAdjusted(event: PriceAdjusted): void {
-    this.__data.price = event.data.product.newPrice;
-    this.__data.updatedAt = event.data.product.updatedAt;
-    this.__meta.uncommittedEvents.push(event);
+    this.__data.price = event.data.changes.price
+    this.__data.updatedAt = event.data.changes.updatedAt;
   }
 
   updateProductInfo(command: UpdateProductInfo, deps: Pick<Deps, 'time'>): void {

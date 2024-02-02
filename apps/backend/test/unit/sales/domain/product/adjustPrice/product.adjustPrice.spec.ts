@@ -54,11 +54,23 @@ describe(Product.name, () => {
 
     test.each(uncommittedEventsTestCases)('%s', ({ product, now, command}) => {
       stubTime.now.mockReturnValue(now);
-      const expectedEvent = PriceAdjusted.from({ ...command, updatedAt: now });
+      const expectedEvent = new PriceAdjusted({
+        productId: command.productId,
+        changes: {
+          price: command.newPrice,
+          updatedAt: now,
+        },
+        before: product.export(),
+        after: {
+          ...product.export(),
+          price: command.newPrice,
+          updatedAt: now,
+        },
+      });
 
       product.adjustPrice(command, { time: stubTime });
 
       expect(product.exportUncommittedEvents()).toStrictEqual([expectedEvent]);
-    })
+    });
   });
 });
