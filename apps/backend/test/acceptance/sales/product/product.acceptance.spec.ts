@@ -173,7 +173,8 @@ describe(ProductController.name, () => {
 
     test('event should be sent to broker', async () => {
       const message = extractMessage(await waitForMatchingPayload(messagePayloads, adjustPriceCorrelationId));
-      const payload = JSON.parse(message.value.payload)
+      const keyPayload = message.key.payload
+      const valuePayload = JSON.parse(message.value.payload)
 
       expect(message.headers).toMatchObject({
         messageType: MessageTypeEnum.event,
@@ -182,11 +183,15 @@ describe(ProductController.name, () => {
         aggregateName: Product.name,
         contextName: SALES_CONTEXT_NAME,
       });
-      expect(message.key.payload).toStrictEqual(adjustPriceResponse.product.productId);
-      expect(payload.product).toMatchObject({
+      expect(keyPayload).toStrictEqual(adjustPriceResponse.product.productId);
+      expect(valuePayload).toMatchObject({
         productId: adjustPriceResponse.product.productId,
-        newPrice: adjustPriceResponse.product.price,
-        updatedAt: adjustPriceResponse.product.updatedAt,
+        changes: {
+          price: adjustPriceResponse.product.price,
+          updatedAt: adjustPriceResponse.product.updatedAt,
+        },
+        before: createProductResponse.product,
+        after: adjustPriceResponse.product,
       });
     })
   });

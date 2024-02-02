@@ -54,17 +54,30 @@ describe(Product.name, () => {
 
     test.each(uncommittedEventsTestCases)('%s', ({ product, now, command}) => {
       stubTime.now.mockReturnValue(now);
+      const exported = product.export();
       const expectedEvent = new PriceAdjusted({
         productId: command.productId,
         changes: {
           price: command.newPrice,
           updatedAt: now,
         },
-        before: product.export(),
+        before: {
+          productId: exported.productId,
+          name: exported.name,
+          description: exported.description,
+          price: exported.price,
+          createdAt: exported.createdAt,
+          updatedAt: exported.updatedAt,
+          removedAt: exported.removedAt,
+        },
         after: {
-          ...product.export(),
+          productId: exported.productId,
+          name: exported.name,
+          description: exported.description,
           price: command.newPrice,
+          createdAt: exported.createdAt,
           updatedAt: now,
+          removedAt: exported.removedAt,
         },
       });
 

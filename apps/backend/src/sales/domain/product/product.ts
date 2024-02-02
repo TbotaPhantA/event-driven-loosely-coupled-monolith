@@ -9,6 +9,7 @@ import { RandomService } from '../../../infrastructure/random/random.service';
 import { IEvent } from './events/IEvent';
 import { ProductCreated } from './events/productCreated';
 import { PriceAdjusted } from './events/priceAdjusted';
+import * as _ from 'lodash';
 
 export class Product implements Importable, Exportable {
   private readonly __meta: Meta;
@@ -68,7 +69,7 @@ export class Product implements Importable, Exportable {
   }
 
   import(data: Data): void { this.__data = data; }
-  export(): DeepReadonly<Data> { return this.__data; }
+  export(): DeepReadonly<Data> { return _.cloneDeep(this.__data); }
   exportUncommittedEvents(): IEvent[] {
     return this.__meta.uncommittedEvents;
   }
