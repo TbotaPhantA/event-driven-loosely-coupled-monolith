@@ -7,7 +7,8 @@ const isRequired = (propName: keyof NodeJS.ProcessEnv): never => {
 
 export class Config {
   app = {
-    port: process.env.APP_PORT ?? isRequired('APP_PORT'),
+    origin: process.env.APP_ORIGIN ?? isRequired('APP_ORIGIN'),
+    port: +(process.env.APP_ORIGIN ?? isRequired('APP_ORIGIN')).split(':')[2],
   };
 
   database = {

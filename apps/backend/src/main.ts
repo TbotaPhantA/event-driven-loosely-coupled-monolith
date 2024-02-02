@@ -12,7 +12,7 @@ async function bootstrap(): Promise<void> {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(config.app.port, () => {
-    console.log('Application started on port ', config.app.port);
+    console.log('Application started on: ', config.app.origin);
   });
 }
 bootstrap();

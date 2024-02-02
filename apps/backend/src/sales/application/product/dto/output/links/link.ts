@@ -6,6 +6,9 @@ export class Link {
   @ApiProperty({ example: 'AdjustPrice' })
   name!: string;
 
+  @ApiProperty({ example: `http://localhost:3000` })
+  origin!: string;
+
   @ApiProperty({ example: `/${salesProductResource}/${adjustPriceResource}` })
   path!: string;
 
