@@ -102,22 +102,6 @@ services:
       timeout: 10s
       retries: 10
 
-  kafka-schema-registry:
-    image: confluentinc/cp-schema-registry:7.3.2
-    hostname: kafka-schema-registry
-    container_name: kafka-schema-registry
-    depends_on:
-      - zoo1
-      - kafka1
-      - kafka2
-      - kafka3
-    ports:
-      - ${SCHEMA_REGISTRY_PORT}:${SCHEMA_REGISTRY_PORT}
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka1:${KAFKA1_INTERNAL_PORT},PLAINTEXT://kafka2:${KAFKA2_INTERNAL_PORT},PLAINTEXT://kafka3:${KAFKA3_INTERNAL_PORT}
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:${SCHEMA_REGISTRY_PORT}
-
   debezium:
     image: debezium/connect:2.5
     container_name: debezium
@@ -131,8 +115,6 @@ services:
         condition: service_healthy
       kafka3:
         condition: service_healthy
-      kafka-schema-registry:
-        condition: service_started
     ports:
       - ${DEBEZIUM_PORT}:8083
     environment:
