@@ -83,7 +83,7 @@ export class Product implements Importable, Exportable {
     this.addEvent(productRemoved);
   }
 
-  private addEvent(event: IProductEvent<ProductData>): void {
+  private addEvent(event: IProductEvent): void {
     event.addBefore(this.export());
     this.apply(event);
     event.addAfter(this.export());
