@@ -12,6 +12,7 @@ import { PriceAdjusted } from './events/priceAdjusted';
 import * as _ from 'lodash';
 import { ProductInfoUpdated } from './events/productInfoUpdated';
 import { IProductBaseEvent } from './events/IProductBaseEvent';
+import { ProductRemoved } from './events/productRemoved';
 
 export class Product implements Importable, Exportable {
   private readonly __meta: Meta;
@@ -70,8 +71,16 @@ export class Product implements Importable, Exportable {
 
   remove(deps: Pick<Deps, 'time'>): void {
     const now = deps.time.now();
-    this.__data.updatedAt = now;
-    this.__data.removedAt = now;
+
+    const productRemoved = new ProductRemoved({
+      productId: this.__data.productId,
+      changes: {
+        updatedAt: now,
+        removedAt: now,
+      },
+    });
+
+    this.addEvent(productRemoved);
   }
 
   private addEvent(event: IProductEvent<ProductData>): void {
@@ -86,6 +95,8 @@ export class Product implements Importable, Exportable {
       this.applyPriceAdjusted(event);
     } else if (event instanceof ProductInfoUpdated) {
       this.applyProductInfoUpdated(event);
+    } else if (event instanceof ProductRemoved) {
+      this.applyProductRemoved(event);
     }
   }
 
@@ -98,6 +109,11 @@ export class Product implements Importable, Exportable {
     this.__data.name = event.data.changes.name;
     this.__data.description = event.data.changes.description;
     this.__data.updatedAt = event.data.changes.updatedAt;
+  }
+
+  private applyProductRemoved(event: ProductRemoved): void {
+    this.__data.updatedAt = event.data.changes.updatedAt;
+    this.__data.removedAt = event.data.changes.removedAt;
   }
 
   import(data: ProductData): void { this.__data = data; }
