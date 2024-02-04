@@ -23,12 +23,10 @@ export class Product implements Importable, Exportable {
   }
 
   static create(command: CreateProduct, deps: Deps): Product {
-    const productId = deps.random.generateULID();
     const now = deps.time.now();
-
     const product = new Product({
       ...command,
-      productId,
+      productId: deps.random.generateULID(),
       createdAt: now,
       updatedAt: now,
       removedAt: null,
