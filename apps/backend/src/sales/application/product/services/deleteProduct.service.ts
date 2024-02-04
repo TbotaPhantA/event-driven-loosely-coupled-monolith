@@ -30,7 +30,7 @@ export class DeleteProductService {
     transaction: ITransaction,
   ): Promise<DeleteProductOutputDto> {
     const product = await this.getProductByIdQuery.run({ productId }, transaction);
-    product.markAsRemoved({ time: this.time });
+    product.remove({ time: this.time });
     const savedProduct = await this.repo.save(product, transaction);
     return DeleteProductOutputDto.from(savedProduct);
   }

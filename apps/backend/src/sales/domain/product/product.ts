@@ -68,7 +68,7 @@ export class Product implements Importable, Exportable {
     this.addEvent(productInfoUpdated);
   }
 
-  markAsRemoved(deps: Pick<Deps, 'time'>): void {
+  remove(deps: Pick<Deps, 'time'>): void {
     const now = deps.time.now();
     this.__data.updatedAt = now;
     this.__data.removedAt = now;
