@@ -2,37 +2,38 @@ import { IProductEvent } from './IProductEvent';
 import { Product, ProductData } from '../product';
 import { SALES_CONTEXT_NAME } from '../../../application/shared/constants';
 
-interface PriceAdjustedEventData {
+interface ProductInfoUpdatedData {
   productId: string;
   changes: {
-    price: ProductData['price'];
-    updatedAt: ProductData['updatedAt'];
+    name: string;
+    description: string;
+    updatedAt: Date;
   },
   before?: ProductData,
   after?: ProductData,
 }
 
-export class PriceAdjusted implements IProductEvent {
+export class ProductInfoUpdated implements IProductEvent {
   readonly eventName: string;
   readonly aggregateId: string;
   readonly aggregateName: string;
   readonly contextName: string;
-  readonly data: PriceAdjustedEventData;
+  readonly data: ProductInfoUpdatedData;
 
-  constructor(data: PriceAdjustedEventData) {
-    this.eventName = PriceAdjusted.name;
+  constructor(data: ProductInfoUpdatedData) {
+    this.eventName = ProductInfoUpdated.name;
     this.aggregateId = data.productId;
     this.aggregateName = Product.name;
     this.contextName = SALES_CONTEXT_NAME;
     this.data = data;
   }
 
-  addBefore(before: ProductData): PriceAdjusted {
+  addBefore(before: ProductData): ProductInfoUpdated {
     this.data.before = before;
     return this;
   }
 
-  addAfter(after: ProductData): PriceAdjusted {
+  addAfter(after: ProductData): ProductInfoUpdated {
     this.data.after = after;
     return this;
   }

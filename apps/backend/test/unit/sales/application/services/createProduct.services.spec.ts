@@ -83,7 +83,13 @@ describe(CreateProductService.name, () => {
       const command = CreateProductBuilder.defaultAll.result;
       const product = Product.create(command, { time: getStubTime(), random: getStubRandom() });
       stubProductFactory.create = jest.fn().mockReturnValue(product);
-      const events = [new ProductCreated({ data: { product: product.export() }})];
+      const exported = product.export();
+      const events = [new ProductCreated({
+        data: {
+          productId: exported.productId,
+          changes: exported,
+        }
+      })];
 
       await createProductService.runTransaction(command);
 

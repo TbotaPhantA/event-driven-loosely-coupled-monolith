@@ -1,6 +1,7 @@
-import { IEvent } from '../../../../domain/product/events/IEvent';
+import { IProductEvent } from '../../../../domain/product/events/IProductEvent';
 import { ITransaction } from '../../../../../infrastructure/transaction/shared/types/ITransaction';
+import { IProductBaseEvent } from '../../../../domain/product/events/IProductBaseEvent';
 
 export interface IProductMessagesService {
-  insertEvents(event: IEvent[], transaction: ITransaction): Promise<void>;
+  insertEvents(event: (IProductEvent | IProductBaseEvent)[], transaction: ITransaction): Promise<void>;
 }

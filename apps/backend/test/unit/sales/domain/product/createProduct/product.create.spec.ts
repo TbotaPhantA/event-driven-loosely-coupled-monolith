@@ -76,7 +76,8 @@ describe(Product.name, () => {
       } satisfies Parameters<typeof Product['create']>[1];
       stubTime.now.mockReturnValue(now);
       stubRandom.generateULID.mockReturnValue(productId);
-      const expectedEvents = [new ProductCreated({ data: { product: expectedProduct.export() } })];
+      const exported = expectedProduct.export();
+      const expectedEvents = [new ProductCreated({ data: { productId: exported.productId , changes: exported } })];
 
       const resultProduct = Product.create(command, deps);
 

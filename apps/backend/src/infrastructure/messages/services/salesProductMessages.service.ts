@@ -8,7 +8,7 @@ import { PLACEHOLDER_ID } from '../../shared/constants';
 import { MessageTypeEnum } from '../../shared/enums/messageType.enum';
 import { CorrelationService } from '../../correlation';
 import { EntityManager } from 'typeorm';
-import { IEvent } from '../../../sales/domain/product/events/IEvent';
+import { IProductEvent } from '../../../sales/domain/product/events/IProductEvent';
 
 @Injectable()
 export class SalesProductMessagesService implements IProductMessagesService {
@@ -18,7 +18,7 @@ export class SalesProductMessagesService implements IProductMessagesService {
   ) {}
 
   async insertEvents(
-    events: IEvent[],
+    events: IProductEvent[],
     transaction: EntityManager,
   ): Promise<void> {
     const messages = events.map(event => SalesProductMessage.createByRaw({

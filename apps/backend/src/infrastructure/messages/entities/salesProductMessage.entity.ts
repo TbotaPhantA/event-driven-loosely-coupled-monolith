@@ -26,7 +26,7 @@ export class SalesProductMessage {
   contextName!: string;
 
   @Column({ type: 'jsonb' })
-  data!: Record<string, unknown>;
+  data!: Record<string, any>;
 
   static createByRaw(raw: NoMethods<SalesProductMessage>): SalesProductMessage {
     const message = new SalesProductMessage();

@@ -108,7 +108,8 @@ describe(ProductController.name, () => {
       const message = extractMessage(await waitForMatchingPayload(messagePayloads, createProductCorrelationId));
 
       expect(message.key.payload).toStrictEqual(createProductResponse.product.productId);
-      expect(JSON.parse(message.value.payload).product).toMatchObject(createProductResponse.product);
+      expect(JSON.parse(message.value.payload).productId).toStrictEqual(createProductResponse.product.productId);
+      expect(JSON.parse(message.value.payload).changes).toMatchObject(createProductResponse.product);
       expect(message.headers).toMatchObject({
         messageType: MessageTypeEnum.event,
         messageName: ProductCreated.name,
