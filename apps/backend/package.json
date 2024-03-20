@@ -34,7 +34,8 @@
     "create:topics:test": "ts-node scripts/create-kafka-topics.ts --acceptance-tests",
     "change:wal_level:test": "ts-node scripts/changeWalLevel.ts --acceptance-tests",
     "setup:debezium:test": "ts-node scripts/setupDebezium.ts --acceptance-tests",
-    "delete:debezium:settings:test": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests"
+    "delete:debezium:settings:test": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests",
+    "run:playground:test": "ts-node src/playground/playground.ts --acceptance-tests --project tsconfig.build.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

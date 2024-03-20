@@ -46,3 +46,4 @@ yarn-error.log*
 
 # playground
 /**/playground.spec.ts
+**/playground.ts
