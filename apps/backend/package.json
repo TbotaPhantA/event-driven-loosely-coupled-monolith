@@ -35,7 +35,8 @@
     "change:wal_level:test": "ts-node scripts/changeWalLevel.ts --acceptance-tests",
     "setup:debezium:test": "ts-node scripts/setupDebezium.ts --acceptance-tests",
     "delete:debezium:settings:test": "ts-node scripts/deleteDebeziumSettings.ts --acceptance-tests",
-    "run:playground:test": "ts-node src/playground/playground.ts --acceptance-tests --project tsconfig.build.json"
+    "run:playground:test": "ts-node src/playground/playground.ts --acceptance-tests --project tsconfig.build.json",
+    "allure:serve": "npx allure serve allure-results"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
