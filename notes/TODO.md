@@ -6,7 +6,7 @@ Before you implement the feature, you should write a failing acceptance test.
 - [ ] think about services names (interactors, commands, ...) + study ports and adapters
 ### infrastructure
 - [ ] add request logging
-- [ ] set CI pipelines [link, build, test:unit, test:acceptance] with environment variables from vault.
+- [ ] set CI pipelines [lint, build, test:unit, test:acceptance] with environment variables from vault.
 ### docker-compose
 - [ ] configure schema registry for `avro` in docker-compose
 ### kafka
