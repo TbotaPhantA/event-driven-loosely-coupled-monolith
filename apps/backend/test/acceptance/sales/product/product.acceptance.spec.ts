@@ -32,19 +32,19 @@ const createProductRequestBody = CreateProductBuilder.defaultAll.with({
 }).result;
 let createProductResponse: CreateProductOutputDto;
 
-beforeAll(async () => {
-  salesEntryLinks = await getSalesEntryLinks();
-  createProductPath = findCreateProductPath(salesEntryLinks);
-
-  async function getSalesEntryLinks(): Promise<GetSalesEntryLinksOutputDto> {
-    const response = await request(app.getHttpServer())
-      .get(entryLinksPaths)
-      .send();
-    return response.body;
-  }
-})
-
 describe(ProductController.name, () => {
+  beforeAll(async () => {
+    salesEntryLinks = await getSalesEntryLinks();
+    createProductPath = findCreateProductPath(salesEntryLinks);
+
+    async function getSalesEntryLinks(): Promise<GetSalesEntryLinksOutputDto> {
+      const response = await request(app.getHttpServer())
+        .get(entryLinksPaths)
+        .send();
+      return response.body;
+    }
+  })
+
   describe(ProductController.prototype.createProduct.name, () => {
     test('when given valid body - should successfully respond', async () => {
       const { body, status } = await requestCreateProduct(
