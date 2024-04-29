@@ -21,6 +21,13 @@ import { ProductController } from '../../../../src/sales/application/product/pro
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/product/dto/output/adjustPriceOutput.dto';
 import { PriceAdjusted } from '../../../../src/sales/domain/product/events/priceAdjusted';
 import { AdjustPrice } from '../../../../src/sales/domain/product/commands/adjustPrice';
+import { requestUpdateProductInfo } from '../../../shared/utils/requests/requestUpdateProductInfo';
+import { UpdateProductInfo } from '../../../../src/sales/domain/product/commands/updateProductInfo';
+import {
+  UpdateProductInfoOutputDto
+} from '../../../../src/sales/application/product/dto/output/updateProductInfoOutput.dto';
+import { UpdateProductInfoBuilder } from '../../../shared/__fixtures__/builders/commands/updateProductInfo.builder';
+import { findUpdateProductInfoPath } from '../../../shared/utils/links/findUpdateProductInfoPath';
 
 let salesEntryLinks: GetSalesEntryLinksOutputDto;
 let createProductPath: string;
@@ -133,7 +140,7 @@ describe(ProductController.name, () => {
     })
     let adjustPriceResponse: AdjustPriceOutputDto;
 
-    test('successful test cases', async () => {
+    test('successful test case', async () => {
       const { body, status } = await requestAdjustPrice(
         app,
         adjustPricePath,
@@ -194,6 +201,42 @@ describe(ProductController.name, () => {
         before: createProductResponse.product,
         after: adjustPriceResponse.product,
       });
+    })
+  });
+
+  describe(`${ProductController.prototype.updateProductInfo.name}`, () => {
+    let updateProductInfoPath: string;
+    const updateProductInfoCorrelationId: string = 'someAdjustPriceCorrelationId';
+    let updateProductInfoRequestBody: UpdateProductInfo;
+
+    beforeAll(() => {
+      updateProductInfoPath = findUpdateProductInfoPath(createProductResponse.links);
+      updateProductInfoRequestBody = UpdateProductInfoBuilder.defaultAll.with({
+        productId: createProductResponse.product.productId,
+        name: 'name2',
+        description: 'description2',
+      }).result;
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let updateProductInfoResponse: UpdateProductInfoOutputDto;
+
+    test('successful test case', async () => {
+      const { body, status } = await requestUpdateProductInfo(
+        app,
+        updateProductInfoPath,
+        updateProductInfoCorrelationId,
+        updateProductInfoRequestBody,
+      );
+      // findUpdateProductInfoPath
+
+      expect(status).toStrictEqual(HttpStatus.OK);
+      expect(body.product).toMatchObject({
+        productId: createProductResponse.product.productId,
+        name: updateProductInfoRequestBody.name,
+        price: createProductResponse.product.price + 100,
+        description: updateProductInfoRequestBody.description,
+      })
+      updateProductInfoResponse = body;
     })
   });
 });
