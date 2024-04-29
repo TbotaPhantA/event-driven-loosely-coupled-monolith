@@ -238,5 +238,26 @@ describe(ProductController.name, () => {
       })
       updateProductInfoResponse = body;
     })
+
+    test('invalid body test case', async () => {
+      const requestBody = UpdateProductInfoBuilder.defaultAll.with({
+        productId: createProductResponse.product.productId,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        name: 2,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        description: 3,
+      }).result;
+
+      const { status } = await requestUpdateProductInfo(
+        app,
+        updateProductInfoPath,
+        updateProductInfoCorrelationId,
+        requestBody,
+      );
+
+      expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
+    })
   });
 });
