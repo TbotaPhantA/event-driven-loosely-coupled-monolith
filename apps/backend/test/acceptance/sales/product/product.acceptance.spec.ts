@@ -29,17 +29,18 @@ import {
 import { UpdateProductInfoBuilder } from '../../../shared/__fixtures__/builders/commands/updateProductInfo.builder';
 import { findUpdateProductInfoPath } from '../../../shared/utils/links/findUpdateProductInfoPath';
 
-let salesEntryLinks: GetSalesEntryLinksOutputDto;
-let createProductPath: string;
-const createProductCorrelationId = 'correlationId999';
-const createProductRequestBody = CreateProductBuilder.defaultAll.with({
-  name: 'Xiaomi',
-  price: 500,
-  description: 'An android phone',
-}).result;
-let createProductResponse: CreateProductOutputDto;
 
 describe(ProductController.name, () => {
+  let salesEntryLinks: GetSalesEntryLinksOutputDto;
+  let createProductPath: string;
+  const createProductCorrelationId = 'correlationId999';
+  const createProductRequestBody = CreateProductBuilder.defaultAll.with({
+    name: 'Xiaomi',
+    price: 500,
+    description: 'An android phone',
+  }).result;
+  let createProductResponse: CreateProductOutputDto;
+
   beforeAll(async () => {
     salesEntryLinks = await getSalesEntryLinks();
     createProductPath = findCreateProductPath(salesEntryLinks);
@@ -259,5 +260,7 @@ describe(ProductController.name, () => {
 
       expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
     })
+
+    // TODO: event should be sent to broker
   });
 });
