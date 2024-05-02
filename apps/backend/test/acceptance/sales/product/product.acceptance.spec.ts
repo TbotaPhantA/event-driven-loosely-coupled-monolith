@@ -15,7 +15,6 @@ import { findAdjustPricePath } from '../../../shared/utils/links/findAdjustPrice
 import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
 import { requestAdjustPrice } from '../../../shared/utils/requests/requestAdjustPrice';
 import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/shared/dto/getSalesEntryLinksOutputDto';
-import { entryLinksPaths } from '../../../../src/sales/application/shared/paths';
 import { Product } from '../../../../src/sales/domain/product/product';
 import { ProductController } from '../../../../src/sales/application/product/product.controller';
 import { AdjustPriceOutputDto } from '../../../../src/sales/application/product/dto/output/adjustPriceOutput.dto';
@@ -28,6 +27,7 @@ import {
 } from '../../../../src/sales/application/product/dto/output/updateProductInfoOutput.dto';
 import { UpdateProductInfoBuilder } from '../../../shared/__fixtures__/builders/commands/updateProductInfo.builder';
 import { findUpdateProductInfoPath } from '../../../shared/utils/links/findUpdateProductInfoPath';
+import { requestSalesEntryLinks } from '../../../shared/utils/requests/requestSalesEntryLinks';
 
 
 describe(ProductController.name, () => {
@@ -42,16 +42,9 @@ describe(ProductController.name, () => {
   let createProductResponse: CreateProductOutputDto;
 
   beforeAll(async () => {
-    salesEntryLinks = await getSalesEntryLinks();
+    salesEntryLinks = await requestSalesEntryLinks();
     createProductPath = findCreateProductPath(salesEntryLinks);
-
-    async function getSalesEntryLinks(): Promise<GetSalesEntryLinksOutputDto> {
-      const response = await request(app.getHttpServer())
-        .get(entryLinksPaths)
-        .send();
-      return response.body;
-    }
-  })
+  });
 
   describe(ProductController.prototype.createProduct.name, () => {
     test('when given valid body - should successfully respond', async () => {
