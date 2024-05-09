@@ -1,27 +1,35 @@
 import { EachMessagePayload } from 'kafkajs';
-import { assertIsNotEmpty } from '../../../../src/infrastructure/shared/utils/assertIsNotEmpty';
+import { assertIsNotEmpty } from './assertIsNotEmpty';
 
-interface Message {
-  headers: object;
+export interface Message {
+  headers: {
+    id: string,
+    messageId: 'string',
+    messageType: 'event' | 'command',
+    messageName: string,
+    correlationId: string,
+    aggregateName: string,
+    contextName: string,
+  };
   key: {
-    schema: object,
     payload: string,
   };
   value: {
-    schema: object,
     payload: string,
   };
 }
 
-export const extractMessage = (payload: EachMessagePayload): Message => {
+export const extractMessage = (payload: Pick<EachMessagePayload, 'message'>): Message => {
   const valueBuffer = payload.message.value;
   const keyBuffer = payload.message.key;
   const headerBuffers = payload.message.headers;
   assertIsNotEmpty(valueBuffer);
   assertIsNotEmpty(keyBuffer);
   assertIsNotEmpty(headerBuffers);
-  const value = JSON.parse(valueBuffer.toString())
-  const key = JSON.parse(keyBuffer.toString())
+  const valueStr = valueBuffer.toString();
+  const keyStr = keyBuffer.toString();
+  const value = JSON.parse(valueStr);
+  const key = JSON.parse(keyStr);
   const headers: { [key: string]: string | unknown } = {};
 
   for (const key in headerBuffers) {
@@ -32,5 +40,5 @@ export const extractMessage = (payload: EachMessagePayload): Message => {
     }
   }
 
-  return { value, key, headers };
+  return <Message>{ value, key, headers };
 }
