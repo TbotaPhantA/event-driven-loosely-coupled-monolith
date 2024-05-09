@@ -3,7 +3,7 @@ import { CreateProductBuilder } from '../../../shared/__fixtures__/builders/comm
 import * as request from 'supertest';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
 import { waitForMatchingPayload } from '../../../shared/utils/messageBroker/waitForMatchingPayload';
-import { extractMessage } from '../../../shared/utils/messageBroker/extractMessage';
+import { extractMessage } from '../../../../src/infrastructure/shared/utils/extractMessage';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { ProductCreated } from '../../../../src/sales/domain/product/events/productCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
