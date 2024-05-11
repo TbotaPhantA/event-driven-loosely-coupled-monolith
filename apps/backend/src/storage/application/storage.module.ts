@@ -7,15 +7,24 @@ import { DatabaseInventoryItemRepository } from '../dal/databaseInventoryItem.re
 import { TransactionModule } from '../../infrastructure/transaction/transaction.module';
 import { TimeModule } from '../../infrastructure/time/time.module';
 import { SalesACLService } from '../acl/salesACL.service';
+import { InventoryItemReadService } from './inventoryItem/services/inventoryItemRead.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { InventoryItemEntity } from '../dal/inventoryItem.entity';
 
 @Module({
-  imports: [TransactionModule, TimeModule],
+  imports: [
+    TransactionModule,
+    TimeModule,
+    TypeOrmModule.forFeature([InventoryItemEntity]),
+  ],
   controllers: [InventoryItemController, SalesMessagesController],
   providers: [
+
     {
       provide: INVENTORY_ITEM_REPOSITORY,
       useClass: DatabaseInventoryItemRepository,
     },
+    InventoryItemReadService,
     InventoryItemCreateService,
     SalesACLService,
   ],
