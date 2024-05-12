@@ -8,9 +8,15 @@ import { TimeService } from '../../../../infrastructure/time/time.service';
 import { InventoryItemRepository } from '../../../dal/inventoryItem.repository';
 import { CreateInventoryItemOutputDto } from '../dto/output/createInventoryItemOutput.dto';
 import { INVENTORY_ITEM_REPOSITORY } from '../../shared/constants';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
 @Injectable()
+@WebSocketGateway()
 export class InventoryItemCreateService {
+  @WebSocketServer()
+  server!: Server;
+
   constructor(
     @Inject(TRANSACTION_SERVICE)
     private readonly transactionService: ITransactionService,
@@ -31,6 +37,9 @@ export class InventoryItemCreateService {
   ): Promise<CreateInventoryItemOutputDto> {
     const inventoryItem = InventoryItem.create(dto, { time: this.time });
     const insertedItem = await this.repo.insert(inventoryItem, transaction);
+    this.server.emit('InventoryItemCreated', {
+      insertedItem: insertedItem.export(),
+    });
     return CreateInventoryItemOutputDto.from(insertedItem);
   }
 }
