@@ -36,6 +36,7 @@ export class SalesProductIdempotencyService implements IProductIdempotencyServic
     const request = SalesProductRequestEntity.from({
       response,
       correlationId,
+      productId: response.product.productId,
     });
     await this.repo.insertRequest(request, transaction);
   }
