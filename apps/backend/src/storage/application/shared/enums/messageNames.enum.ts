@@ -1,3 +1,3 @@
-export enum MessageNames {
+export enum MessageNamesEnum {
   ProductCreated='ProductCreated',
 }
