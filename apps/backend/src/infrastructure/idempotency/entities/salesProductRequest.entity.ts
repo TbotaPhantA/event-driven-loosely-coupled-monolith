@@ -9,6 +9,9 @@ export class SalesProductRequestEntity {
   @PrimaryColumn({ name: 'correlation_id' })
   correlationId!: string;
 
+  @Column({ name: 'product_id' })
+  productId!: string;
+
   @Column({ type: 'jsonb' })
   response!: IdempotentResponses;
 
@@ -23,6 +26,7 @@ export class SalesProductRequestEntity {
     const salesProductRequestEntity = new SalesProductRequestEntity();
     salesProductRequestEntity.correlationId = raw.correlationId;
     salesProductRequestEntity.response = raw.response;
+    salesProductRequestEntity.productId = raw.productId;
     return salesProductRequestEntity;
   }
 }
