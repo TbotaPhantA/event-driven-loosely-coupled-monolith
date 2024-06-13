@@ -1,8 +1,10 @@
 import { config } from '../../../../src/infrastructure/config/config';
 import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
 
-export const startConsumerFillingMessagePayloads = async (messagePayloads: EachMessagePayload[]): Promise<Consumer> => {
-  const kafka = createKafka();
+export const startConsumerFillingMessagePayloads = async (
+  kafka: Kafka,
+  messagePayloads: EachMessagePayload[],
+): Promise<Consumer> => {
   const consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
   await consumer.connect();
   await consumer.subscribe({
@@ -16,15 +18,4 @@ export const startConsumerFillingMessagePayloads = async (messagePayloads: EachM
   })
 
   return consumer;
-
-  function createKafka(): Kafka {
-    return new Kafka({
-      clientId: 'acceptance-tests',
-      brokers: [
-        `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
-        `${config.kafka.kafka2Host}:${config.kafka.kafka2ExternalPort}`,
-        `${config.kafka.kafka3Host}:${config.kafka.kafka3ExternalPort}`,
-      ],
-    });
-  }
 }
