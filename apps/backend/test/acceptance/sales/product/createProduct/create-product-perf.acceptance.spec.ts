@@ -1,11 +1,13 @@
-import { ProductController } from '../../../../src/sales/application/product/product.controller';
-import { findCreateProductPath } from '../../../shared/utils/links/findCreateProductPath';
-import { GetSalesEntryLinksOutputDto } from '../../../../src/sales/application/shared/dto/getSalesEntryLinksOutputDto';
-import { requestSalesEntryLinks } from '../../../shared/utils/requests/requestSalesEntryLinks';
-import { requestCreateProduct } from '../../../shared/utils/requests/requestCreateProduct';
-import { app } from '../../globalBeforeAndAfterAll';
-import { CreateProductBuilder } from '../../../shared/__fixtures__/builders/commands/createProduct.builder';
-import { CreateProductOutputDto } from '../../../../src/sales/application/product/dto/output/createProductOutputDto';
+import { ProductController } from '../../../../../src/sales/application/product/product.controller';
+import { findCreateProductPath } from '../../../../shared/utils/links/findCreateProductPath';
+import {
+  GetSalesEntryLinksOutputDto,
+} from '../../../../../src/sales/application/shared/dto/getSalesEntryLinksOutputDto';
+import { requestSalesEntryLinks } from '../../../../shared/utils/requests/requestSalesEntryLinks';
+import { requestCreateProduct } from '../../../../shared/utils/requests/requestCreateProduct';
+import { app } from '../../../globalBeforeAndAfterAll';
+import { CreateProductBuilder } from '../../../../shared/__fixtures__/builders/commands/createProduct.builder';
+import { CreateProductOutputDto } from '../../../../../src/sales/application/product/dto/output/createProductOutputDto';
 import { HttpStatus } from '@nestjs/common';
 
 // TODO: fix

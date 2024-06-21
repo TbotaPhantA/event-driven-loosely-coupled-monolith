@@ -1,14 +1,14 @@
-import { ProductController } from '../../../../src/sales/application/product/product.controller';
-import { CreateProductBuilder } from '../../../shared/__fixtures__/builders/commands/createProduct.builder';
-import { cleaner, messagesHelper, requester } from '../../globalBeforeAndAfterAll';
+import { ProductController } from '../../../../../src/sales/application/product/product.controller';
+import { CreateProductBuilder } from '../../../../shared/__fixtures__/builders/commands/createProduct.builder';
+import { cleaner, messagesHelper, requester } from '../../../globalBeforeAndAfterAll';
 import { HttpStatus } from '@nestjs/common';
 import { ulid } from 'ulid';
-import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
-import { ProductOutputDto } from '../../../../src/sales/application/product/dto/output/productOutputDto';
-import { ProductCreated } from '../../../../src/sales/domain/product/events/productCreated';
-import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
-import { Product } from '../../../../src/sales/domain/product/product';
-import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
+import { PRODUCT_ALREADY_CREATED } from '../../../../../src/infrastructure/shared/errorMessages';
+import { ProductOutputDto } from '../../../../../src/sales/application/product/dto/output/productOutputDto';
+import { ProductCreated } from '../../../../../src/sales/domain/product/events/productCreated';
+import { MessageTypeEnum } from '../../../../../src/infrastructure/shared/enums/messageType.enum';
+import { Product } from '../../../../../src/sales/domain/product/product';
+import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/constants';
 
 /**
  * TODO:
