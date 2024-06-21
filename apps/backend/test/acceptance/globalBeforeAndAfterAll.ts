@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { Consumer, EachMessagePayload, Kafka, Partitioners, Producer } from 'kafkajs';
-import { startConsumerFillingMessagePayloads } from '../shared/utils/messageBroker/startConsumerFillingMessagePayloads';
+import { Consumer, Kafka, Partitioners, Producer } from 'kafkajs';
 import { TestApiController } from './testApi.controller';
 import { AppModule } from '../../src/app.module';
 import { createKafka } from '../shared/utils/messageBroker/createKafka';
@@ -10,11 +9,12 @@ import { Requester } from '../shared/utils/requests/requester';
 import { Cleaner } from '../shared/utils/cleaner';
 import { DataSource } from 'typeorm';
 import { Transport } from '@nestjs/microservices';
+import { MessagesHelper } from '../shared/utils/helpers/messagesHelper';
 
 let moduleRef: TestingModule;
 let consumer: Consumer;
 export let app: INestApplication;
-export let messagePayloads: Array<EachMessagePayload>;
+export let messagesHelper: MessagesHelper;
 export let kafka: Kafka;
 export let producer: Producer;
 export let requester: Requester;
@@ -27,7 +27,7 @@ beforeAll(async () => {
   }).compile();
 
   app = moduleRef.createNestApplication();
-  messagePayloads = new Array<EachMessagePayload>;
+  messagesHelper = new MessagesHelper();
   kafka = createKafka();
   producer = kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
   app.connectMicroservice({
@@ -51,7 +51,7 @@ beforeAll(async () => {
 
   const [,startedConsumer] = await Promise.all([
     app.listen(config.app.port),
-    startConsumerFillingMessagePayloads(kafka, messagePayloads),
+    messagesHelper.startConsumerFillingMessagePayloads(kafka),
     producer.connect(),
   ])
 
