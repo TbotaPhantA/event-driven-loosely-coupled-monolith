@@ -2,12 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 import { CreateProductBuilder } from '../../../shared/__fixtures__/builders/commands/createProduct.builder';
 import * as request from 'supertest';
 import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
-import { waitForMatchingPayload } from '../../../shared/utils/messageBroker/waitForMatchingPayload';
-import { extractMessage } from '../../../../src/infrastructure/shared/utils/extractMessage';
 import { MessageTypeEnum } from '../../../../src/infrastructure/shared/enums/messageType.enum';
 import { ProductCreated } from '../../../../src/sales/domain/product/events/productCreated';
 import { SALES_CONTEXT_NAME } from '../../../../src/sales/application/shared/constants';
-import { app, messagePayloads } from '../../globalBeforeAndAfterAll';
+import { app, messagesHelper } from '../../globalBeforeAndAfterAll';
 import { AdjustPriceBuilder } from '../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
 import { CreateProductOutputDto } from '../../../../src/sales/application/product/dto/output/createProductOutputDto';
 import { findCreateProductPath } from '../../../shared/utils/links/findCreateProductPath';
@@ -109,7 +107,7 @@ describe.skip(ProductController.name, () => {
     })
 
     test(`${ProductCreated.name} event - should be sent to broker`, async () => {
-      const message = extractMessage(await waitForMatchingPayload(messagePayloads, createProductCorrelationId));
+      const message = await messagesHelper.getMessageByCorrelationId(createProductCorrelationId);
 
       expect(message.key.payload).toStrictEqual(createProductResponse.product.productId);
       expect(JSON.parse(message.value.payload).productId).toStrictEqual(createProductResponse.product.productId);
@@ -177,7 +175,7 @@ describe.skip(ProductController.name, () => {
     });
 
     test('event should be sent to broker', async () => {
-      const message = extractMessage(await waitForMatchingPayload(messagePayloads, adjustPriceCorrelationId));
+      const message = await messagesHelper.getMessageByCorrelationId(adjustPriceCorrelationId);
       const keyPayload = message.key.payload
       const valuePayload = JSON.parse(message.value.payload)
 
