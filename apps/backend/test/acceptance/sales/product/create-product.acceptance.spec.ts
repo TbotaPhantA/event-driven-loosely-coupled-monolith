@@ -3,18 +3,27 @@ import { CreateProductBuilder } from '../../../shared/__fixtures__/builders/comm
 import { cleaner, requester } from '../../globalBeforeAndAfterAll';
 import { HttpStatus } from '@nestjs/common';
 import { ulid } from 'ulid';
+import { PRODUCT_ALREADY_CREATED } from '../../../../src/infrastructure/shared/errorMessages';
+import { ProductOutputDto } from '../../../../src/sales/application/product/dto/output/productOutputDto';
 
+/**
+ * TODO:
+ * - create idempotency test
+ * - create broker test
+ * - create 4** tests
+ * - think of parallelization
+ */
 describe(`${ProductController.name}`, () => {
   let correlationId: string;
-  let productId: string | undefined;
+  let product: ProductOutputDto | undefined;
 
   beforeAll(() => {
     correlationId = ulid();
   })
 
   afterAll(async () => {
-    if (productId) {
-      await cleaner.cleanupProductDataInDB(productId);
+    if (product) {
+      await cleaner.cleanupProductDataInDB(product.productId);
     }
   })
 
@@ -35,7 +44,18 @@ describe(`${ProductController.name}`, () => {
         description: dto.description,
       });
 
-      productId = body.product.productId;
+      product = body.product;
+    })
+
+    test('idempotent request with same correlationId - should respond that product is already created', async () => {
+      const dto = CreateProductBuilder.defaultAll.result;
+      const secondResponse = await requester.createProduct({ dto, correlationId });
+
+      expect(secondResponse.status).toStrictEqual(HttpStatus.CONFLICT)
+      expect(secondResponse.body).toMatchObject({
+        message: PRODUCT_ALREADY_CREATED,
+        product,
+      })
     })
   })
 });
