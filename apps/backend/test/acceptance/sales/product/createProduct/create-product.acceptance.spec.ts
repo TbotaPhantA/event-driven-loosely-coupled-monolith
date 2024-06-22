@@ -11,15 +11,15 @@ import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../../../../src/app.module';
-import { Cleaner } from '../../../../shared/utils/cleaner';
 import { Requester } from '../../../../shared/utils/requests/requester';
 import { DataSource } from 'typeorm';
 import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
 import { SETUP_TIMEOUT } from '../../../../shared/constants';
+import { FixtureHelper } from '../../../../shared/utils/fixtureHelper';
 
 describe(`${ProductController.name}`, () => {
   let requester: Requester;
-  let cleaner: Cleaner;
+  let fixtureHelper: FixtureHelper;
   let messagesHelper: MessagesHelper;
   let correlationId: string;
   let product: ProductOutputDto | undefined;
@@ -31,7 +31,7 @@ describe(`${ProductController.name}`, () => {
     }).compile();
     const app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     requester = new Requester(app);
-    cleaner = new Cleaner(app.get(DataSource));
+    fixtureHelper = new FixtureHelper(app.get(DataSource));
     messagesHelper = new MessagesHelper();
     correlationId = ulid();
 
@@ -44,7 +44,7 @@ describe(`${ProductController.name}`, () => {
 
   afterAll(async () => {
     if (product) {
-      await cleaner.cleanupProductDataInDB(product.productId);
+      await fixtureHelper.cleanupProductDataInDB(product.productId);
     }
   })
 
@@ -94,6 +94,6 @@ describe(`${ProductController.name}`, () => {
         aggregateName: Product.name,
         contextName: SALES_CONTEXT_NAME,
       });
-    }, 15000);
+    });
   })
 });
