@@ -8,10 +8,13 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
 
-  const documentConfig = new DocumentBuilder().setTitle('Nestjs DDD example').setVersion('1.0.0').build();
+  const documentConfig = new DocumentBuilder()
+    .setTitle('Nestjs DDD example')
+    .setVersion('1.0.0')
+    .build();
 
   const document = SwaggerModule.createDocument(app, documentConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('/api', app, document);
 
   app.connectMicroservice({
     transport: Transport.KAFKA,
