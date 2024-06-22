@@ -3,6 +3,7 @@ import { extractMessage, Message } from '../../../../src/infrastructure/shared/u
 import { waitForMatchingPayload } from '../messageBroker/waitForMatchingPayload';
 import { config } from '../../../../src/infrastructure/config/config';
 import { createKafka } from '../messageBroker/createKafka';
+import { ulid } from 'ulid';
 
 export class MessagesHelper {
   private messagePayloads: Array<EachMessagePayload>;
@@ -20,7 +21,7 @@ export class MessagesHelper {
   }
 
   async startConsumerFillingMessagePayloads(): Promise<Consumer> {
-    const consumer = this.kafka.consumer({ groupId: config.kafka.consumerGroup });
+    const consumer = this.kafka.consumer({ groupId: ulid() });
     await consumer.connect();
     await consumer.subscribe({
       topic: config.kafka.kafkaProductsTopic,
