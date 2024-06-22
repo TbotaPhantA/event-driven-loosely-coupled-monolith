@@ -6,14 +6,16 @@ import { createKafka } from '../messageBroker/createKafka';
 import { ulid } from 'ulid';
 
 export class MessagesHelper {
-  private messagePayloads: Array<EachMessagePayload>;
-  private kafka: Kafka;
-  private producer: Producer;
+  private readonly messagePayloads: Array<EachMessagePayload>;
+  private readonly consumer: Consumer;
+  private readonly kafka: Kafka;
+  private readonly producer: Producer;
 
   constructor() {
     this.messagePayloads = new Array<EachMessagePayload>;
     this.kafka = createKafka();
     this.producer = this.kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
+    this.consumer = this.kafka.consumer({ groupId: ulid() });
   }
 
   async getMessageByCorrelationId(correlationId: string): Promise<Message> {
@@ -21,18 +23,22 @@ export class MessagesHelper {
   }
 
   async startConsumerFillingMessagePayloads(): Promise<Consumer> {
-    const consumer = this.kafka.consumer({ groupId: ulid() });
-    await consumer.connect();
-    await consumer.subscribe({
+    await this.consumer.connect();
+    await this.consumer.subscribe({
       topic: config.kafka.kafkaProductsTopic,
       fromBeginning: false,
     });
-    await consumer.run({
+    await this.consumer.run({
       eachMessage: async (payload) => {
         this.messagePayloads.push(payload);
       },
     })
 
-    return consumer;
+    return this.consumer;
+  }
+
+  async stopConsumer(): Promise<void> {
+    await this.consumer.stop();
+    await this.consumer.disconnect();
   }
 }
