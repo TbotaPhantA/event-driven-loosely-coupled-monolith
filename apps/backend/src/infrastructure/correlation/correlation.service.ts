@@ -5,7 +5,7 @@ import { ulid } from 'ulid';
 import { AsyncContextStorage, InjectAsyncContextStorage } from '../async-context';
 
 import { isString } from 'class-validator';
-import { CORRELATION_ID_KEY } from './correlationConstants';
+import { CORRELATION_ID_CONTEXT_STORE_KEY } from './correlationConstants';
 
 const doesExistAndValid = isString;
 
@@ -22,7 +22,7 @@ export class CorrelationService {
     const contextStore = this.asyncContextStorage.getStore();
 
     if (contextStore) {
-      contextStore.set(CORRELATION_ID_KEY, correlationId);
+      contextStore.set(CORRELATION_ID_CONTEXT_STORE_KEY, correlationId);
     }
 
     return correlationId;
@@ -30,6 +30,6 @@ export class CorrelationService {
 
   public getCorrelationId(): string {
     const store = this.asyncContextStorage.getStore();
-    return store?.get(CORRELATION_ID_KEY) ?? '';
+    return store?.get(CORRELATION_ID_CONTEXT_STORE_KEY) ?? '';
   }
 }
