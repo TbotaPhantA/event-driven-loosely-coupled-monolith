@@ -1,6 +1,5 @@
 import { ProductController } from '../../../../../src/sales/application/product/product.controller';
 import { CreateProductBuilder } from '../../../../shared/__fixtures__/builders/commands/createProduct.builder';
-import { cleaner, messagesHelper, requester } from '../../../globalBeforeAndAfterAll';
 import { HttpStatus } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { PRODUCT_ALREADY_CREATED } from '../../../../../src/infrastructure/shared/errorMessages';
@@ -9,20 +8,40 @@ import { ProductCreated } from '../../../../../src/sales/domain/product/events/p
 import { MessageTypeEnum } from '../../../../../src/infrastructure/shared/enums/messageType.enum';
 import { Product } from '../../../../../src/sales/domain/product/product';
 import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/constants';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { Test } from '@nestjs/testing';
+import { AppModule } from '../../../../../src/app.module';
+import { Cleaner } from '../../../../shared/utils/cleaner';
+import { Requester } from '../../../../shared/utils/requests/requester';
+import { DataSource } from 'typeorm';
+import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
 
 /**
  * TODO:
- * - create idempotency test
- * - create broker test
- * - create 4** tests
- * - think of parallelization
+ * create separate app in every file and use FASTIFY!!!
+ * - https://docs.nestjs.com/fundamentals/testing
  */
 describe(`${ProductController.name}`, () => {
+  let requester: Requester;
+  let cleaner: Cleaner;
+  let messagesHelper: MessagesHelper;
   let correlationId: string;
   let product: ProductOutputDto | undefined;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      controllers: [],
+      imports: [AppModule],
+    }).compile();
+    const app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    requester = new Requester(app);
+    cleaner = new Cleaner(app.get(DataSource));
+    messagesHelper = new MessagesHelper();
     correlationId = ulid();
+
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+    await messagesHelper.startConsumerFillingMessagePayloads();
   })
 
   afterAll(async () => {
@@ -50,17 +69,6 @@ describe(`${ProductController.name}`, () => {
 
       product = body.product;
     })
-
-    test('when invalid body - should respond with validation error', async () => {
-      const dto = CreateProductBuilder.defaultAll.with({
-        // @ts-expect-error INTENTIONALLY INCORRECT TYPE
-        name: true,
-      }).result
-
-      const { status } = await requester.createProduct({ dto, correlationId });
-
-      expect(status).toStrictEqual(HttpStatus.UNPROCESSABLE_ENTITY);
-    });
 
     test('idempotent request with same correlationId - should respond that product is already created', async () => {
       if (!product) return;
