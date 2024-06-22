@@ -17,11 +17,6 @@ import { DataSource } from 'typeorm';
 import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
 import { SETUP_TIMEOUT } from '../../../../shared/constants';
 
-/**
- * TODO:
- * create separate app in every file and use FASTIFY!!!
- * - https://docs.nestjs.com/fundamentals/testing
- */
 describe(`${ProductController.name}`, () => {
   let requester: Requester;
   let cleaner: Cleaner;
