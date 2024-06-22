@@ -1,4 +1,4 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, logLevel } from 'kafkajs';
 import { config } from '../../../../src/infrastructure/config/config';
 
 export const createKafka = (): Kafka => {
@@ -9,5 +9,6 @@ export const createKafka = (): Kafka => {
         `${config.kafka.kafka2Host}:${config.kafka.kafka2ExternalPort}`,
         `${config.kafka.kafka3Host}:${config.kafka.kafka3ExternalPort}`,
       ],
+      logLevel: logLevel.ERROR,
     });
   }
