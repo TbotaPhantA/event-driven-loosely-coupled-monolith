@@ -7,14 +7,16 @@ import { createProductLinksFrom } from './links/utils/createProductLinksFrom';
 
 export class AdjustPriceOutputDto {
   @ApiProperty({ type: ProductOutputDto })
-  product: ProductOutputDto;
+  product!: ProductOutputDto;
 
   @ApiProperty({ type: [Link] })
-  links: Link[];
+  links!: Link[];
 
-  constructor(raw: NoMethods<AdjustPriceOutputDto>) {
-    this.product = raw.product;
-    this.links = raw.links;
+  static createByRaw(raw: NoMethods<AdjustPriceOutputDto>): AdjustPriceOutputDto {
+    const dto = new AdjustPriceOutputDto();
+    dto.product = raw.product;
+    dto.links = raw.links;
+    return dto;
   }
 
   static from(product: Product): AdjustPriceOutputDto {
@@ -22,6 +24,6 @@ export class AdjustPriceOutputDto {
     const output = new ProductOutputDto(exported);
     const links: Link[] = createProductLinksFrom(exported);
 
-    return new AdjustPriceOutputDto({ product: output, links });
+    return AdjustPriceOutputDto.createByRaw({ product: output, links });
   }
 }
