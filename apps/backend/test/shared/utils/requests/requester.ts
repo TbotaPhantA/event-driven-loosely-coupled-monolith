@@ -6,11 +6,8 @@ import { ulid } from 'ulid';
 import { CreateProductOutputDto } from '../../../../src/sales/application/product/dto/output/createProductOutputDto';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { plainToInstance } from 'class-transformer';
-
-interface CreateProductParams {
-  dto: CreateProduct,
-  correlationId?: string,
-}
+import { AdjustPrice } from '../../../../src/sales/domain/product/commands/adjustPrice';
+import { AdjustPriceOutputDto } from '../../../../src/sales/application/product/dto/output/adjustPriceOutput.dto';
 
 export class Requester {
   private readonly paths: ReturnType<typeof getAllSalesPaths>;
@@ -38,4 +35,32 @@ export class Requester {
 
     return { body, status: result.statusCode };
   }
+
+  async adjustPrice(params: AdjustPriceParams): Promise<{ body: AdjustPriceOutputDto, status: HttpStatus }> {
+    const correlationId = params.correlationId ?? ulid();
+
+    const result = await this.app
+      .inject({
+        method: 'PUT',
+        url: this.paths.adjustPricePath,
+        headers: {
+          [CORRELATION_ID_HEADER]: correlationId,
+        },
+        body: params.dto
+      });
+
+    const body = plainToInstance(AdjustPriceOutputDto, JSON.parse(result.body) as AdjustPriceOutputDto);
+
+    return { body, status: result.statusCode };
+  }
+}
+
+interface CreateProductParams {
+  dto: CreateProduct,
+  correlationId?: string,
+}
+
+interface AdjustPriceParams {
+  dto: AdjustPrice,
+  correlationId: string,
 }
