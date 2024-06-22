@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { Product, ProductData } from '../../../../../src/sales/domain/product/product';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../../src/app.module';
 import { Requester } from '../../../../shared/utils/requests/requester';
 import { DataSource } from 'typeorm';
@@ -18,6 +18,8 @@ import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/
 import { PriceAdjusted } from '../../../../../src/sales/domain/product/events/priceAdjusted';
 
 describe(`${ProductController.name}`, () => {
+  let moduleRef: TestingModule;
+  let app: NestFastifyApplication;
   let requester: Requester;
   let messagesHelper: MessagesHelper;
   let fixtureHelper: FixtureHelper;
@@ -25,11 +27,10 @@ describe(`${ProductController.name}`, () => {
   let product: ProductData;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      controllers: [],
+    moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    const app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     requester = new Requester(app);
     fixtureHelper = new FixtureHelper(app.get(DataSource));
     messagesHelper = new MessagesHelper();
@@ -38,7 +39,7 @@ describe(`${ProductController.name}`, () => {
     await Promise.all([
       app.init(),
       messagesHelper.startConsumerFillingMessagePayloads(),
-    ])
+    ]);
     await app.getHttpAdapter().getInstance().ready();
   }, SETUP_TIMEOUT);
 
@@ -46,7 +47,12 @@ describe(`${ProductController.name}`, () => {
     if (product) {
       await fixtureHelper.cleanupProductDataInDB(product.productId);
     }
-  });
+    await Promise.all([
+      messagesHelper.stopConsumer(),
+      moduleRef.close(),
+    ])
+    await app.close();
+  }, SETUP_TIMEOUT);
 
   describe(`${ProductController.prototype.adjustPrice.name}`, () => {
     test(`should return proper response` , async () => {
