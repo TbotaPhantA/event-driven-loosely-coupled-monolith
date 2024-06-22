@@ -15,6 +15,7 @@ import { Cleaner } from '../../../../shared/utils/cleaner';
 import { Requester } from '../../../../shared/utils/requests/requester';
 import { DataSource } from 'typeorm';
 import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
+import { SETUP_TIMEOUT } from '../../../../shared/constants';
 
 /**
  * TODO:
@@ -39,10 +40,12 @@ describe(`${ProductController.name}`, () => {
     messagesHelper = new MessagesHelper();
     correlationId = ulid();
 
-    await app.init();
+    await Promise.all([
+      app.init(),
+      messagesHelper.startConsumerFillingMessagePayloads(),
+    ])
     await app.getHttpAdapter().getInstance().ready();
-    await messagesHelper.startConsumerFillingMessagePayloads();
-  })
+  }, SETUP_TIMEOUT)
 
   afterAll(async () => {
     if (product) {
