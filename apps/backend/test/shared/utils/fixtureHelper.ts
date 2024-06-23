@@ -13,7 +13,8 @@ export class FixtureHelper {
     return salesProductRepo.save(product);
   }
 
-  async cleanupProductDataInDB(productId: string): Promise<void> {
+  async cleanupProductDataInDB(productId: string | undefined): Promise<void> {
+    if (!productId) return;
     const salesProductRepo = this.dataSource.getRepository(ProductEntity);
     await salesProductRepo.delete({ productId });
 
