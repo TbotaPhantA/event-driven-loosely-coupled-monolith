@@ -2,11 +2,7 @@ import { ProductController } from '../../../../../src/sales/application/product/
 import { HttpStatus } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { Product, ProductData } from '../../../../../src/sales/domain/product/product';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../../../src/app.module';
 import { Requester } from '../../../../shared/utils/requests/requester';
-import { DataSource } from 'typeorm';
 import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
 import { SETUP_TIMEOUT } from '../../../../shared/constants';
 import { AdjustPriceBuilder } from '../../../../shared/__fixtures__/builders/commands/adjustPrice.builder';
@@ -16,42 +12,29 @@ import { AdjustPrice } from '../../../../../src/sales/domain/product/commands/ad
 import { MessageTypeEnum } from '../../../../../src/infrastructure/shared/enums/messageType.enum';
 import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/constants';
 import { PriceAdjusted } from '../../../../../src/sales/domain/product/events/priceAdjusted';
+import { SetupManager } from '../../../../shared/utils/setupManager';
 
 describe(`${ProductController.name}`, () => {
-  let moduleRef: TestingModule;
-  let app: NestFastifyApplication;
+  let setup: SetupManager;
   let requester: Requester;
-  let messagesHelper: MessagesHelper;
   let fixtureHelper: FixtureHelper;
+  let messagesHelper: MessagesHelper;
   let correlationId: string;
-  let product: ProductData;
+  let product: ProductData | undefined;
 
   beforeAll(async () => {
-    moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    requester = new Requester(app);
-    fixtureHelper = new FixtureHelper(app.get(DataSource));
-    messagesHelper = new MessagesHelper();
-    correlationId = ulid();
+    setup = await SetupManager.beginInitialization();
+    requester = setup.initRequester();
+    fixtureHelper = setup.initFixtureHelper();
+    messagesHelper = setup.initMessagesHelper();
+    await setup.setup();
 
-    await Promise.all([
-      app.init(),
-      messagesHelper.startConsumerFillingMessagePayloads(),
-    ]);
-    await app.getHttpAdapter().getInstance().ready();
+    correlationId = ulid();
   }, SETUP_TIMEOUT);
 
   afterAll(async () => {
-    if (product) {
-      await fixtureHelper.cleanupProductDataInDB(product.productId);
-    }
-    await Promise.all([
-      messagesHelper.stopConsumer(),
-      moduleRef.close(),
-    ])
-    await app.close();
+    await fixtureHelper.cleanupProductDataInDB(product?.productId);
+    await setup.teardown();
   }, SETUP_TIMEOUT);
 
   describe(`${ProductController.prototype.adjustPrice.name}`, () => {
