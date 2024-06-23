@@ -15,7 +15,7 @@ import { PriceAdjusted } from '../../../../../src/sales/domain/product/events/pr
 import { SetupManager } from '../../../../shared/utils/setupManager';
 
 describe(`${ProductController.name}`, () => {
-  let setup: SetupManager;
+  let setupManager: SetupManager;
   let requester: Requester;
   let fixtureHelper: FixtureHelper;
   let messagesHelper: MessagesHelper;
@@ -23,18 +23,18 @@ describe(`${ProductController.name}`, () => {
   let product: ProductData | undefined;
 
   beforeAll(async () => {
-    setup = await SetupManager.beginInitialization();
-    requester = setup.initRequester();
-    fixtureHelper = setup.initFixtureHelper();
-    messagesHelper = setup.initMessagesHelper();
-    await setup.setup();
+    setupManager = await SetupManager.beginInitialization();
+    requester = setupManager.initRequester();
+    fixtureHelper = setupManager.initFixtureHelper();
+    messagesHelper = setupManager.initMessagesHelper();
+    await setupManager.setup();
 
     correlationId = ulid();
   }, SETUP_TIMEOUT);
 
   afterAll(async () => {
     await fixtureHelper.cleanupProductDataInDB(product?.productId);
-    await setup.teardown();
+    await setupManager.teardown();
   }, SETUP_TIMEOUT);
 
   describe(`${ProductController.prototype.adjustPrice.name}`, () => {
