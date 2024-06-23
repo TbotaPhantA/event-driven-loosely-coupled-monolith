@@ -62,5 +62,5 @@ interface CreateProductParams {
 
 interface AdjustPriceParams {
   dto: AdjustPrice,
-  correlationId: string,
+  correlationId?: string,
 }
