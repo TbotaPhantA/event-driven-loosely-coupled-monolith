@@ -8,50 +8,33 @@ import { ProductCreated } from '../../../../../src/sales/domain/product/events/p
 import { MessageTypeEnum } from '../../../../../src/infrastructure/shared/enums/messageType.enum';
 import { Product } from '../../../../../src/sales/domain/product/product';
 import { SALES_CONTEXT_NAME } from '../../../../../src/sales/application/shared/constants';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../../../src/app.module';
 import { Requester } from '../../../../shared/utils/requests/requester';
-import { DataSource } from 'typeorm';
 import { MessagesHelper } from '../../../../shared/utils/helpers/messagesHelper';
 import { SETUP_TIMEOUT } from '../../../../shared/constants';
 import { FixtureHelper } from '../../../../shared/utils/fixtureHelper';
+import { SetupManager } from '../../../../shared/utils/setupManager';
 
 describe(`${ProductController.name}`, () => {
-  let moduleRef: TestingModule;
-  let app: NestFastifyApplication;
+  let setup: SetupManager;
   let requester: Requester;
-  let messagesHelper: MessagesHelper;
   let fixtureHelper: FixtureHelper;
+  let messagesHelper: MessagesHelper;
   let correlationId: string;
   let product: ProductOutputDto | undefined;
 
   beforeAll(async () => {
-    moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    requester = new Requester(app);
-    fixtureHelper = new FixtureHelper(app.get(DataSource));
-    messagesHelper = new MessagesHelper();
-    correlationId = ulid();
+    setup = await SetupManager.beginInitialization();
+    requester = setup.initRequester();
+    fixtureHelper = setup.initFixtureHelper();
+    messagesHelper = setup.initMessagesHelper();
+    await setup.setup();
 
-    await Promise.all([
-      app.init(),
-      messagesHelper.startConsumerFillingMessagePayloads(),
-    ]);
-    await app.getHttpAdapter().getInstance().ready();
-  }, SETUP_TIMEOUT)
+    correlationId = ulid();
+  }, SETUP_TIMEOUT);
 
   afterAll(async () => {
-    if (product) {
-      await fixtureHelper.cleanupProductDataInDB(product.productId);
-    }
-    await Promise.all([
-      messagesHelper.stopConsumer(),
-      moduleRef.close(),
-    ])
-    await app.close();
+    await fixtureHelper.cleanupProductDataInDB(product?.productId);
+    await setup.teardown();
   }, SETUP_TIMEOUT);
 
   describe(`${ProductController.prototype.createProduct.name}`, () => {

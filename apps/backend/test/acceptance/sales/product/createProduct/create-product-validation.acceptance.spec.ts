@@ -1,32 +1,22 @@
 import { ProductController } from '../../../../../src/sales/application/product/product.controller';
 import { Requester } from '../../../../shared/utils/requests/requester';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../../../src/app.module';
 import { CreateProductBuilder } from '../../../../shared/__fixtures__/builders/commands/createProduct.builder';
 import { HttpStatus } from '@nestjs/common';
 import { SETUP_TIMEOUT } from '../../../../shared/constants';
+import { SetupManager } from '../../../../shared/utils/setupManager';
 
 describe(`${ProductController.name} validation`, () => {
-  let moduleRef: TestingModule;
-  let app: NestFastifyApplication;
+  let setup: SetupManager;
   let requester: Requester;
 
   beforeAll(async () => {
-    moduleRef = await Test.createTestingModule({
-      controllers: [],
-      imports: [AppModule],
-    }).compile();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    requester = new Requester(app);
-
-    await app.init();
-    await app.getHttpAdapter().getInstance().ready();
+    setup = await SetupManager.beginInitialization();
+    requester = setup.initRequester();
+    await setup.setup();
   }, SETUP_TIMEOUT)
 
   afterAll(async () => {
-    await moduleRef.close();
-    await app.close();
+    await setup.teardown();
   }, SETUP_TIMEOUT)
 
   describe(`${ProductController.prototype.createProduct.name} validation`, () => {
