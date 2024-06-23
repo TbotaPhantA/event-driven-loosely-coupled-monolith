@@ -6,17 +6,17 @@ import { SETUP_TIMEOUT } from '../../../../shared/constants';
 import { SetupManager } from '../../../../shared/utils/setupManager';
 
 describe(`${ProductController.name} validation`, () => {
-  let setup: SetupManager;
+  let setupManager: SetupManager;
   let requester: Requester;
 
   beforeAll(async () => {
-    setup = await SetupManager.beginInitialization();
-    requester = setup.initRequester();
-    await setup.setup();
+    setupManager = await SetupManager.beginInitialization();
+    requester = setupManager.initRequester();
+    await setupManager.setup();
   }, SETUP_TIMEOUT)
 
   afterAll(async () => {
-    await setup.teardown();
+    await setupManager.teardown();
   }, SETUP_TIMEOUT)
 
   describe(`${ProductController.prototype.createProduct.name} validation`, () => {
