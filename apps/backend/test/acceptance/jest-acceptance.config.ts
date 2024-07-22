@@ -2,9 +2,7 @@ export default {
   "setupFiles": [
     "<rootDir>/setup-tests.ts",
   ],
-  "setupFilesAfterEnv": [
-    "<rootDir>/acceptance/globalBeforeAndAfterAll.ts",
-  ],
+  "setupFilesAfterEnv": [],
   "moduleFileExtensions": [
     "js",
     "json",
