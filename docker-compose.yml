@@ -102,6 +102,8 @@ services:
       timeout: 10s
       retries: 10
 
+  # TODO kafka UI: curl -L https://releases.conduktor.io/quick-start -o docker-compose.yml
+
   debezium:
     image: debezium/connect:2.5
     container_name: debezium
