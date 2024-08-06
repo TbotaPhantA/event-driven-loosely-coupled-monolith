@@ -104,6 +104,26 @@ services:
 
   # TODO kafka UI: curl -L https://releases.conduktor.io/quick-start -o docker-compose.yml
 
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    ports:
+      - ${KAFKA_UI_PORT}:8080
+    environment:
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${DOCKER_HOST_IP}:${KAFKA1_EXTERNAL_PORT},${DOCKER_HOST_IP}:${KAFKA2_EXTERNAL_PORT},${DOCKER_HOST_IP}:${KAFKA3_EXTERNAL_PORT}
+      AUTH_TYPE: "DISABLED"
+      DYNAMIC_CONFIG_ENABLED: 'true'
+
+
   debezium:
     image: debezium/connect:2.5
     container_name: debezium
