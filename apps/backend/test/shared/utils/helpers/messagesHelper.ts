@@ -1,4 +1,4 @@
-import { Consumer, EachMessagePayload, Kafka, Partitioners, Producer } from 'kafkajs';
+import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
 import { extractMessage, Message } from '../../../../src/infrastructure/shared/utils/extractMessage';
 import { waitForMatchingPayload } from '../messageBroker/waitForMatchingPayload';
 import { config } from '../../../../src/infrastructure/config/config';
@@ -9,12 +9,10 @@ export class MessagesHelper {
   private readonly messagePayloads: Array<EachMessagePayload>;
   private readonly consumer: Consumer;
   private readonly kafka: Kafka;
-  private readonly producer: Producer;
 
   constructor() {
     this.messagePayloads = new Array<EachMessagePayload>;
     this.kafka = createKafka();
-    this.producer = this.kafka.producer({ createPartitioner: Partitioners.DefaultPartitioner });
     this.consumer = this.kafka.consumer({ groupId: ulid() });
   }
 
