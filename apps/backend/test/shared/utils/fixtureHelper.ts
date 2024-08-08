@@ -1,7 +1,11 @@
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { ProductEntity } from '../../../src/sales/dal/product/product.entity';
 import { SalesProductMessage } from '../../../src/infrastructure/messages/entities/salesProductMessage.entity';
 import { SalesProductRequestEntity } from '../../../src/infrastructure/idempotency/entities/salesProductRequest.entity';
+import { InventoryItemEntity } from '../../../src/storage/dal/inventoryItem.entity';
+import {
+  SalesProductIdempMessageEntity
+} from '../../../src/infrastructure/idempotency/entities/salesProductIdempMessageEntity';
 
 export class FixtureHelper {
   constructor(
@@ -23,5 +27,17 @@ export class FixtureHelper {
 
     const SalesProductRequestEntityRepo = this.dataSource.getRepository(SalesProductRequestEntity);
     await SalesProductRequestEntityRepo.delete({ productId });
+  }
+
+  async cleanupInventoryItemInDB(inventoryItemIds: string[]): Promise<void> {
+    if (inventoryItemIds.length === 0) return;
+    const repo = this.dataSource.getRepository(InventoryItemEntity);
+    await repo.delete({ inventoryItemId: In(inventoryItemIds) });
+  }
+
+  async cleanupIdempMessageInDB(messageIds: string[]): Promise<void> {
+    if (messageIds.length === 0) return;
+    const repo = this.dataSource.getRepository(SalesProductIdempMessageEntity);
+    await repo.delete({ messageId: In(messageIds) });
   }
 }
