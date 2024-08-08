@@ -10,7 +10,7 @@ describe(`${ProductController.name} validation`, () => {
   let requester: Requester;
 
   beforeAll(async () => {
-    setupManager = await SetupManager.beginInitialization();
+    setupManager = await SetupManager.beginInitSalesModule();
     requester = setupManager.initRequester();
     await setupManager.setup();
   }, SETUP_TIMEOUT)
