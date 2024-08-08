@@ -8,23 +8,18 @@ import {
   IProductIdempotencyService,
   IdempotentResponses,
 } from '../../../sales/application/product/services/interfaces/IProductIdempotency.service';
-import {
-  DatabaseSalesProductIdempotentRequestRepository
-} from '../repositories/databaseSalesProductIdempotentRequestRepository';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class SalesProductIdempotencyService implements IProductIdempotencyService {
   constructor(
     private readonly correlationService: CorrelationService,
-    private readonly repo: DatabaseSalesProductIdempotentRequestRepository,
   ) {}
 
   async assertCreateProductRequestIsIdempotent(transaction: EntityManager): Promise<void> {
-    const existingRequest = await this.repo.findRequestByCorrelationId(
-      this.correlationService.getCorrelationId(),
-      transaction
-    );
+    const existingRequest = await transaction.findOne(SalesProductRequestEntity, {
+      where: { correlationId: this.correlationService.getCorrelationId() },
+    });
 
     if (existingRequest) {
       throw new ProductAlreadyCreatedException(existingRequest.response);
@@ -38,6 +33,7 @@ export class SalesProductIdempotencyService implements IProductIdempotencyServic
       correlationId,
       productId: response.product.productId,
     });
-    await this.repo.insertRequest(request, transaction);
+
+    await transaction.save(request);
   }
 }
