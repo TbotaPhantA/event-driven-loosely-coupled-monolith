@@ -10,16 +10,17 @@ import { SalesACLService } from '../acl/salesACL.service';
 import { InventoryItemReadService } from './inventoryItem/services/inventoryItemRead.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InventoryItemEntity } from '../dal/inventoryItem.entity';
+import { IdempotencyModule } from '../../infrastructure/idempotency/idempotency.module';
 
 @Module({
   imports: [
     TransactionModule,
     TimeModule,
+    IdempotencyModule,
     TypeOrmModule.forFeature([InventoryItemEntity]),
   ],
   controllers: [InventoryItemController, SalesMessagesController],
   providers: [
-
     {
       provide: INVENTORY_ITEM_REPOSITORY,
       useClass: DatabaseInventoryItemRepository,
