@@ -27,7 +27,7 @@ describe(`${ProductController.name}`, () => {
     requester = setupManager.initRequester();
     fixtureHelper = setupManager.initFixtureHelper();
     messagesHelper = setupManager.initMessagesHelper();
-    await setupManager.setup();
+    await setupManager.setupSales();
 
     correlationId = ulid();
   }, SETUP_TIMEOUT);

@@ -12,7 +12,7 @@ describe(`${ProductController.name} validation`, () => {
   beforeAll(async () => {
     setupManager = await SetupManager.beginInitSalesModule();
     requester = setupManager.initRequester();
-    await setupManager.setup();
+    await setupManager.setupSales();
   }, SETUP_TIMEOUT)
 
   afterAll(async () => {
