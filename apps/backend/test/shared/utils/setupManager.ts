@@ -8,6 +8,12 @@ import { FixtureHelper } from './fixtureHelper';
 import { DataSource } from 'typeorm';
 import { MessagesHelper } from './helpers/messagesHelper';
 import { assertIsNotUndefined } from './isNotUndefined';
+import { io, Socket } from 'socket.io-client';
+import { config } from '../../../src/infrastructure/config/config';
+import { Partitioners, Producer } from 'kafkajs';
+import { createKafka } from './messageBroker/createKafka';
+import { Transport } from '@nestjs/microservices';
+import { ulid } from 'ulid';
 
 export class SetupManager {
   private __moduleRef?: TestingModule;
@@ -15,6 +21,8 @@ export class SetupManager {
   private __requester?: Requester;
   private __fixtureHelper?: FixtureHelper;
   private __messagesHelper?: MessagesHelper;
+  private __socket?: Socket<any>;
+  private __producer?: Producer;
 
   get moduleRef(): TestingModule {
     assertIsNotUndefined(this.__moduleRef);
@@ -39,6 +47,16 @@ export class SetupManager {
   get messagesHelper(): MessagesHelper {
     assertIsNotUndefined(this.__messagesHelper);
     return this.__messagesHelper;
+  }
+
+  get socket(): Socket<any> {
+    assertIsNotUndefined(this.__socket);
+    return this.__socket;
+  }
+
+  get producer(): Producer {
+    assertIsNotUndefined(this.__producer);
+    return this.__producer;
   }
 
   static async beginInitialization(): Promise<SetupManager> {
@@ -68,16 +86,53 @@ export class SetupManager {
     return this.messagesHelper;
   }
 
+  initSocket(): Socket<any> {
+    this.__socket = io(`${config.app.origin}`);
+    return this.socket;
+  }
+
+  initProducer(): Producer {
+    const kafka = createKafka();
+
+    this.__producer = kafka.producer({
+      createPartitioner: Partitioners.DefaultPartitioner,
+    });
+
+    return this.producer;
+  }
+
   async setup(): Promise<void> {
+    this.app.connectMicroservice({
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: [
+            `${config.kafka.kafka1Host}:${config.kafka.kafka1ExternalPort}`,
+            `${config.kafka.kafka2Host}:${config.kafka.kafka2ExternalPort}`,
+            `${config.kafka.kafka3Host}:${config.kafka.kafka3ExternalPort}`,
+          ],
+          connectionTimeout: 10000,
+        },
+        consumer: {
+          groupId: ulid(),
+        },
+      },
+    }, { inheritAppConfig: true });
+
+    await this.app.startAllMicroservices();
+
     await Promise.all([
       this.__app?.init(),
-      this.__messagesHelper?.startConsumerFillingMessagePayloads()
+      this.__messagesHelper?.startConsumerFillingMessagePayloads(),
+      this.__producer?.connect(),
     ]);
     await this.__app?.getHttpAdapter()?.getInstance()?.ready();
   }
 
   async teardown(): Promise<void> {
     await Promise.all([
+      this.__producer?.disconnect(),
+      this.__socket?.disconnect(),
       this.__messagesHelper?.stopConsumer(),
       this.__moduleRef?.close(),
     ])
