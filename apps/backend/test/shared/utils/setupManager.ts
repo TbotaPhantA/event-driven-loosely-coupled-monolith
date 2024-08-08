@@ -2,7 +2,6 @@
 // noinspection JSUnusedAssignment
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from '../../../src/app.module';
 import { Requester } from './requests/requester';
 import { FixtureHelper } from './fixtureHelper';
 import { DataSource } from 'typeorm';
@@ -14,6 +13,8 @@ import { Partitioners, Producer } from 'kafkajs';
 import { createKafka } from './messageBroker/createKafka';
 import { Transport } from '@nestjs/microservices';
 import { ulid } from 'ulid';
+import { SalesTestModule } from '../testModules/salesTest.module';
+import { StorageTestModule } from '../testModules/storageTest.module';
 
 export class SetupManager {
   private __moduleRef?: TestingModule;
@@ -59,17 +60,6 @@ export class SetupManager {
     return this.__producer;
   }
 
-  static async beginInitialization(): Promise<SetupManager> {
-    const builder = new SetupManager();
-
-    builder.__moduleRef = await Test.createTestingModule({
-      controllers: [],
-      imports: [AppModule],
-    }).compile();
-    builder.__app = builder.moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-
-    return builder
-  }
 
   initRequester(): Requester {
     this.__requester = new Requester(this.app);
@@ -86,8 +76,8 @@ export class SetupManager {
     return this.messagesHelper;
   }
 
-  initSocket(): Socket<any> {
-    this.__socket = io(`${config.app.origin}`);
+  initSocket(origin: string): Socket<any> {
+    this.__socket = io(origin);
     return this.socket;
   }
 
@@ -101,7 +91,29 @@ export class SetupManager {
     return this.producer;
   }
 
-  async setup(): Promise<void> {
+  static async beginInitSalesModule(): Promise<SetupManager> {
+    const builder = new SetupManager();
+
+    builder.__moduleRef = await Test.createTestingModule({
+      imports: [SalesTestModule],
+    }).compile();
+    builder.__app = builder.moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+
+    return builder
+  }
+
+  static async beginInitStorageModule(): Promise<SetupManager> {
+    const builder = new SetupManager();
+
+    builder.__moduleRef = await Test.createTestingModule({
+      imports: [StorageTestModule],
+    }).compile();
+    builder.__app = builder.moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+
+    return builder
+  }
+
+  async setupStorage(port?: number): Promise<void> {
     this.app.connectMicroservice({
       transport: Transport.KAFKA,
       options: {
@@ -121,6 +133,15 @@ export class SetupManager {
 
     await this.app.startAllMicroservices();
 
+    await Promise.all([
+      port ? this.__app?.listen(port) : this.__app?.init(),
+      this.__messagesHelper?.startConsumerFillingMessagePayloads(),
+      this.__producer?.connect(),
+    ]);
+    await this.__app?.getHttpAdapter()?.getInstance()?.ready();
+  }
+
+  async setupSales(): Promise<void> {
     await Promise.all([
       this.__app?.init(),
       this.__messagesHelper?.startConsumerFillingMessagePayloads(),
