@@ -25,12 +25,6 @@ export class InventoryItemCreateService {
     private readonly time: TimeService,
   ) {}
 
-  async runTransaction(dto: CreateInventoryItemDto): Promise<CreateInventoryItemOutputDto> {
-    return this.transactionService.withTransaction('SERIALIZABLE', manager => {
-      return this.create(dto, manager);
-    })
-  }
-
   async create(
     dto: CreateInventoryItemDto,
     transaction: ITransaction,
