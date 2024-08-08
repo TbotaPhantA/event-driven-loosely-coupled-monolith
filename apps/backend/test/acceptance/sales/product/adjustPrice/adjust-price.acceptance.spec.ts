@@ -23,7 +23,7 @@ describe(`${ProductController.name}`, () => {
   let product: ProductData | undefined;
 
   beforeAll(async () => {
-    setupManager = await SetupManager.beginInitialization();
+    setupManager = await SetupManager.beginInitSalesModule();
     requester = setupManager.initRequester();
     fixtureHelper = setupManager.initFixtureHelper();
     messagesHelper = setupManager.initMessagesHelper();
